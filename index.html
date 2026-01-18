@@ -20,25 +20,46 @@
         * { box-sizing: border-box; transition: all 0.2s ease; }
         body { margin: 0; font-family: 'Inter', sans-serif; background-color: var(--bg-color); color: var(--text-main); min-height: 100vh; display: flex; justify-content: center; align-items: center; }
 
-        /* LOADING */
         #loader-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(15,23,42,0.9); z-index:9999; display:flex; justify-content:center; align-items:center; backdrop-filter:blur(5px); }
         .spinner { width:50px; height:50px; border:4px solid rgba(255,255,255,0.1); border-top:4px solid var(--primary); border-radius:50%; animation:spin 1s linear infinite; }
         @keyframes spin { 0% { transform:rotate(0deg); } 100% { transform:rotate(360deg); } }
 
-        /* LAYOUT */
         .auth-container { width:100%; max-width:420px; padding:2.5rem; background:var(--card-bg); border-radius:20px; border:1px solid rgba(255,255,255,0.05); box-shadow:0 10px 30px rgba(0,0,0,0.5); }
         .dashboard-wrapper { display:none; width:100%; max-width:1200px; padding:20px; grid-template-columns:1.5fr 1fr; gap:25px; height:90vh; }
         @media (max-width:850px) { .dashboard-wrapper { grid-template-columns:1fr; height:auto; } }
-        .dash-card { background:var(--card-bg); border-radius:20px; padding:25px; border:1px solid rgba(255,255,255,0.05); overflow-y:auto; }
+        .dash-card { background:var(--card-bg); border-radius:20px; padding:25px; border:1px solid rgba(255,255,255,0.05); overflow-y:auto; position: relative; }
 
-        /* BRANDING */
         .brand-wrapper { text-align: center; margin-bottom: 30px; }
         .app-title { font-family: 'Playfair Display', serif; font-size: 2.5rem; margin: 0; display: flex; align-items: center; justify-content: center; gap: 12px; background: linear-gradient(135deg, #fff 20%, #94a3b8 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .brand-subtitle { font-family: 'Inter', sans-serif; font-size: 0.75rem; color: var(--text-sub); text-transform: uppercase; letter-spacing: 3px; margin-top: 5px; opacity: 0.8; }
 
-        /* UI ELEMENTS */
+        .dash-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; }
+        .profile-btn { 
+            width: 45px; height: 45px; border-radius: 50%; background: var(--primary); 
+            display: flex; justify-content: center; align-items: center; 
+            color: white; font-weight: bold; cursor: pointer; border: 2px solid rgba(255,255,255,0.2); 
+            overflow: hidden; background-size: cover; background-position: center;
+        }
+        .profile-modal {
+            position: absolute; top: 70px; right: 20px; width: 320px; 
+            background: #252e42; border-radius: 16px; padding: 20px; 
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1);
+            z-index: 100; display: none; flex-direction: column; align-items: center;
+        }
+        .profile-modal.show { display: flex; }
+        .modal-avatar { 
+            width: 80px; height: 80px; border-radius: 50%; background: var(--input-bg); 
+            margin-bottom: 10px; display: flex; justify-content: center; align-items: center; 
+            font-size: 2rem; color: var(--text-sub); cursor: pointer; position: relative;
+            background-size: cover; background-position: center; border: 2px dashed var(--text-sub);
+        }
+        .modal-section { width: 100%; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px; margin-top: 10px; }
+        .modal-label { font-size: 0.75rem; color: var(--text-sub); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; display: block; }
+        .modal-value { background: rgba(0,0,0,0.2); padding: 8px 12px; border-radius: 6px; font-size: 0.9rem; color: #fff; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .copy-btn { background: transparent; border: none; color: var(--primary); cursor: pointer; font-size: 0.9rem; }
+        .logout-btn-modal { width: 100%; background: rgba(239, 68, 68, 0.1); color: var(--danger); margin-top: 15px; border: 1px solid rgba(239, 68, 68, 0.3); }
+
         .role-wrapper { margin-bottom: 25px; text-align: center; }
-        .role-label { font-size: 0.8rem; color: var(--text-sub); margin-bottom: 8px; display: block; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
         .role-selector { display:flex; background:var(--bg-color); padding:5px; border-radius:10px; border: 1px solid var(--input-bg); }
         .role-opt { flex:1; text-align:center; padding:10px; border-radius:8px; cursor:pointer; font-size:0.95rem; color:var(--text-sub); }
         .role-opt.active { background:var(--input-bg); color:white; font-weight:600; box-shadow:0 2px 5px rgba(0,0,0,0.2); border: 1px solid var(--primary); }
@@ -48,26 +69,30 @@
         .auth-tab.active { color:var(--primary); border-bottom:2px solid var(--primary); margin-bottom:-2px; }
 
         .input-group { position:relative; margin-bottom:15px; }
-        .input-group i { position:absolute; left:15px; top:50%; transform:translateY(-50%); color:var(--text-sub); }
-        input, select { width:100%; padding:14px 14px 14px 45px; background:var(--input-bg); border:1px solid transparent; border-radius:12px; color:white; font-size:0.95rem; outline:none; }
+        .input-group .icon-left { position:absolute; left:15px; top:50%; transform:translateY(-50%); color:var(--text-sub); }
+        .input-group .icon-right { position:absolute; right:15px; top:50%; transform:translateY(-50%); color:var(--text-sub); cursor:pointer; }
+        input, select { width:100%; padding:14px 45px 14px 45px; background:var(--input-bg); border:1px solid transparent; border-radius:12px; color:white; font-size:0.95rem; outline:none; }
         input:focus { border-color:var(--primary); background:#1e293b; }
         
         button { width:100%; padding:14px; border:none; border-radius:12px; background:var(--primary); color:white; font-weight:600; cursor:pointer; margin-top:10px; font-size:1rem; }
         button:hover { filter:brightness(1.1); }
         button.secondary { background:transparent; border:1px solid var(--input-bg); color:var(--text-sub); margin-top:10px; }
+        button.text-btn { background:transparent; color:var(--primary); width:auto; padding:5px 10px; font-size:0.9rem; margin-top:0; border:none; text-decoration:underline; }
 
-        /* DASHBOARD ELEMENTS */
+        .forgot-link { display:block; text-align:right; font-size:0.85rem; color:var(--text-sub); text-decoration:none; margin-top:-10px; margin-bottom:15px; cursor:pointer; }
+        .forgot-link:hover { color:var(--primary); }
+
         .total-card { background:var(--gradient); padding:25px; border-radius:20px; color:white; text-align:center; margin-bottom:25px; position:relative; overflow:hidden; }
         .total-amount { font-size:2.5rem; font-weight:700; display:block; margin:10px 0; }
-        
         .dash-toggle { display:flex; background:var(--bg-color); border-radius:12px; padding:5px; margin-bottom:20px; }
         .dash-opt { flex:1; text-align:center; padding:10px; cursor:pointer; border-radius:8px; color:var(--text-sub); font-size:0.9rem; font-weight:600; }
         .dash-opt.active { background:var(--input-bg); color:white; }
 
+        .month-header { color: var(--text-sub); font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin: 20px 0 10px 0; padding-bottom: 5px; border-bottom: 1px solid rgba(255,255,255,0.1); }
         .expense-item { background:var(--bg-color); padding:15px; border-radius:12px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; border-left:4px solid var(--primary); }
         .expense-item.reimburse { border-left-color:var(--accent); }
-        .expense-item.loan { border-left-color:var(--loan-color); } /* Purple for Loans */
-
+        .expense-item.loan { border-left-color:var(--loan-color); }
+        
         .status-badge { font-size:0.75rem; padding:4px 10px; border-radius:20px; }
         .status-Approved, .status-Repaid { background:rgba(16,185,129,0.2); color:#10b981; }
         .status-Rejected { background:rgba(239,68,68,0.2); color:#ef4444; }
@@ -90,44 +115,78 @@
             <div class="brand-subtitle">by Panav Gohil</div>
         </div>
         
-        <div class="role-wrapper">
-            <span class="role-label">Login as</span>
-            <div class="role-selector">
-                <div id="role-student" class="role-opt active" onclick="setGlobalRole('student')">Student</div>
-                <div id="role-guardian" class="role-opt" onclick="setGlobalRole('guardian')">Guardian</div>
+        <div id="authContent">
+            <div class="role-wrapper">
+                <span class="role-label" style="font-size:0.8rem; color:var(--text-sub);">Login as</span>
+                <div class="role-selector">
+                    <div id="role-student" class="role-opt active" onclick="setGlobalRole('student')">Student</div>
+                    <div id="role-guardian" class="role-opt" onclick="setGlobalRole('guardian')">Guardian</div>
+                </div>
+            </div>
+
+            <div class="auth-tabs">
+                <div id="tabLogin" class="auth-tab active" onclick="switchTab('login')">Sign In</div>
+                <div id="tabRegister" class="auth-tab" onclick="switchTab('register')">Sign Up</div>
+            </div>
+
+            <div id="loginForm">
+                <div class="input-group"><i class="fa-solid fa-envelope icon-left"></i><input type="email" id="l-email" placeholder="Email Address"></div>
+                <div class="input-group">
+                    <i class="fa-solid fa-lock icon-left"></i>
+                    <input type="password" id="l-password" placeholder="Password">
+                    <i class="fa-solid fa-eye icon-right" onclick="togglePwd('l-password')"></i>
+                </div>
+                <div class="forgot-link" onclick="showReset()">Forgot Password?</div>
+                <button onclick="doLogin()">Login</button>
+            </div>
+
+            <div id="registerForm" class="hidden">
+                <div id="reg-step-1">
+                    <div class="step-indicator">Step 1 of 3</div>
+                    <div class="input-group"><i class="fa-solid fa-envelope icon-left"></i><input type="email" id="r-email" placeholder="Enter your email"></div>
+                    <button onclick="sendOtp('register')">Send Verification Code</button>
+                </div>
+                <div id="reg-step-2" class="hidden">
+                    <div class="step-indicator">Step 2 of 3</div>
+                    <p style="color:var(--text-sub); text-align:center; font-size:0.9rem;">Code sent to email.</p>
+                    <div class="input-group"><i class="fa-solid fa-key icon-left"></i><input type="text" id="r-otp" placeholder="Enter 4-digit Code"></div>
+                    <button onclick="verifyOtp('register')">Verify Code</button>
+                    <button class="secondary" onclick="resetReg()">Back</button>
+                </div>
+                <div id="reg-step-3" class="hidden">
+                    <div class="step-indicator">Step 3 of 3</div>
+                    <div class="input-group"><i class="fa-solid fa-user icon-left"></i><input type="text" id="r-name" placeholder="Full Name"></div>
+                    <div class="input-group">
+                        <i class="fa-solid fa-lock icon-left"></i>
+                        <input type="password" id="r-password" placeholder="Create Password">
+                        <i class="fa-solid fa-eye icon-right" onclick="togglePwd('r-password')"></i>
+                    </div>
+                    <div class="input-group hidden" id="r-guardian-field"><i class="fa-solid fa-link icon-left"></i><input type="text" id="r-student-key" placeholder="Student Key (Required)"></div>
+                    <button onclick="doRegister()">Create Account</button>
+                </div>
             </div>
         </div>
 
-        <div class="auth-tabs">
-            <div id="tabLogin" class="auth-tab active" onclick="switchTab('login')">Sign In</div>
-            <div id="tabRegister" class="auth-tab" onclick="switchTab('register')">Sign Up</div>
-        </div>
-
-        <div id="loginForm">
-            <div class="input-group"><i class="fa-solid fa-envelope"></i><input type="email" id="l-email" placeholder="Email Address"></div>
-            <div class="input-group"><i class="fa-solid fa-lock"></i><input type="password" id="l-password" placeholder="Password"></div>
-            <button onclick="doLogin()">Login</button>
-        </div>
-
-        <div id="registerForm" class="hidden">
-            <div id="reg-step-1">
-                <div class="step-indicator">Step 1 of 3</div>
-                <div class="input-group"><i class="fa-solid fa-envelope"></i><input type="email" id="r-email" placeholder="Enter your email"></div>
-                <button onclick="sendOtp()">Send Verification Code</button>
+        <div id="resetForm" class="hidden">
+            <h3 style="text-align:center; color:white;">Reset Password</h3>
+            <div id="reset-step-1">
+                <div class="input-group"><i class="fa-solid fa-envelope icon-left"></i><input type="email" id="reset-email" placeholder="Enter registered email"></div>
+                <button onclick="sendOtp('reset')">Send OTP</button>
+                <button class="secondary" onclick="hideReset()">Back to Login</button>
             </div>
-            <div id="reg-step-2" class="hidden">
-                <div class="step-indicator">Step 2 of 3</div>
-                <p style="color:var(--text-sub); text-align:center; font-size:0.9rem;">Code sent to email.</p>
-                <div class="input-group"><i class="fa-solid fa-key"></i><input type="text" id="r-otp" placeholder="Enter 4-digit Code"></div>
-                <button onclick="verifyOtp()">Verify Code</button>
-                <button class="secondary" onclick="resetReg()">Back</button>
+            <div id="reset-step-2" class="hidden">
+                <p style="color:var(--text-sub); text-align:center; font-size:0.9rem;">Enter OTP sent to your email.</p>
+                <div class="input-group"><i class="fa-solid fa-key icon-left"></i><input type="text" id="reset-otp" placeholder="4-digit Code"></div>
+                <button onclick="verifyOtp('reset')">Verify</button>
+                <button class="secondary" onclick="hideReset()">Cancel</button>
             </div>
-            <div id="reg-step-3" class="hidden">
-                <div class="step-indicator">Step 3 of 3</div>
-                <div class="input-group"><i class="fa-solid fa-user"></i><input type="text" id="r-name" placeholder="Full Name"></div>
-                <div class="input-group"><i class="fa-solid fa-lock"></i><input type="password" id="r-password" placeholder="Create Password"></div>
-                <div class="input-group hidden" id="r-guardian-field"><i class="fa-solid fa-link"></i><input type="text" id="r-student-key" placeholder="Student Key (Required)"></div>
-                <button onclick="doRegister()">Create Account</button>
+            <div id="reset-step-3" class="hidden">
+                <div class="input-group">
+                    <i class="fa-solid fa-lock icon-left"></i>
+                    <input type="password" id="reset-new-pass" placeholder="New Password">
+                    <i class="fa-solid fa-eye icon-right" onclick="togglePwd('reset-new-pass')"></i>
+                </div>
+                <button onclick="doReset()">Set New Password</button>
             </div>
         </div>
         <p id="authMsg" style="color:var(--danger); text-align:center; margin-top:15px; min-height:20px;"></p>
@@ -135,9 +194,37 @@
 
     <div class="dashboard-wrapper" id="dashboardSection">
         <div class="dash-card">
-            <div style="display:flex; justify-content:space-between; margin-bottom:20px;">
+            <div class="dash-header">
                 <h3 id="dashTitle" style="margin:0; font-family:'Playfair Display', serif;">Dashboard</h3>
-                <button onclick="logout()" style="width:auto; padding:8px 15px; background:var(--danger);">Logout</button>
+                <div class="profile-btn" id="profileBtn" onclick="toggleProfileModal()">A</div>
+                
+                <div id="profileModal" class="profile-modal">
+                    <input type="file" id="profilePicInput" style="display:none;" accept="image/*" onchange="saveProfilePic()">
+                    <div class="modal-avatar" onclick="document.getElementById('profilePicInput').click()" id="modalAvatar">
+                        <span><i class="fa-solid fa-camera"></i></span>
+                    </div>
+                    <p class="modal-name" id="modalName">User Name</p>
+                    <p class="modal-email" id="modalEmail">user@example.com</p>
+                    <div class="modal-section" id="studentSection">
+                        <span class="modal-label">Student Key</span>
+                        <div class="modal-value">
+                            <span id="modalKey">STU-XXXX</span>
+                            <button class="copy-btn" onclick="copyKey()"><i class="fa-regular fa-copy"></i></button>
+                        </div>
+                    </div>
+                    <div class="modal-section">
+                        <span class="modal-label">Your Password</span>
+                        <div class="modal-value">
+                            <span id="modalPass">••••••</span>
+                            <button class="copy-btn" onclick="toggleModalPwd()"><i class="fa-solid fa-eye" id="modalEye"></i></button>
+                        </div>
+                        <div class="input-group" style="margin-top:10px;">
+                            <input type="password" id="modalNewPass" placeholder="New Password" style="padding:10px; font-size:0.85rem;">
+                        </div>
+                        <button style="margin-top:5px; padding:8px; font-size:0.9rem;" onclick="updatePassword()">Update Password</button>
+                    </div>
+                    <button class="logout-btn-modal" onclick="logout()">Sign Out</button>
+                </div>
             </div>
 
             <div id="dashToggle" class="dash-toggle hidden">
@@ -148,17 +235,23 @@
             <div id="section-spend">
                 <div id="studentControls" class="hidden">
                     <div style="background:#0f172a; padding:15px; border-radius:15px; margin-bottom:20px; border:1px solid rgba(255,255,255,0.05);">
-                        <h4 style="margin:0 0 10px 0;">Add Expense</h4>
-                        <div class="input-group"><i class="fa-solid fa-tag"></i><input id="expItem" placeholder="Item Name"></div>
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                            <h4 style="margin:0;">Add Expense</h4>
+                            <button class="text-btn" onclick="togglePastEntry()">+ Add Past Entry</button>
+                        </div>
+                        <div class="input-group"><i class="fa-solid fa-tag icon-left"></i><input id="expItem" placeholder="Item Name"></div>
                         <div style="display:flex; gap:10px;">
-                            <div class="input-group"><i class="fa-solid fa-indian-rupee-sign"></i><input type="number" id="expAmount" placeholder="Amount"></div>
-                            <div class="input-group"><i class="fa-solid fa-list"></i>
+                            <div class="input-group"><i class="fa-solid fa-indian-rupee-sign icon-left"></i><input type="number" id="expAmount" placeholder="Amount"></div>
+                            <div class="input-group"><i class="fa-solid fa-list icon-left"></i>
                                 <select id="expCategory" style="padding-left:45px;">
                                     <option>Essentials</option><option>Food</option><option>Travel</option><option>Study</option>
                                     <option>Rent</option><option>Utilities</option><option>Health</option><option>Fashion</option>
                                     <option>Entertainment</option><option>Others</option>
                                 </select>
                             </div>
+                        </div>
+                        <div id="pastDateGroup" class="hidden" style="margin-bottom:10px;">
+                            <div class="input-group"><i class="fa-solid fa-calendar icon-left"></i><input type="date" id="expDate"></div>
                         </div>
                         <label style="color:var(--text-sub); display:flex; align-items:center; gap:10px; cursor:pointer;">
                             <input type="checkbox" id="expReimburse" style="width:18px; margin:0;"> Request Reimbursement
@@ -176,20 +269,19 @@
             <div id="section-lend" class="hidden">
                 <div style="background:#0f172a; padding:15px; border-radius:15px; margin-bottom:20px; border:1px solid var(--loan-color);">
                     <h4 style="margin:0 0 10px 0; color:var(--loan-color);">Add New Loan</h4>
-                    <div class="input-group"><i class="fa-solid fa-user-group"></i><input id="loanName" placeholder="Friend's Name"></div>
-                    <div class="input-group"><i class="fa-solid fa-calendar"></i><input type="date" id="loanDate"></div>
-                    <div class="input-group"><i class="fa-solid fa-indian-rupee-sign"></i><input type="number" id="loanAmount" placeholder="Amount Given"></div>
+                    <div class="input-group"><i class="fa-solid fa-user-group icon-left"></i><input id="loanName" placeholder="Friend's Name"></div>
+                    <div class="input-group"><i class="fa-solid fa-calendar icon-left"></i><input type="date" id="loanDate"></div>
+                    <div class="input-group"><i class="fa-solid fa-indian-rupee-sign icon-left"></i><input type="number" id="loanAmount" placeholder="Amount Given"></div>
                     <button style="background:var(--loan-color);" onclick="addLoan()">Record Loan</button>
                 </div>
                 <h4>Active Loans</h4>
                 <div id="loanList">Loading...</div>
             </div>
-
         </div>
 
         <div class="dash-card">
             <div class="total-card">
-                <span style="opacity:0.8; font-size:0.9rem;">TOTAL SPENT</span>
+                <span id="totalLabel" style="opacity:0.8; font-size:0.9rem;">TOTAL SPENT</span>
                 <span class="total-amount" id="grandTotal">₹0</span>
             </div>
             <h4 style="text-align:center;">Analysis</h4>
@@ -199,26 +291,23 @@
     </div>
 
     <script>
-        const API_URL = 'https://script.google.com/macros/s/AKfycbyDC0RkfvP0BIWuPymhUl9xbLeu9lPkkBIVadUQBmIgbdwintGIP5cd-gs3T-BZNNKt/exec'; // REPLACE
+        // REPLACE WITH YOUR NEW DEPLOYMENT URL
+        const API_URL = 'https://script.google.com/macros/s/AKfycbyTivbv9zufd0Tq1mc1x6Ak0k4S3iW0dYPinm9kfxc_vpX-tTbhtybUcaRCisGid6ou/exec'; 
 
         let currentRole = 'student', currentUser = null, currentExpenses = [], myChart = null;
-
         const loader = { show: () => document.getElementById('loader-overlay').classList.remove('hidden'), hide: () => document.getElementById('loader-overlay').classList.add('hidden') };
         const msg = (text) => document.getElementById('authMsg').innerText = text;
 
         function setGlobalRole(r) { currentRole = r; document.getElementById('role-student').classList.toggle('active', r==='student'); document.getElementById('role-guardian').classList.toggle('active', r==='guardian'); document.getElementById('r-guardian-field').classList.toggle('hidden', r!=='guardian'); msg(""); }
         function switchTab(t) { document.getElementById('tabLogin').classList.toggle('active', t==='login'); document.getElementById('tabRegister').classList.toggle('active', t==='register'); document.getElementById('loginForm').classList.toggle('hidden', t!=='login'); document.getElementById('registerForm').classList.toggle('hidden', t!=='register'); msg(""); }
         function resetReg() { document.getElementById('reg-step-1').classList.remove('hidden'); document.getElementById('reg-step-2').classList.add('hidden'); document.getElementById('reg-step-3').classList.add('hidden'); msg(""); }
+        function togglePwd(id) { const x = document.getElementById(id); x.type = (x.type === "password") ? "text" : "password"; }
+        function showReset() { document.getElementById('authContent').classList.add('hidden'); document.getElementById('resetForm').classList.remove('hidden'); msg(""); }
+        function hideReset() { document.getElementById('authContent').classList.remove('hidden'); document.getElementById('resetForm').classList.add('hidden'); resetResetFlow(); msg(""); }
+        function resetResetFlow() { document.getElementById('reset-step-1').classList.remove('hidden'); document.getElementById('reset-step-2').classList.add('hidden'); document.getElementById('reset-step-3').classList.add('hidden'); }
 
-        // --- DASHBOARD MODES ---
-        function setDashMode(mode) {
-            document.getElementById('mode-spend').classList.toggle('active', mode==='spend');
-            document.getElementById('mode-lend').classList.toggle('active', mode==='lend');
-            document.getElementById('section-spend').classList.toggle('hidden', mode!=='spend');
-            document.getElementById('section-lend').classList.toggle('hidden', mode!=='lend');
-            
-            if(mode === 'lend') fetchLoans();
-        }
+        // --- AUTH & API ---
+        async function apiCall(data) { loader.show(); try { const res = await fetch(API_URL, {method:'POST', body:JSON.stringify(data)}); const json = await res.json(); loader.hide(); return json; } catch(e) { loader.hide(); alert("Connection Error"); return {status:'error'}; } }
 
         async function doLogin() {
             const email = document.getElementById('l-email').value, pass = document.getElementById('l-password').value;
@@ -227,15 +316,6 @@
             if(res.status==='success') { localStorage.setItem('vantageUser', JSON.stringify({...res.data, role:currentRole})); loadDashboard({...res.data, role:currentRole}); } else msg(res.message);
         }
 
-        async function sendOtp() {
-            const email = document.getElementById('r-email').value; if(!email) return msg("Enter email");
-            msg("Sending OTP..."); const res = await apiCall({ action:'send_otp', email:email });
-            if(res.status==='success') { msg(""); document.getElementById('reg-step-1').classList.add('hidden'); document.getElementById('reg-step-2').classList.remove('hidden'); } else msg("Error");
-        }
-        async function verifyOtp() {
-            const res = await apiCall({ action:'verify_otp', email:document.getElementById('r-email').value, otp:document.getElementById('r-otp').value });
-            if(res.status==='success') { msg(""); document.getElementById('reg-step-2').classList.add('hidden'); document.getElementById('reg-step-3').classList.remove('hidden'); } else msg("Invalid OTP");
-        }
         async function doRegister() {
             const email = document.getElementById('r-email').value, pass = document.getElementById('r-password').value, name = document.getElementById('r-name').value, key = document.getElementById('r-student-key').value;
             if(!name||!pass) return msg("Fill all fields");
@@ -245,27 +325,87 @@
             if(res.status==='success') { alert(currentRole==='student'?"Account Created! Check email for key.":"Account Created!"); switchTab('login'); resetReg(); } else msg(res.message);
         }
 
-        async function apiCall(data) { loader.show(); try { const res = await fetch(API_URL, {method:'POST', body:JSON.stringify(data)}); const json = await res.json(); loader.hide(); return json; } catch(e) { loader.hide(); alert("Connection Error"); return {status:'error'}; } }
+        async function sendOtp(flow) {
+            const emailId = flow === 'register' ? 'r-email' : 'reset-email';
+            const email = document.getElementById(emailId).value; if(!email) return msg("Enter email");
+            msg("Sending OTP..."); const res = await apiCall({ action:'send_otp', email:email });
+            if(res.status==='success') { msg(""); if(flow==='register') { document.getElementById('reg-step-1').classList.add('hidden'); document.getElementById('reg-step-2').classList.remove('hidden'); } else { document.getElementById('reset-step-1').classList.add('hidden'); document.getElementById('reset-step-2').classList.remove('hidden'); } } else msg("Error");
+        }
+        
+        async function verifyOtp(flow) {
+            const emailId = flow === 'register' ? 'r-email' : 'reset-email';
+            const otpId = flow === 'register' ? 'r-otp' : 'reset-otp';
+            const res = await apiCall({ action:'verify_otp', email:document.getElementById(emailId).value, otp:document.getElementById(otpId).value });
+            if(res.status==='success') { msg(""); if(flow==='register') { document.getElementById('reg-step-2').classList.add('hidden'); document.getElementById('reg-step-3').classList.remove('hidden'); } else { document.getElementById('reset-step-2').classList.add('hidden'); document.getElementById('reset-step-3').classList.remove('hidden'); } } else msg("Invalid OTP");
+        }
 
-        window.onload = function() { const saved = localStorage.getItem('vantageUser'); if(saved) loadDashboard(JSON.parse(saved)); };
+        async function doReset() {
+            const email = document.getElementById('reset-email').value, pass = document.getElementById('reset-new-pass').value;
+            if(!pass) return msg("Enter new password");
+            const res = await apiCall({ action: 'reset_password', email: email, password: pass });
+            if(res.status === 'success') { alert("Password Reset Successful! Login now."); hideReset(); } else msg(res.message);
+        }
+
+        // --- INITIALIZATION ---
+        window.onload = function() { 
+            const saved = localStorage.getItem('vantageUser'); 
+            if(saved) loadDashboard(JSON.parse(saved)); 
+        };
         function logout() { localStorage.removeItem('vantageUser'); location.reload(); }
 
+        // --- DASHBOARD LOGIC ---
         function loadDashboard(user) {
             currentUser = user;
             document.getElementById('authSection').style.display='none'; document.getElementById('dashboardSection').style.display='grid';
             document.getElementById('dashTitle').innerText = `Hi, ${user.name.split(' ')[0]}`;
+            
+            // PROFILE SETUP
+            const btn = document.getElementById('profileBtn'), modalAvatar = document.getElementById('modalAvatar');
+            btn.innerText = user.name.charAt(0).toUpperCase();
+            btn.style.backgroundImage = 'none'; modalAvatar.style.backgroundImage = 'none';
+            modalAvatar.innerHTML = '<span><i class="fa-solid fa-camera"></i></span>';
+
+            const uniqueKey = 'vantageProfilePic_' + user.email;
+            const savedPic = localStorage.getItem(uniqueKey);
+            if(savedPic) {
+                btn.style.backgroundImage = `url(${savedPic})`; btn.innerText = "";
+                modalAvatar.style.backgroundImage = `url(${savedPic})`; modalAvatar.innerHTML = "";
+            }
+
             if(user.role === 'student') {
                 document.getElementById('studentControls').classList.remove('hidden');
                 document.getElementById('dashToggle').classList.remove('hidden');
                 fetchData(user.student_key, 'get_expenses');
             } else {
+                document.getElementById('studentControls').classList.add('hidden');
+                document.getElementById('dashToggle').classList.add('hidden');
                 fetchData(user.email, 'get_guardian_data');
             }
         }
 
+        function setDashMode(mode) {
+            document.getElementById('mode-spend').classList.toggle('active', mode==='spend');
+            document.getElementById('mode-lend').classList.toggle('active', mode==='lend');
+            document.getElementById('section-spend').classList.toggle('hidden', mode!=='spend');
+            document.getElementById('section-lend').classList.toggle('hidden', mode!=='lend');
+            if(mode === 'lend') fetchLoans();
+        }
+
+        function togglePastEntry() {
+            const group = document.getElementById('pastDateGroup');
+            group.classList.toggle('hidden');
+            const btn = document.querySelector('.text-btn');
+            if(!group.classList.contains('hidden')) { btn.innerText = "Cancel Past Entry"; btn.style.color = "#ef4444"; } 
+            else { btn.innerText = "+ Add Past Entry"; btn.style.color = "#3b82f6"; document.getElementById('expDate').value = ""; }
+        }
+
         async function addExpense() {
-            await apiCall({ action:'add_expense', student_key:currentUser.student_key, item_name:document.getElementById('expItem').value, amount:document.getElementById('expAmount').value, category:document.getElementById('expCategory').value, is_reimbursable:document.getElementById('expReimburse').checked });
-            document.getElementById('expItem').value=""; document.getElementById('expAmount').value="";
+            const dateInput = document.getElementById('expDate').value;
+            const payload = { action:'add_expense', student_key:currentUser.student_key, item_name:document.getElementById('expItem').value, amount:document.getElementById('expAmount').value, category:document.getElementById('expCategory').value, is_reimbursable:document.getElementById('expReimburse').checked };
+            if(dateInput) payload.date = dateInput;
+            await apiCall(payload);
+            document.getElementById('expItem').value=""; document.getElementById('expAmount').value=""; document.getElementById('expDate').value="";
+            if(!document.getElementById('pastDateGroup').classList.contains('hidden')) togglePastEntry();
             fetchData(currentUser.student_key, 'get_expenses');
         }
 
@@ -282,8 +422,11 @@
 
         async function fetchData(id, action) {
             const res = await apiCall({ action:action, [action==='get_expenses'?'student_key':'email']:id });
-            currentExpenses = res.expenses || []; renderList(currentExpenses); renderStats(currentExpenses);
+            currentExpenses = res.expenses || []; 
+            currentExpenses.sort((a, b) => new Date(b.date) - new Date(a.date));
+            renderList(currentExpenses); renderStats(currentExpenses);
         }
+        
         async function fetchLoans() {
             const res = await apiCall({ action:'get_loans', student_key:currentUser.student_key });
             const list = document.getElementById('loanList'); list.innerHTML="";
@@ -299,15 +442,32 @@
         function renderList(items) {
             const list = document.getElementById('expenseList'); list.innerHTML="";
             if(!items.length) return list.innerHTML="<p style='text-align:center;color:#666'>No records.</p>";
-            items.reverse().forEach(i => {
+            let lastMonth = "";
+            items.forEach(i => {
+                const d = new Date(i.date);
+                const m = d.toLocaleDateString('default', { month: 'long', year: 'numeric' });
+                if(m !== lastMonth) { list.innerHTML += `<div class="month-header">${m}</div>`; lastMonth = m; }
                 let btns = (currentUser.role === 'guardian' && i.status === 'Pending') ? `<div style="margin-top:5px;"><button onclick="updateStatus('${i.id}','Approved')" style="width:30px;padding:5px;margin-right:5px;background:rgba(16,185,129,0.2);color:#10b981"><i class="fa fa-check"></i></button><button onclick="updateStatus('${i.id}','Rejected')" style="width:30px;padding:5px;background:rgba(239,68,68,0.2);color:#ef4444"><i class="fa fa-times"></i></button></div>` : '';
-                list.innerHTML += `<div class="expense-item ${i.reimbursable||currentUser.role==='guardian'?'reimburse':''}"><div><strong>${i.item}</strong><div style="font-size:0.8rem;color:#888">${currentUser.role==='guardian'?i.studentName:i.category} • ${new Date(i.date).toLocaleDateString()}</div></div><div style="text-align:right"><strong>₹${i.amount}</strong><br>${(i.reimbursable||currentUser.role==='guardian')?`<span class="status-badge status-${i.status}">${i.status}</span>`:''}${btns}</div></div>`;
+                list.innerHTML += `<div class="expense-item ${i.reimbursable||currentUser.role==='guardian'?'reimburse':''}"><div><strong>${i.item}</strong><div style="font-size:0.8rem;color:#888">${currentUser.role==='guardian'?i.studentName:i.category} • ${d.toLocaleDateString()}</div></div><div style="text-align:right"><strong>₹${i.amount}</strong><br>${(i.reimbursable||currentUser.role==='guardian')?`<span class="status-badge status-${i.status}">${i.status}</span>`:''}${btns}</div></div>`;
             });
         }
 
         function renderStats(items) {
             let total=0; const cats={};
-            items.forEach(i => { total+= +i.amount; cats[i.category||'Misc']=(cats[i.category||'Misc']||0)+ +i.amount; });
+            const isGuardian = currentUser.role === 'guardian';
+            
+            // Logic: Guardian shows sum of PENDING ONLY. Student shows ALL.
+            const targetItems = isGuardian ? items.filter(i => i.status === 'Pending') : items;
+
+            targetItems.forEach(i => { 
+                total += +i.amount; 
+                cats[i.category||'Misc']=(cats[i.category||'Misc']||0)+ +i.amount; 
+            });
+
+            // Update Label based on Role
+            const labelEl = document.getElementById('totalLabel');
+            if(labelEl) labelEl.innerText = isGuardian ? "ACTIVE REQUESTS" : "TOTAL SPENT";
+
             document.getElementById('grandTotal').innerText = `₹${total.toLocaleString()}`;
             if(myChart) myChart.destroy();
             const ctx = document.getElementById('expenseChart');
@@ -321,6 +481,41 @@
             let csv = "Date,Item,Category,Amount,Status\n" + currentExpenses.map(r => `${new Date(r.date).toLocaleDateString()},${r.item},${r.category},${r.amount},${r.status||'Pending'}`).join("\n");
             const link = document.createElement("a"); link.href = "data:text/csv;charset=utf-8," + encodeURI(csv); link.download = "Expenses.csv"; link.click();
         }
+
+        // --- PROFILE LOGIC ---
+        function toggleProfileModal() {
+            const m = document.getElementById('profileModal'); m.classList.toggle('show');
+            if(m.classList.contains('show')) {
+                document.getElementById('modalName').innerText = currentUser.name;
+                document.getElementById('modalEmail').innerText = currentUser.email;
+                document.getElementById('modalPass').innerText = '••••••'; 
+                if(currentUser.role === 'student') { document.getElementById('studentSection').classList.remove('hidden'); document.getElementById('modalKey').innerText = currentUser.student_key; } 
+                else { document.getElementById('studentSection').classList.add('hidden'); }
+            }
+        }
+        function saveProfilePic() {
+            const file = document.getElementById('profilePicInput').files[0];
+            const reader = new FileReader();
+            reader.onloadend = function() {
+                const uniqueKey = 'vantageProfilePic_' + currentUser.email;
+                localStorage.setItem(uniqueKey, reader.result);
+                document.getElementById('profileBtn').style.backgroundImage = `url(${reader.result})`; document.getElementById('profileBtn').innerText = "";
+                document.getElementById('modalAvatar').style.backgroundImage = `url(${reader.result})`; document.getElementById('modalAvatar').innerHTML = "";
+            }
+            if(file) reader.readAsDataURL(file);
+        }
+        function toggleModalPwd() {
+            const span = document.getElementById('modalPass'); const eye = document.getElementById('modalEye');
+            if(span.innerText === '••••••') { span.innerText = currentUser.password; eye.classList.remove('fa-eye'); eye.classList.add('fa-eye-slash'); } 
+            else { span.innerText = '••••••'; eye.classList.remove('fa-eye-slash'); eye.classList.add('fa-eye'); }
+        }
+        async function updatePassword() {
+            const newPass = document.getElementById('modalNewPass').value; if(!newPass) return alert("Enter password");
+            const res = await apiCall({ action: 'reset_password', email: currentUser.email, password: newPass });
+            if(res.status === 'success') { alert("Updated!"); currentUser.password = newPass; localStorage.setItem('vantageUser', JSON.stringify(currentUser)); document.getElementById('modalNewPass').value=""; toggleModalPwd(); } else alert(res.message);
+        }
+        function copyKey() { navigator.clipboard.writeText(currentUser.student_key); alert("Copied!"); }
+        window.onclick = function(event) { if (!event.target.matches('.profile-btn') && !event.target.closest('.profile-modal')) { document.getElementById('profileModal').classList.remove('show'); } }
     </script>
 </body>
 </html>
