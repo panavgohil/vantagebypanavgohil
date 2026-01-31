@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Vantage Finance</title>
+    
     <link rel="manifest" href="manifest.json">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📈</text></svg>">
-    
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     
@@ -30,7 +30,6 @@
         .spinner { width:50px; height:50px; border:4px solid rgba(255,255,255,0.1); border-top:4px solid var(--primary); border-radius:50%; animation:spin 1s linear infinite; }
         @keyframes spin { 0% { transform:rotate(0deg); } 100% { transform:rotate(360deg); } }
 
-        /* LAYOUT & AUTH */
         .auth-container { width:100%; max-width:420px; padding:2.5rem; background:var(--card-bg); border-radius:20px; border:1px solid rgba(255,255,255,0.05); box-shadow:0 10px 30px rgba(0,0,0,0.5); }
         .dashboard-wrapper { display:none; width:100%; max-width:1200px; padding:20px; grid-template-columns:1.5fr 1fr; gap:25px; height:90vh; }
         @media (max-width:850px) { .dashboard-wrapper { grid-template-columns:1fr; height:auto; } }
@@ -42,8 +41,6 @@
 
         .dash-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; }
         .profile-btn { width: 45px; height: 45px; border-radius: 50%; background: var(--primary); display: flex; justify-content: center; align-items: center; color: white; font-weight: bold; cursor: pointer; border: 2px solid rgba(255,255,255,0.2); overflow: hidden; background-size: cover; background-position: center; }
-        
-        /* PROFILE MODAL */
         .profile-modal { position: absolute; top: 70px; right: 20px; width: 320px; background: #252e42; border-radius: 16px; padding: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); z-index: 100; display: none; flex-direction: column; align-items: center; }
         .profile-modal.show { display: flex; }
         .modal-avatar { width: 80px; height: 80px; border-radius: 50%; background: var(--input-bg); margin-bottom: 10px; display: flex; justify-content: center; align-items: center; font-size: 2rem; color: var(--text-sub); cursor: pointer; position: relative; background-size: cover; background-position: center; border: 2px dashed var(--text-sub); }
@@ -53,7 +50,6 @@
         .copy-btn { background: transparent; border: none; color: var(--primary); cursor: pointer; font-size: 0.9rem; }
         .logout-btn-modal { width: 100%; background: rgba(239, 68, 68, 0.1); color: var(--danger); margin-top: 15px; border: 1px solid rgba(239, 68, 68, 0.3); }
 
-        /* INPUTS & BUTTONS */
         .role-wrapper { margin-bottom: 25px; text-align: center; }
         .role-selector { display:flex; background:var(--bg-color); padding:5px; border-radius:10px; border: 1px solid var(--input-bg); }
         .role-opt { flex:1; text-align:center; padding:10px; border-radius:8px; cursor:pointer; font-size:0.95rem; color:var(--text-sub); }
@@ -76,7 +72,6 @@
 
         .forgot-link { display:block; text-align:right; font-size:0.85rem; color:var(--text-sub); text-decoration:none; margin-top:-10px; margin-bottom:15px; cursor:pointer; }
         
-        /* DASHBOARD COMPONENTS */
         .total-card { background:var(--gradient); padding:25px; border-radius:20px; color:white; text-align:center; margin-bottom:25px; position:relative; overflow:hidden; }
         .total-amount { font-size:2.5rem; font-weight:700; display:block; margin:10px 0; }
         .dash-toggle { display:flex; background:var(--bg-color); border-radius:12px; padding:5px; margin-bottom:20px; }
@@ -105,7 +100,6 @@
         .action-icons i.fa-pen:hover { color: var(--primary); }
         .action-icons i.fa-trash:hover { color: var(--danger); }
 
-        /* BUDGET */
         .budget-wrapper { margin-top: 15px; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 12px; }
         .budget-header { display: flex; justify-content: space-between; font-size: 0.85rem; color: var(--text-sub); margin-bottom: 8px; }
         .progress-track { width: 100%; height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden; }
@@ -113,7 +107,6 @@
         .progress-fill.warning { background: #f59e0b; } .progress-fill.danger { background: #ef4444; }
         .set-budget-btn { background: none; border: none; color: var(--primary); font-size: 0.8rem; cursor: pointer; padding: 0; text-decoration: underline; }
 
-        /* SEARCH */
         .search-bar-container { margin-bottom: 15px; position: relative; margin-top: 15px; }
         .search-bar { width: 100%; padding: 12px 40px 12px 15px; border-radius: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; }
         .search-icon { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: var(--text-sub); }
@@ -131,7 +124,6 @@
             <h2 class="app-title"><i class="fa-solid fa-chart-line" style="color:var(--primary); font-size:0.8em;"></i> Vantage</h2>
             <div class="brand-subtitle">by Panav Gohil</div>
         </div>
-        
         <div id="authContent">
             <div class="role-wrapper">
                 <span class="role-label" style="font-size:0.8rem; color:var(--text-sub);">Login as</span>
@@ -140,19 +132,16 @@
                     <div id="role-guardian" class="role-opt" onclick="setGlobalRole('guardian')">Guardian</div>
                 </div>
             </div>
-
             <div class="auth-tabs">
                 <div id="tabLogin" class="auth-tab active" onclick="switchTab('login')">Sign In</div>
                 <div id="tabRegister" class="auth-tab" onclick="switchTab('register')">Sign Up</div>
             </div>
-
             <div id="loginForm">
                 <div class="input-group"><i class="fa-solid fa-envelope icon-left"></i><input type="email" id="l-email" placeholder="Email Address"></div>
                 <div class="input-group"><i class="fa-solid fa-lock icon-left"></i><input type="password" id="l-password" placeholder="Password"><i class="fa-solid fa-eye icon-right" onclick="togglePwd('l-password')"></i></div>
                 <div class="forgot-link" onclick="showReset()">Forgot Password?</div>
                 <button onclick="doLogin()">Login</button>
             </div>
-
             <div id="registerForm" class="hidden">
                 <div id="reg-step-1">
                     <div class="step-indicator">Step 1 of 3</div>
@@ -175,7 +164,6 @@
                 </div>
             </div>
         </div>
-
         <div id="resetForm" class="hidden">
             <h3 style="text-align:center; color:white;">Reset Password</h3>
             <div id="reset-step-1"><div class="input-group"><i class="fa-solid fa-envelope icon-left"></i><input type="email" id="reset-email" placeholder="Enter registered email"></div><button onclick="sendOtp('reset')">Send OTP</button><button class="secondary" onclick="hideReset()">Back to Login</button></div>
@@ -198,9 +186,14 @@
                     <p class="modal-email" id="modalEmail">user@example.com</p>
                     <div class="modal-section" id="studentSection"><span class="modal-label">Student Key</span><div class="modal-value"><span id="modalKey">STU-XXXX</span><button class="copy-btn" onclick="copyKey()"><i class="fa-regular fa-copy"></i></button></div></div>
                     <div class="modal-section">
-                        <span class="modal-label">Security</span>
-                        <p style="font-size:0.8rem;color:#666;margin-bottom:5px;">Password is secured (hidden).</p>
-                        <div class="input-group" style="margin-top:5px;"><input type="password" id="modalNewPass" placeholder="Enter New Password" style="padding:10px; font-size:0.85rem;"></div>
+                        <span class="modal-label">Your Password</span>
+                        <div class="modal-value">
+                            <span id="modalPass">••••••</span>
+                            <button class="copy-btn" onclick="toggleModalPwd()"><i class="fa-solid fa-eye" id="modalEye"></i></button>
+                        </div>
+                        <div class="input-group" style="margin-top:10px;">
+                            <input type="password" id="modalNewPass" placeholder="New Password" style="padding:10px; font-size:0.85rem;">
+                        </div>
                         <button style="margin-top:5px; padding:8px; font-size:0.9rem;" onclick="updatePassword()">Update Password</button>
                     </div>
                     <button class="logout-btn-modal" onclick="logout()">Sign Out</button>
@@ -264,8 +257,8 @@
     </div>
 
     <script>
-        // REPLACE WITH YOUR DEPLOYMENT URL
-        const API_URL = 'https://script.google.com/macros/s/AKfycby0eaQE8I-4v_7_fQnCT_XT-qctqztw8v1x2OlpDygLuerUzbpVz8DAVgRtxPVJZwBY/exec'; 
+        // REPLACE WITH YOUR URL
+        const API_URL = 'https://script.google.com/macros/s/AKfycbyd08MNdcJpKM18aVberZk8tCFhu_NzXxbDDq1pTXr7u7_h6ewYGt8ILfVtK5e8G_c/exec'; 
 
         let currentRole = 'student', currentUser = null, currentExpenses = [], myChart = null;
         let givenLoans = [], takenLoans = [], activeLoanTab = 'given';
@@ -320,7 +313,7 @@
             document.getElementById('section-spend').classList.toggle('hidden', mode!=='spend');
             document.getElementById('section-lend').classList.toggle('hidden', mode!=='lend');
             if(mode === 'lend') fetchLoans();
-            else { renderStats(currentExpenses); } // Switch chart back to expenses
+            else { renderStats(currentExpenses); } 
         }
 
         function switchLoanTab(type) {
@@ -472,9 +465,7 @@
                 const btn = (activeLoanTab === 'given' && !isRepaid) ? `<button class="btn-check" onclick="settleLoan('${l.id}', '${l.amount}')"><i class="fa fa-check"></i></button>` : '';
                 const cssClass = activeLoanTab === 'given' ? 'loan-given' : 'loan-taken';
                 const actions = `<div class="action-icons"><i class="fa-solid fa-pen" onclick="startEditLoan('${l.id}')"></i><i class="fa-solid fa-trash" onclick="deleteItem('${l.id}', 'loan')"></i></div>`;
-                
                 const remarksHTML = l.remarks ? `<div style="font-size:0.75rem; color:#666; margin-top:4px;">NOTE: ${l.remarks}</div>` : '';
-
                 list.innerHTML += `<div class="expense-item ${cssClass}"><div><strong>${nameLabel}</strong><br><span style="color:#888;font-size:0.8rem">${new Date(l.date).toLocaleDateString()}</span>${remarksHTML}</div><div style="text-align:right; display:flex; gap:10px; align-items:center;"><strong>₹${l.amount}</strong><span class="status-badge status-${l.status}">${l.status}</span>${btn}${actions}</div></div>`;
             });
         }
@@ -513,7 +504,6 @@
         }
 
         function renderLoanStats() {
-            // Calculate total UNPAID amount for the graph
             let totalUnpaid = 0; const people = {};
             const items = activeLoanTab === 'given' ? givenLoans : takenLoans;
             items.forEach(l => {
@@ -522,10 +512,8 @@
                     people[l.friend] = (people[l.friend] || 0) + +l.amount;
                 }
             });
-            
             document.getElementById('grandTotal').innerText = `₹${totalUnpaid.toLocaleString()}`;
             document.getElementById('totalLabel').innerText = activeLoanTab === 'given' ? "TOTAL OWED TO ME" : "TOTAL DEBT I OWE";
-
             if(myChart) myChart.destroy();
             const ctx = document.getElementById('expenseChart');
             const colors = activeLoanTab === 'given' ? ['#8b5cf6','#a78bfa','#c4b5fd'] : ['#f97316','#fb923c','#fdba74'];
@@ -537,7 +525,8 @@
         
         function toggleProfileModal() { const m = document.getElementById('profileModal'); m.classList.toggle('show'); if(m.classList.contains('show')) { document.getElementById('modalName').innerText = currentUser.name; document.getElementById('modalEmail').innerText = currentUser.email; if(currentUser.role === 'student') { document.getElementById('studentSection').classList.remove('hidden'); document.getElementById('modalKey').innerText = currentUser.student_key; } else { document.getElementById('studentSection').classList.add('hidden'); } } }
         function saveProfilePic() { const file = document.getElementById('profilePicInput').files[0]; const reader = new FileReader(); reader.onloadend = function() { const uniqueKey = 'vantageProfilePic_' + currentUser.email; localStorage.setItem(uniqueKey, reader.result); document.getElementById('profileBtn').style.backgroundImage = `url(${reader.result})`; document.getElementById('profileBtn').innerText = ""; document.getElementById('modalAvatar').style.backgroundImage = `url(${reader.result})`; document.getElementById('modalAvatar').innerHTML = ""; }; if(file) reader.readAsDataURL(file); }
-        async function updatePassword() { const newPass = document.getElementById('modalNewPass').value; if(!newPass) return alert("Enter password"); const res = await apiCall({ action: 'reset_password', email: currentUser.email, password: newPass }); if(res.status === 'success') { alert("Updated!"); document.getElementById('modalNewPass').value=""; } else alert(res.message); }
+        function toggleModalPwd() { const span = document.getElementById('modalPass'); const eye = document.getElementById('modalEye'); if(span.innerText === '••••••') { span.innerText = currentUser.password; eye.classList.remove('fa-eye'); eye.classList.add('fa-eye-slash'); } else { span.innerText = '••••••'; eye.classList.remove('fa-eye-slash'); eye.classList.add('fa-eye'); } }
+        async function updatePassword() { const newPass = document.getElementById('modalNewPass').value; if(!newPass) return alert("Enter password"); const res = await apiCall({ action: 'reset_password', email: currentUser.email, password: newPass }); if(res.status === 'success') { alert("Updated!"); currentUser.password = newPass; localStorage.setItem('vantageUser', JSON.stringify(currentUser)); document.getElementById('modalNewPass').value=""; toggleModalPwd(); } else alert(res.message); }
         function copyKey() { navigator.clipboard.writeText(currentUser.student_key); alert("Copied!"); }
         window.onclick = function(event) { if (!event.target.matches('.profile-btn') && !event.target.closest('.profile-modal')) { document.getElementById('profileModal').classList.remove('show'); } }
     </script>
