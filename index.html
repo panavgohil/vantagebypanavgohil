@@ -82,7 +82,20 @@
         .loan-tab { flex:1; padding:12px; text-align:center; border-radius:10px; border:1px solid var(--input-bg); cursor:pointer; font-size:0.9rem; color:var(--text-sub); font-weight:600; }
         .loan-tab.active { background:var(--input-bg); color:white; }
 
-        .month-header { color: var(--text-sub); font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin: 20px 0 10px 0; padding-bottom: 5px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        /* MONTH HEADER & COLLAPSIBLE */
+        .month-group { margin-bottom: 20px; }
+        .month-header { 
+            color: var(--text-sub); font-size: 0.85rem; font-weight: 700; 
+            text-transform: uppercase; letter-spacing: 1px; padding: 10px 0; 
+            border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 10px; 
+            cursor: pointer; display: flex; justify-content: space-between; align-items: center;
+        }
+        .month-header:hover { color: white; }
+        .month-header i { transition: transform 0.2s; }
+        .month-header.collapsed i { transform: rotate(-90deg); }
+        .month-content { transition: all 0.3s ease; overflow: hidden; }
+        .month-content.collapsed { display: none; }
+
         .expense-item { background:var(--bg-color); padding:15px; border-radius:12px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; border-left:4px solid var(--primary); }
         .expense-item.reimburse { border-left-color:var(--accent); }
         .expense-item.loan-given { border-left-color:var(--loan-given); }
@@ -110,6 +123,10 @@
         .search-bar-container { margin-bottom: 15px; position: relative; margin-top: 15px; }
         .search-bar { width: 100%; padding: 12px 40px 12px 15px; border-radius: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; }
         .search-icon { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: var(--text-sub); }
+
+        /* CHART SELECTOR */
+        .chart-controls { display: flex; justify-content: center; margin-bottom: 15px; }
+        .chart-select { background: var(--bg-color); color: white; border: 1px solid rgba(255,255,255,0.1); padding: 5px 15px; border-radius: 20px; font-size: 0.9rem; outline: none; }
 
         .hidden { display:none !important; }
         .step-indicator { font-size:0.8rem; color:var(--text-sub); margin-bottom:10px; text-align:right; }
@@ -191,9 +208,7 @@
                             <span id="modalPass">••••••</span>
                             <button class="copy-btn" onclick="toggleModalPwd()"><i class="fa-solid fa-eye" id="modalEye"></i></button>
                         </div>
-                        <div class="input-group" style="margin-top:10px;">
-                            <input type="password" id="modalNewPass" placeholder="New Password" style="padding:10px; font-size:0.85rem;">
-                        </div>
+                        <div class="input-group" style="margin-top:10px;"><input type="password" id="modalNewPass" placeholder="New Password" style="padding:10px; font-size:0.85rem;"></div>
                         <button style="margin-top:5px; padding:8px; font-size:0.9rem;" onclick="updatePassword()">Update Password</button>
                     </div>
                     <button class="logout-btn-modal" onclick="logout()">Sign Out</button>
@@ -251,6 +266,9 @@
         <div class="dash-card">
             <div class="total-card"><span id="totalLabel" style="opacity:0.8; font-size:0.9rem;">TOTAL SPENT</span><span class="total-amount" id="grandTotal">₹0</span></div>
             <h4 style="text-align:center;">Analysis</h4>
+            <div class="chart-controls">
+                <select id="chartMonthSelect" class="chart-select" onchange="filterChartByMonth()"></select>
+            </div>
             <div style="height:250px; position:relative;"><canvas id="expenseChart"></canvas></div>
             <div id="chartLegend" style="margin-top:20px;"></div>
         </div>
@@ -297,12 +315,16 @@
                 document.getElementById('studentControls').classList.remove('hidden'); 
                 document.getElementById('dashToggle').classList.remove('hidden'); 
                 document.getElementById('budgetCard').classList.remove('hidden'); 
+                // Show chart dropdown for students
+                document.querySelector('.chart-controls').classList.remove('hidden');
                 updateBudgetUI(user.budget||0, 0); 
                 fetchData(user.student_key, 'get_expenses'); 
             } else { 
                 document.getElementById('studentControls').classList.add('hidden'); 
                 document.getElementById('dashToggle').classList.add('hidden'); 
                 document.getElementById('budgetCard').classList.add('hidden'); 
+                // Hide chart dropdown for guardians
+                document.querySelector('.chart-controls').classList.add('hidden');
                 fetchData(user.email, 'get_guardian_data'); 
             }
         }
@@ -312,8 +334,19 @@
             document.getElementById('mode-lend').classList.toggle('active', mode==='lend');
             document.getElementById('section-spend').classList.toggle('hidden', mode!=='spend');
             document.getElementById('section-lend').classList.toggle('hidden', mode!=='lend');
-            if(mode === 'lend') fetchLoans();
-            else { renderStats(currentExpenses); } 
+            if(mode === 'lend') {
+                document.querySelector('.chart-controls').classList.add('hidden'); 
+                fetchLoans();
+            } else { 
+                if(currentUser.role === 'student') {
+                    document.querySelector('.chart-controls').classList.remove('hidden'); 
+                    populateChartSelector();
+                    filterChartByMonth();
+                } else {
+                    document.querySelector('.chart-controls').classList.add('hidden'); 
+                    renderStats(currentExpenses); // Render full data
+                }
+            } 
         }
 
         function switchLoanTab(type) {
@@ -352,7 +385,7 @@
             if(newBudget && !isNaN(newBudget)) {
                 currentUser.budget = parseInt(newBudget);
                 localStorage.setItem('vantageUser', JSON.stringify(currentUser));
-                updateBudgetUI(currentUser.budget, calculateTotalSpent());
+                updateBudgetUI(currentUser.budget, calculateCurrentMonthSpent());
                 const id = currentUser.role === 'student' ? currentUser.student_key : currentUser.email;
                 await apiCall({ action: 'update_budget', role: currentUser.role, [currentUser.role === 'student' ? 'student_key' : 'email']: id, budget: newBudget });
             }
@@ -369,7 +402,38 @@
             document.getElementById('budgetText').innerText = `${Math.round(pct)}% used of ₹${limit}`;
         }
 
-        function calculateTotalSpent() { return currentExpenses.reduce((sum, item) => sum + Number(item.amount), 0); }
+        function calculateCurrentMonthSpent() {
+            const now = new Date();
+            const currentMonthKey = now.toLocaleDateString('default', { month: 'long', year: 'numeric' });
+            return currentExpenses.reduce((sum, item) => {
+                const itemDate = new Date(item.date).toLocaleDateString('default', { month: 'long', year: 'numeric' });
+                return itemDate === currentMonthKey ? sum + Number(item.amount) : sum;
+            }, 0);
+        }
+
+        function populateChartSelector() {
+            const select = document.getElementById('chartMonthSelect');
+            select.innerHTML = '';
+            const months = new Set();
+            currentExpenses.forEach(e => months.add(new Date(e.date).toLocaleDateString('default', { month: 'long', year: 'numeric' })));
+            const nowKey = new Date().toLocaleDateString('default', { month: 'long', year: 'numeric' });
+            months.add(nowKey);
+            const sortedMonths = Array.from(months).sort((a, b) => new Date(b) - new Date(a));
+            sortedMonths.forEach(m => {
+                const opt = document.createElement('option');
+                opt.value = m; opt.innerText = m;
+                select.appendChild(opt);
+            });
+            select.value = nowKey; 
+        }
+
+        function filterChartByMonth() {
+            const selectedMonth = document.getElementById('chartMonthSelect').value;
+            const filteredItems = currentExpenses.filter(e => 
+                new Date(e.date).toLocaleDateString('default', { month: 'long', year: 'numeric' }) === selectedMonth
+            );
+            renderStats(filteredItems, selectedMonth);
+        }
 
         async function addExpense() {
             const dateInput = document.getElementById('expDate').value;
@@ -445,7 +509,17 @@
         async function fetchData(id, action) {
             const res = await apiCall({ action:action, [action==='get_expenses'?'student_key':'email']:id });
             currentExpenses = res.expenses || []; currentExpenses.sort((a, b) => new Date(b.date) - new Date(a.date));
-            renderList(currentExpenses); renderStats(currentExpenses);
+            
+            if(currentUser.role === 'student') {
+                renderList(currentExpenses); 
+                populateChartSelector(); 
+                filterChartByMonth();    
+                updateBudgetUI(currentUser.budget||0, calculateCurrentMonthSpent());
+            } else {
+                // GUARDIAN: Render ALL data flat and stats for ALL
+                renderList(currentExpenses);
+                renderStats(currentExpenses);
+            }
         }
         
         async function fetchLoans() {
@@ -461,7 +535,6 @@
             items.reverse().forEach(l => {
                 const nameLabel = activeLoanTab === 'given' ? l.friend : `Lender: ${l.friend}`;
                 const isRepaid = l.status === 'Repaid';
-                // Button logic for Partial/Full
                 const btn = (activeLoanTab === 'given' && !isRepaid) ? `<button class="btn-check" onclick="settleLoan('${l.id}', '${l.amount}')"><i class="fa fa-check"></i></button>` : '';
                 const cssClass = activeLoanTab === 'given' ? 'loan-given' : 'loan-taken';
                 const actions = `<div class="action-icons"><i class="fa-solid fa-pen" onclick="startEditLoan('${l.id}')"></i><i class="fa-solid fa-trash" onclick="deleteItem('${l.id}', 'loan')"></i></div>`;
@@ -470,17 +543,50 @@
             });
         }
 
+        // --- UPDATED: Split renderList logic ---
         function renderList(items) {
-            const list = document.getElementById('expenseList'); list.innerHTML=""; if(!items.length) return list.innerHTML="<p style='text-align:center;color:#666'>No records.</p>";
-            let lastMonth = "";
+            const list = document.getElementById('expenseList'); list.innerHTML=""; 
+            if(!items.length) return list.innerHTML="<p style='text-align:center;color:#666'>No records.</p>";
+            
+            // GUARDIAN: Flat List (Classic)
+            if(currentUser.role === 'guardian') {
+                let lastMonth = "";
+                items.forEach(i => {
+                    const d = new Date(i.date); const m = d.toLocaleDateString('default', { month: 'long', year: 'numeric' });
+                    if(m !== lastMonth) { list.innerHTML += `<div class="month-header">${m}</div>`; lastMonth = m; }
+                    let btns = (i.status === 'Pending') ? `<div style="margin-top:5px;"><button onclick="updateStatus('${i.id}','Approved')" style="width:30px;padding:5px;margin-right:5px;background:rgba(16,185,129,0.2);color:#10b981"><i class="fa fa-check"></i></button><button onclick="updateStatus('${i.id}','Rejected')" style="width:30px;padding:5px;background:rgba(239,68,68,0.2);color:#ef4444"><i class="fa fa-times"></i></button></div>` : '';
+                    
+                    list.innerHTML += `<div class="expense-item ${i.reimbursable||currentUser.role==='guardian'?'reimburse':''}"><div><strong>${escapeHTML(i.item)}</strong><div style="font-size:0.8rem;color:#888">${i.studentName} • ${d.toLocaleDateString()}</div></div><div style="text-align:right"><strong>₹${i.amount}</strong><br><span class="status-badge status-${i.status}">${i.status}</span>${btns}</div></div>`;
+                });
+                return;
+            }
+
+            // STUDENT: Collapsible Groups
+            const groups = {};
             items.forEach(i => {
-                const d = new Date(i.date); const m = d.toLocaleDateString('default', { month: 'long', year: 'numeric' });
-                if(m !== lastMonth) { list.innerHTML += `<div class="month-header">${m}</div>`; lastMonth = m; }
-                let btns = (currentUser.role === 'guardian' && i.status === 'Pending') ? `<div style="margin-top:5px;"><button onclick="updateStatus('${i.id}','Approved')" style="width:30px;padding:5px;margin-right:5px;background:rgba(16,185,129,0.2);color:#10b981"><i class="fa fa-check"></i></button><button onclick="updateStatus('${i.id}','Rejected')" style="width:30px;padding:5px;background:rgba(239,68,68,0.2);color:#ef4444"><i class="fa fa-times"></i></button></div>` : '';
-                let actions = "";
-                if(currentUser.role === 'student') { actions = `<div class="action-icons"><i class="fa-solid fa-pen" onclick="startEditExpense('${i.id}')"></i><i class="fa-solid fa-trash" onclick="deleteItem('${i.id}', 'expense')"></i></div>`; }
-                list.innerHTML += `<div class="expense-item ${i.reimbursable||currentUser.role==='guardian'?'reimburse':''}"><div><strong>${escapeHTML(i.item)}</strong><div style="font-size:0.8rem;color:#888">${currentUser.role==='guardian'?i.studentName:i.category} • ${d.toLocaleDateString()}</div></div><div style="text-align:right"><strong>₹${i.amount}</strong><br>${(i.reimbursable||currentUser.role==='guardian')?`<span class="status-badge status-${i.status}">${i.status}</span>`:''}${btns}${actions}</div></div>`;
+                const m = new Date(i.date).toLocaleDateString('default', { month: 'long', year: 'numeric' });
+                if(!groups[m]) groups[m] = [];
+                groups[m].push(i);
             });
+
+            for (const [month, expenses] of Object.entries(groups)) {
+                const groupDiv = document.createElement('div'); groupDiv.className = 'month-group';
+                const header = document.createElement('div'); header.className = 'month-header';
+                header.innerHTML = `<span>${month}</span><i class="fa-solid fa-chevron-down"></i>`;
+                const content = document.createElement('div'); content.className = 'month-content';
+                header.onclick = () => { header.classList.toggle('collapsed'); content.classList.toggle('collapsed'); };
+
+                expenses.forEach(i => {
+                    const d = new Date(i.date);
+                    const actions = `<div class="action-icons"><i class="fa-solid fa-pen" onclick="startEditExpense('${i.id}')"></i><i class="fa-solid fa-trash" onclick="deleteItem('${i.id}', 'expense')"></i></div>`;
+                    const itemDiv = document.createElement('div');
+                    itemDiv.className = `expense-item ${i.reimbursable?'reimburse':''}`;
+                    itemDiv.innerHTML = `<div><strong>${escapeHTML(i.item)}</strong><div style="font-size:0.8rem;color:#888">${i.category} • ${d.toLocaleDateString()}</div></div><div style="text-align:right"><strong>₹${i.amount}</strong><br>${(i.reimbursable)?`<span class="status-badge status-${i.status}">${i.status}</span>`:''}${actions}</div>`;
+                    content.appendChild(itemDiv);
+                });
+                groupDiv.appendChild(header); groupDiv.appendChild(content);
+                list.appendChild(groupDiv);
+            }
         }
 
         function filterExpenses() {
@@ -489,13 +595,13 @@
             renderList(filtered);
         }
 
-        function renderStats(items) {
+        function renderStats(items, labelMonth = "Total") {
             let total=0; const cats={}; const isGuardian = currentUser.role === 'guardian';
             const targetItems = isGuardian ? items.filter(i => i.status === 'Pending') : items;
             targetItems.forEach(i => { total += +i.amount; cats[i.category||'Misc']=(cats[i.category||'Misc']||0)+ +i.amount; });
-            const labelEl = document.getElementById('totalLabel'); if(labelEl) labelEl.innerText = isGuardian ? "ACTIVE REQUESTS" : "TOTAL SPENT";
+            
+            const labelEl = document.getElementById('totalLabel'); if(labelEl) labelEl.innerText = isGuardian ? "ACTIVE REQUESTS" : "MONTHLY SPEND";
             document.getElementById('grandTotal').innerText = `₹${total.toLocaleString()}`;
-            if(!isGuardian) updateBudgetUI(currentUser.budget || 0, total);
             
             if(myChart) myChart.destroy();
             const ctx = document.getElementById('expenseChart'); const colors = ['#3b82f6','#10b981','#f59e0b','#ef4444','#8b5cf6', '#ec4899', '#6366f1', '#14b8a6', '#f43f5e', '#64748b'];
