@@ -48,7 +48,7 @@
         .modal-label { font-size: 0.75rem; color: var(--text-sub); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; display: block; }
         .modal-value { background: rgba(0,0,0,0.2); padding: 8px 12px; border-radius: 6px; font-size: 0.9rem; color: #fff; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
         .copy-btn { background: transparent; border: none; color: var(--primary); cursor: pointer; font-size: 0.9rem; }
-        .logout-btn-modal { width: 100%; background: rgba(239, 68, 68, 0.1); color: var(--danger); margin-top: 15px; border: 1px solid rgba(239, 68, 68, 0.3); }
+        .logout-btn-modal { width: 100%; background: rgba(239, 68, 68, 0.1); color: var(--danger); margin-top: 15px; border: 1px solid rgba(239, 68, 68, 0.3); padding: 10px; border-radius: 8px; font-weight: bold; cursor: pointer; }
 
         .role-wrapper { margin-bottom: 25px; text-align: center; }
         .role-selector { display:flex; background:var(--bg-color); padding:5px; border-radius:10px; border: 1px solid var(--input-bg); }
@@ -82,14 +82,8 @@
         .loan-tab { flex:1; padding:12px; text-align:center; border-radius:10px; border:1px solid var(--input-bg); cursor:pointer; font-size:0.9rem; color:var(--text-sub); font-weight:600; }
         .loan-tab.active { background:var(--input-bg); color:white; }
 
-        /* MONTH HEADER & COLLAPSIBLE */
         .month-group { margin-bottom: 20px; }
-        .month-header { 
-            color: var(--text-sub); font-size: 0.85rem; font-weight: 700; 
-            text-transform: uppercase; letter-spacing: 1px; padding: 10px 0; 
-            border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 10px; 
-            cursor: pointer; display: flex; justify-content: space-between; align-items: center;
-        }
+        .month-header { color: var(--text-sub); font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 10px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
         .month-header:hover { color: white; }
         .month-header i { transition: transform 0.2s; }
         .month-header.collapsed i { transform: rotate(-90deg); }
@@ -108,6 +102,7 @@
         
         .btn-export { background:rgba(16,185,129,0.15); color:var(--accent); padding:6px 12px; border-radius:8px; border:none; cursor:pointer; }
         .btn-check { background:rgba(16,185,129,0.2); color:#10b981; width:30px; height:30px; border-radius:50%; border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+        
         .action-icons { display: flex; gap: 8px; margin-left: 10px; }
         .action-icons i { cursor: pointer; color: var(--text-sub); font-size: 0.9rem; transition: color 0.2s; }
         .action-icons i.fa-pen:hover { color: var(--primary); }
@@ -117,14 +112,14 @@
         .budget-header { display: flex; justify-content: space-between; font-size: 0.85rem; color: var(--text-sub); margin-bottom: 8px; }
         .progress-track { width: 100%; height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden; }
         .progress-fill { height: 100%; background: var(--accent); width: 0%; transition: width 0.5s ease; }
-        .progress-fill.warning { background: #f59e0b; } .progress-fill.danger { background: #ef4444; }
+        .progress-fill.warning { background: #f59e0b; } 
+        .progress-fill.danger { background: #ef4444; }
         .set-budget-btn { background: none; border: none; color: var(--primary); font-size: 0.8rem; cursor: pointer; padding: 0; text-decoration: underline; }
 
         .search-bar-container { margin-bottom: 15px; position: relative; margin-top: 15px; }
         .search-bar { width: 100%; padding: 12px 40px 12px 15px; border-radius: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; }
         .search-icon { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: var(--text-sub); }
 
-        /* CHART SELECTOR */
         .chart-controls { display: flex; justify-content: center; margin-bottom: 15px; }
         .chart-select { background: var(--bg-color); color: white; border: 1px solid rgba(255,255,255,0.1); padding: 5px 15px; border-radius: 20px; font-size: 0.9rem; outline: none; }
 
@@ -141,6 +136,7 @@
             <h2 class="app-title"><i class="fa-solid fa-chart-line" style="color:var(--primary); font-size:0.8em;"></i> Vantage</h2>
             <div class="brand-subtitle">by Panav Gohil</div>
         </div>
+        
         <div id="authContent">
             <div class="role-wrapper">
                 <span class="role-label" style="font-size:0.8rem; color:var(--text-sub);">Login as</span>
@@ -149,16 +145,19 @@
                     <div id="role-guardian" class="role-opt" onclick="setGlobalRole('guardian')">Guardian</div>
                 </div>
             </div>
+
             <div class="auth-tabs">
                 <div id="tabLogin" class="auth-tab active" onclick="switchTab('login')">Sign In</div>
                 <div id="tabRegister" class="auth-tab" onclick="switchTab('register')">Sign Up</div>
             </div>
+
             <div id="loginForm">
                 <div class="input-group"><i class="fa-solid fa-envelope icon-left"></i><input type="email" id="l-email" placeholder="Email Address"></div>
                 <div class="input-group"><i class="fa-solid fa-lock icon-left"></i><input type="password" id="l-password" placeholder="Password"><i class="fa-solid fa-eye icon-right" onclick="togglePwd('l-password')"></i></div>
                 <div class="forgot-link" onclick="showReset()">Forgot Password?</div>
                 <button onclick="doLogin()">Login</button>
             </div>
+
             <div id="registerForm" class="hidden">
                 <div id="reg-step-1">
                     <div class="step-indicator">Step 1 of 3</div>
@@ -181,6 +180,7 @@
                 </div>
             </div>
         </div>
+
         <div id="resetForm" class="hidden">
             <h3 style="text-align:center; color:white;">Reset Password</h3>
             <div id="reset-step-1"><div class="input-group"><i class="fa-solid fa-envelope icon-left"></i><input type="email" id="reset-email" placeholder="Enter registered email"></div><button onclick="sendOtp('reset')">Send OTP</button><button class="secondary" onclick="hideReset()">Back to Login</button></div>
@@ -194,6 +194,7 @@
         <div class="dash-card">
             <div class="dash-header">
                 <h3 id="dashTitle" style="margin:0; font-family:'Playfair Display', serif;">Dashboard</h3>
+                
                 <div class="profile-btn" id="profileBtn" onclick="toggleProfileModal()">A</div>
                 
                 <div id="profileModal" class="profile-modal">
@@ -201,14 +202,20 @@
                     <div class="modal-avatar" onclick="document.getElementById('profilePicInput').click()" id="modalAvatar"><span><i class="fa-solid fa-camera"></i></span></div>
                     <p class="modal-name" id="modalName">User Name</p>
                     <p class="modal-email" id="modalEmail">user@example.com</p>
-                    <div class="modal-section" id="studentSection"><span class="modal-label">Student Key</span><div class="modal-value"><span id="modalKey">STU-XXXX</span><button class="copy-btn" onclick="copyKey()"><i class="fa-regular fa-copy"></i></button></div></div>
+                    <div class="modal-section" id="studentSection">
+                        <span class="modal-label">Student Key</span>
+                        <div class="modal-value"><span id="modalKey">STU-XXXX</span><button class="copy-btn" onclick="copyKey()"><i class="fa-regular fa-copy"></i></button></div>
+                    </div>
+                    
                     <div class="modal-section">
                         <span class="modal-label">Your Password</span>
                         <div class="modal-value">
                             <span id="modalPass">••••••</span>
                             <button class="copy-btn" onclick="toggleModalPwd()"><i class="fa-solid fa-eye" id="modalEye"></i></button>
                         </div>
-                        <div class="input-group" style="margin-top:10px;"><input type="password" id="modalNewPass" placeholder="New Password" style="padding:10px; font-size:0.85rem;"></div>
+                        <div class="input-group" style="margin-top:10px;">
+                            <input type="password" id="modalNewPass" placeholder="New Password" style="padding:10px; font-size:0.85rem;">
+                        </div>
                         <button style="margin-top:5px; padding:8px; font-size:0.9rem;" onclick="updatePassword()">Update Password</button>
                     </div>
                     <button class="logout-btn-modal" onclick="logout()">Sign Out</button>
@@ -223,11 +230,25 @@
             <div id="section-spend">
                 <div id="studentControls" class="hidden">
                     <div style="background:#0f172a; padding:15px; border-radius:15px; margin-bottom:20px; border:1px solid rgba(255,255,255,0.05);">
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;"><h4 style="margin:0;" id="expFormTitle">Add Expense</h4><button class="text-btn" onclick="togglePastEntry()">+ Add Past Entry</button></div>
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                            <h4 style="margin:0;" id="expFormTitle">Add Expense</h4>
+                            <button class="text-btn" onclick="togglePastEntry()">+ Add Past Entry</button>
+                        </div>
                         <div class="input-group"><i class="fa-solid fa-tag icon-left"></i><input id="expItem" placeholder="Item Name"></div>
-                        <div style="display:flex; gap:10px;"><div class="input-group"><i class="fa-solid fa-indian-rupee-sign icon-left"></i><input type="number" id="expAmount" placeholder="Amount"></div><div class="input-group"><i class="fa-solid fa-list icon-left"></i><select id="expCategory" style="padding-left:45px;"><option>Essentials</option><option>Food</option><option>Travel</option><option>Study</option><option>Rent</option><option>Utilities</option><option>Health</option><option>Fashion</option><option>Entertainment</option><option>Others</option></select></div></div>
+                        <div style="display:flex; gap:10px;">
+                            <div class="input-group"><i class="fa-solid fa-indian-rupee-sign icon-left"></i><input type="number" id="expAmount" placeholder="Total Cost"></div>
+                            <div class="input-group"><i class="fa-solid fa-list icon-left"></i><select id="expCategory" style="padding-left:45px;"><option>Essentials</option><option>Food</option><option>Travel</option><option>Study</option><option>Rent</option><option>Utilities</option><option>Health</option><option>Fashion</option><option>Entertainment</option><option>Others</option></select></div>
+                        </div>
                         <div id="pastDateGroup" class="hidden" style="margin-bottom:10px;"><div class="input-group"><i class="fa-solid fa-calendar icon-left"></i><input type="date" id="expDate"></div></div>
-                        <label style="color:var(--text-sub); display:flex; align-items:center; gap:10px; cursor:pointer;"><input type="checkbox" id="expReimburse" style="width:18px; margin:0;"> Request Reimbursement</label>
+                        
+                        <label style="color:var(--text-sub); display:flex; align-items:center; gap:10px; cursor:pointer; margin-bottom:10px;">
+                            <input type="checkbox" id="expReimburse" style="width:18px; margin:0;" onchange="toggleReimburseAmt()"> Request Reimbursement
+                        </label>
+                        <div id="reimburseAmtGroup" class="hidden input-group">
+                            <i class="fa-solid fa-hand-holding-dollar icon-left"></i>
+                            <input type="number" id="expReqAmount" placeholder="Partial Amount (Leave blank for full)">
+                        </div>
+
                         <button onclick="addExpense()" id="expBtn">Save Expense</button>
                     </div>
                 </div>
@@ -240,6 +261,7 @@
 
                 <div style="display:flex; justify-content:space-between; margin-bottom:10px; margin-top:20px;"><h4>Recent Activity</h4><button class="btn-export" onclick="exportToExcel()"><i class="fa-solid fa-download"></i> CSV</button></div>
                 <div class="search-bar-container"><input type="text" class="search-bar" id="searchInput" placeholder="Search..." onkeyup="filterExpenses()"><i class="fa-solid fa-magnifying-glass search-icon"></i></div>
+                
                 <div id="expenseList">Loading...</div>
             </div>
 
@@ -266,17 +288,17 @@
         <div class="dash-card">
             <div class="total-card"><span id="totalLabel" style="opacity:0.8; font-size:0.9rem;">TOTAL SPENT</span><span class="total-amount" id="grandTotal">₹0</span></div>
             <h4 style="text-align:center;">Analysis</h4>
-            <div class="chart-controls">
-                <select id="chartMonthSelect" class="chart-select" onchange="filterChartByMonth()"></select>
-            </div>
+            <div class="chart-controls"><select id="chartMonthSelect" class="chart-select" onchange="filterChartByMonth()"></select></div>
             <div style="height:250px; position:relative;"><canvas id="expenseChart"></canvas></div>
             <div id="chartLegend" style="margin-top:20px;"></div>
         </div>
     </div>
 
     <script>
-        // REPLACE WITH YOUR URL
-        const API_URL = 'https://script.google.com/macros/s/AKfycbyd08MNdcJpKM18aVberZk8tCFhu_NzXxbDDq1pTXr7u7_h6ewYGt8ILfVtK5e8G_c/exec'; 
+        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        // PUT YOUR APPS SCRIPT URL HERE
+        const API_URL = 'https://script.google.com/macros/s/AKfycby_OwjN6zuh2yWa0oZCBLeVFALJOdy1CXoAxcutKmsqGHxBguXsePw4a8nWlx7A_Ncf/exec'; 
+        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
         let currentRole = 'student', currentUser = null, currentExpenses = [], myChart = null;
         let givenLoans = [], takenLoans = [], activeLoanTab = 'given';
@@ -306,6 +328,7 @@
         function loadDashboard(user) {
             currentUser = user; document.getElementById('authSection').style.display='none'; document.getElementById('dashboardSection').style.display='grid';
             document.getElementById('dashTitle').innerText = `Hi, ${user.name.split(' ')[0]}`;
+            
             const btn = document.getElementById('profileBtn'), modalAvatar = document.getElementById('modalAvatar');
             btn.innerText = user.name.charAt(0).toUpperCase(); btn.style.backgroundImage = 'none'; modalAvatar.style.backgroundImage = 'none'; modalAvatar.innerHTML = '<span><i class="fa-solid fa-camera"></i></span>';
             const uniqueKey = 'vantageProfilePic_' + user.email; const savedPic = localStorage.getItem(uniqueKey);
@@ -315,7 +338,6 @@
                 document.getElementById('studentControls').classList.remove('hidden'); 
                 document.getElementById('dashToggle').classList.remove('hidden'); 
                 document.getElementById('budgetCard').classList.remove('hidden'); 
-                // Show chart dropdown for students
                 document.querySelector('.chart-controls').classList.remove('hidden');
                 updateBudgetUI(user.budget||0, 0); 
                 fetchData(user.student_key, 'get_expenses'); 
@@ -323,7 +345,6 @@
                 document.getElementById('studentControls').classList.add('hidden'); 
                 document.getElementById('dashToggle').classList.add('hidden'); 
                 document.getElementById('budgetCard').classList.add('hidden'); 
-                // Hide chart dropdown for guardians
                 document.querySelector('.chart-controls').classList.add('hidden');
                 fetchData(user.email, 'get_guardian_data'); 
             }
@@ -334,123 +355,100 @@
             document.getElementById('mode-lend').classList.toggle('active', mode==='lend');
             document.getElementById('section-spend').classList.toggle('hidden', mode!=='spend');
             document.getElementById('section-lend').classList.toggle('hidden', mode!=='lend');
-            if(mode === 'lend') {
+            if(mode === 'lend') { 
                 document.querySelector('.chart-controls').classList.add('hidden'); 
-                fetchLoans();
+                fetchLoans(); 
             } else { 
-                if(currentUser.role === 'student') {
+                if(currentUser.role === 'student') { 
                     document.querySelector('.chart-controls').classList.remove('hidden'); 
-                    populateChartSelector();
-                    filterChartByMonth();
-                } else {
+                    populateChartSelector(); filterChartByMonth(); 
+                } else { 
                     document.querySelector('.chart-controls').classList.add('hidden'); 
-                    renderStats(currentExpenses); // Render full data
-                }
+                    renderStats(currentExpenses); 
+                } 
             } 
         }
 
         function switchLoanTab(type) {
-            activeLoanTab = type;
-            document.getElementById('tab-given').classList.toggle('active', type==='given');
-            document.getElementById('tab-taken').classList.toggle('active', type==='taken');
-            
-            editingLoanId = null;
-            document.getElementById('loanBtn').innerText = type === 'given' ? "Record Loan Given" : "Record Debt";
-            
+            activeLoanTab = type; document.getElementById('tab-given').classList.toggle('active', type==='given'); document.getElementById('tab-taken').classList.toggle('active', type==='taken');
+            editingLoanId = null; document.getElementById('loanBtn').innerText = type === 'given' ? "Record Loan Given" : "Record Debt";
             const container = document.getElementById('loanFormContainer'), title = document.getElementById('loanFormTitle');
             const nameInput = document.getElementById('loanName'), keyInput = document.getElementById('loanFriendKey');
             const amtInput = document.getElementById('loanAmount'), btn = document.getElementById('loanBtn');
-
-            if(type === 'given') {
-                container.style.borderColor = 'var(--loan-given)'; title.style.color = 'var(--loan-given)'; title.innerText = 'Record Loan Given';
-                nameInput.placeholder = "Friend's Name"; keyInput.placeholder = "Friend's Student Key (Optional)"; amtInput.placeholder = "Amount Given";
-                btn.style.backgroundColor = 'var(--loan-given)';
-            } else {
-                container.style.borderColor = 'var(--loan-taken)'; title.style.color = 'var(--loan-taken)'; title.innerText = 'Record Debt (Money Taken)';
-                nameInput.placeholder = "Lender's Name"; keyInput.placeholder = "Lender's Student Key (Optional)"; amtInput.placeholder = "Amount Borrowed";
-                btn.style.backgroundColor = 'var(--loan-taken)';
-            }
+            if(type === 'given') { container.style.borderColor = 'var(--loan-given)'; title.style.color = 'var(--loan-given)'; title.innerText = 'Record Loan Given'; nameInput.placeholder = "Friend's Name"; keyInput.placeholder = "Friend's Student Key (Optional)"; amtInput.placeholder = "Amount Given"; btn.style.backgroundColor = 'var(--loan-given)'; } 
+            else { container.style.borderColor = 'var(--loan-taken)'; title.style.color = 'var(--loan-taken)'; title.innerText = 'Record Debt (Money Taken)'; nameInput.placeholder = "Lender's Name"; keyInput.placeholder = "Lender's Student Key (Optional)"; amtInput.placeholder = "Amount Borrowed"; btn.style.backgroundColor = 'var(--loan-taken)'; }
             renderLoanList(); renderLoanStats();
         }
 
-        function togglePastEntry() {
-            const group = document.getElementById('pastDateGroup'); group.classList.toggle('hidden');
-            const btn = document.querySelector('.text-btn');
+        function togglePastEntry() { 
+            const group = document.getElementById('pastDateGroup'); group.classList.toggle('hidden'); 
+            const btn = document.querySelector('.text-btn'); 
             if(!group.classList.contains('hidden')) { btn.innerText = "Cancel Past Entry"; btn.style.color = "#ef4444"; } 
-            else { btn.innerText = "+ Add Past Entry"; btn.style.color = "#3b82f6"; document.getElementById('expDate').value = ""; }
+            else { btn.innerText = "+ Add Past Entry"; btn.style.color = "#3b82f6"; document.getElementById('expDate').value = ""; } 
+        }
+
+        function toggleReimburseAmt() {
+            const isChecked = document.getElementById('expReimburse').checked;
+            const group = document.getElementById('reimburseAmtGroup');
+            if(isChecked) { group.classList.remove('hidden'); } 
+            else { group.classList.add('hidden'); document.getElementById('expReqAmount').value = ""; }
         }
 
         async function promptBudget() {
             const newBudget = prompt("Enter monthly budget (₹):", currentUser.budget || 0);
             if(newBudget && !isNaN(newBudget)) {
-                currentUser.budget = parseInt(newBudget);
-                localStorage.setItem('vantageUser', JSON.stringify(currentUser));
+                currentUser.budget = parseInt(newBudget); localStorage.setItem('vantageUser', JSON.stringify(currentUser));
                 updateBudgetUI(currentUser.budget, calculateCurrentMonthSpent());
                 const id = currentUser.role === 'student' ? currentUser.student_key : currentUser.email;
                 await apiCall({ action: 'update_budget', role: currentUser.role, [currentUser.role === 'student' ? 'student_key' : 'email']: id, budget: newBudget });
             }
         }
-
         function updateBudgetUI(limit, spent) {
             document.getElementById('budgetDisplay').innerText = `₹${parseInt(limit).toLocaleString()}`;
             if(limit <= 0) { document.getElementById('budgetBar').style.width = '0%'; return; }
             let pct = (spent / limit) * 100;
-            const bar = document.getElementById('budgetBar');
-            bar.style.width = `${Math.min(pct, 100)}%`;
-            bar.className = 'progress-fill';
+            const bar = document.getElementById('budgetBar'); bar.style.width = `${Math.min(pct, 100)}%`; bar.className = 'progress-fill';
             if(pct > 90) bar.classList.add('danger'); else if(pct > 75) bar.classList.add('warning');
             document.getElementById('budgetText').innerText = `${Math.round(pct)}% used of ₹${limit}`;
         }
-
         function calculateCurrentMonthSpent() {
-            const now = new Date();
-            const currentMonthKey = now.toLocaleDateString('default', { month: 'long', year: 'numeric' });
-            return currentExpenses.reduce((sum, item) => {
-                const itemDate = new Date(item.date).toLocaleDateString('default', { month: 'long', year: 'numeric' });
-                return itemDate === currentMonthKey ? sum + Number(item.amount) : sum;
-            }, 0);
+            const now = new Date(); const currentMonthKey = now.toLocaleDateString('default', { month: 'long', year: 'numeric' });
+            return currentExpenses.reduce((sum, item) => { const itemDate = new Date(item.date).toLocaleDateString('default', { month: 'long', year: 'numeric' }); return itemDate === currentMonthKey ? sum + Number(item.amount) : sum; }, 0);
         }
 
         function populateChartSelector() {
-            const select = document.getElementById('chartMonthSelect');
-            select.innerHTML = '';
+            const select = document.getElementById('chartMonthSelect'); select.innerHTML = '';
             const months = new Set();
             currentExpenses.forEach(e => months.add(new Date(e.date).toLocaleDateString('default', { month: 'long', year: 'numeric' })));
-            const nowKey = new Date().toLocaleDateString('default', { month: 'long', year: 'numeric' });
-            months.add(nowKey);
+            const nowKey = new Date().toLocaleDateString('default', { month: 'long', year: 'numeric' }); months.add(nowKey);
             const sortedMonths = Array.from(months).sort((a, b) => new Date(b) - new Date(a));
-            sortedMonths.forEach(m => {
-                const opt = document.createElement('option');
-                opt.value = m; opt.innerText = m;
-                select.appendChild(opt);
-            });
+            sortedMonths.forEach(m => { const opt = document.createElement('option'); opt.value = m; opt.innerText = m; select.appendChild(opt); });
             select.value = nowKey; 
         }
-
         function filterChartByMonth() {
             const selectedMonth = document.getElementById('chartMonthSelect').value;
-            const filteredItems = currentExpenses.filter(e => 
-                new Date(e.date).toLocaleDateString('default', { month: 'long', year: 'numeric' }) === selectedMonth
-            );
+            const filteredItems = currentExpenses.filter(e => new Date(e.date).toLocaleDateString('default', { month: 'long', year: 'numeric' }) === selectedMonth );
             renderStats(filteredItems, selectedMonth);
         }
 
         async function addExpense() {
             const dateInput = document.getElementById('expDate').value;
+            const isReimburse = document.getElementById('expReimburse').checked;
             const payload = { 
-                student_key:currentUser.student_key, 
-                item_name:document.getElementById('expItem').value, 
-                amount:document.getElementById('expAmount').value, 
-                category:document.getElementById('expCategory').value, 
-                is_reimbursable:document.getElementById('expReimburse').checked 
+                student_key:currentUser.student_key, item_name:document.getElementById('expItem').value, 
+                amount:document.getElementById('expAmount').value, category:document.getElementById('expCategory').value, 
+                is_reimbursable: isReimburse 
             };
+            if(isReimburse) { const reqAmt = document.getElementById('expReqAmount').value; if(reqAmt) payload.requested_amount = reqAmt; }
             if(dateInput) payload.date = dateInput;
-            if(editingExpenseId) { payload.action = 'update_expense'; payload.id = editingExpenseId; } 
-            else { payload.action = 'add_expense'; }
+            
+            if(editingExpenseId) { payload.action = 'update_expense'; payload.id = editingExpenseId; } else { payload.action = 'add_expense'; }
             await apiCall(payload);
+            
             editingExpenseId = null; document.getElementById('expBtn').innerText = "Save Expense"; document.getElementById('expFormTitle').innerText = "Add Expense";
-            document.getElementById('expItem').value=""; document.getElementById('expAmount').value=""; document.getElementById('expDate').value="";
+            document.getElementById('expItem').value=""; document.getElementById('expAmount').value=""; document.getElementById('expDate').value=""; document.getElementById('expReqAmount').value="";
             if(!document.getElementById('pastDateGroup').classList.contains('hidden')) togglePastEntry();
+            document.getElementById('expReimburse').checked = false; toggleReimburseAmt();
             fetchData(currentUser.student_key, 'get_expenses');
         }
 
@@ -458,12 +456,8 @@
             const name = document.getElementById('loanName').value, amount = document.getElementById('loanAmount').value, date = document.getElementById('loanDate').value;
             const friendKey = document.getElementById('loanFriendKey').value, remarks = document.getElementById('loanRemarks').value;
             if(!name || !amount) return alert("Fill details");
-            const payload = {
-                student_key:currentUser.student_key, friend_name:name, amount:amount, date:date, 
-                borrower_key: friendKey, remarks: remarks, loan_type: activeLoanTab 
-            };
-            if(editingLoanId) { payload.action = 'update_loan'; payload.id = editingLoanId; } 
-            else { payload.action = 'add_loan'; }
+            const payload = { student_key:currentUser.student_key, friend_name:name, amount:amount, date:date, borrower_key: friendKey, remarks: remarks, loan_type: activeLoanTab };
+            if(editingLoanId) { payload.action = 'update_loan'; payload.id = editingLoanId; } else { payload.action = 'add_loan'; }
             await apiCall(payload);
             editingLoanId = null;
             document.getElementById('loanName').value=""; document.getElementById('loanAmount').value=""; document.getElementById('loanFriendKey').value=""; document.getElementById('loanRemarks').value="";
@@ -473,8 +467,17 @@
         function startEditExpense(id) {
             const exp = currentExpenses.find(e => e.id === id); if(!exp) return;
             editingExpenseId = id; document.getElementById('expFormTitle').innerText = "Edit Expense"; document.getElementById('expBtn').innerText = "Update Expense";
-            document.getElementById('expItem').value = exp.item; document.getElementById('expAmount').value = exp.amount;
-            document.getElementById('expCategory').value = exp.category; document.getElementById('expReimburse').checked = exp.reimbursable;
+            document.getElementById('expItem').value = exp.item; document.getElementById('expAmount').value = exp.amount; document.getElementById('expCategory').value = exp.category;
+            document.getElementById('expReimburse').checked = exp.reimbursable;
+            
+            if(exp.reimbursable) {
+                document.getElementById('reimburseAmtGroup').classList.remove('hidden');
+                document.getElementById('expReqAmount').value = exp.requested_amount || exp.amount;
+            } else {
+                document.getElementById('reimburseAmtGroup').classList.add('hidden');
+                document.getElementById('expReqAmount').value = "";
+            }
+
             document.getElementById('pastDateGroup').classList.remove('hidden');
             const d = new Date(exp.date); document.getElementById('expDate').value = d.toISOString().split('T')[0];
             document.querySelector('.text-btn').innerText = "Cancel Edit"; document.querySelector('.text-btn').style.color = "#ef4444";
@@ -482,8 +485,7 @@
         }
 
         function startEditLoan(id) {
-            const loans = activeLoanTab === 'given' ? givenLoans : takenLoans;
-            const l = loans.find(x => x.id === id); if(!l) return;
+            const loans = activeLoanTab === 'given' ? givenLoans : takenLoans; const l = loans.find(x => x.id === id); if(!l) return;
             editingLoanId = id; document.getElementById('loanFormTitle').innerText = "Edit Loan"; document.getElementById('loanBtn').innerText = "Update Loan";
             document.getElementById('loanName').value = l.friend; document.getElementById('loanAmount').value = l.amount; document.getElementById('loanRemarks').value = l.remarks || "";
             const d = new Date(l.date); document.getElementById('loanDate').value = d.toISOString().split('T')[0];
@@ -500,7 +502,7 @@
         
         async function settleLoan(id, totalAmt) { 
             const input = prompt(`Total Owed: ₹${totalAmt}\nEnter amount paid (or leave empty for Full Settle):`);
-            if(input === null) return; // Cancel
+            if(input === null) return; 
             const payload = { action:'settle_loan', loan_id:id };
             if(input.trim() !== "") payload.partial_amount = input;
             await apiCall(payload); fetchLoans(); 
@@ -509,16 +511,10 @@
         async function fetchData(id, action) {
             const res = await apiCall({ action:action, [action==='get_expenses'?'student_key':'email']:id });
             currentExpenses = res.expenses || []; currentExpenses.sort((a, b) => new Date(b.date) - new Date(a.date));
-            
             if(currentUser.role === 'student') {
-                renderList(currentExpenses); 
-                populateChartSelector(); 
-                filterChartByMonth();    
-                updateBudgetUI(currentUser.budget||0, calculateCurrentMonthSpent());
+                renderList(currentExpenses); populateChartSelector(); filterChartByMonth(); updateBudgetUI(currentUser.budget||0, calculateCurrentMonthSpent());
             } else {
-                // GUARDIAN: Render ALL data flat and stats for ALL
-                renderList(currentExpenses);
-                renderStats(currentExpenses);
+                renderList(currentExpenses); renderStats(currentExpenses);
             }
         }
         
@@ -529,12 +525,10 @@
         }
 
         function renderLoanList() {
-            const list = document.getElementById('loanList'); list.innerHTML="";
-            const items = activeLoanTab === 'given' ? givenLoans : takenLoans;
+            const list = document.getElementById('loanList'); list.innerHTML=""; const items = activeLoanTab === 'given' ? givenLoans : takenLoans;
             if(!items.length) return list.innerHTML="<p style='color:#666'>No records.</p>";
             items.reverse().forEach(l => {
-                const nameLabel = activeLoanTab === 'given' ? l.friend : `Lender: ${l.friend}`;
-                const isRepaid = l.status === 'Repaid';
+                const nameLabel = activeLoanTab === 'given' ? l.friend : `Lender: ${l.friend}`; const isRepaid = l.status === 'Repaid';
                 const btn = (activeLoanTab === 'given' && !isRepaid) ? `<button class="btn-check" onclick="settleLoan('${l.id}', '${l.amount}')"><i class="fa fa-check"></i></button>` : '';
                 const cssClass = activeLoanTab === 'given' ? 'loan-given' : 'loan-taken';
                 const actions = `<div class="action-icons"><i class="fa-solid fa-pen" onclick="startEditLoan('${l.id}')"></i><i class="fa-solid fa-trash" onclick="deleteItem('${l.id}', 'loan')"></i></div>`;
@@ -543,12 +537,10 @@
             });
         }
 
-        // --- UPDATED: Split renderList logic ---
         function renderList(items) {
             const list = document.getElementById('expenseList'); list.innerHTML=""; 
             if(!items.length) return list.innerHTML="<p style='text-align:center;color:#666'>No records.</p>";
             
-            // GUARDIAN: Flat List (Classic)
             if(currentUser.role === 'guardian') {
                 let lastMonth = "";
                 items.forEach(i => {
@@ -556,36 +548,33 @@
                     if(m !== lastMonth) { list.innerHTML += `<div class="month-header">${m}</div>`; lastMonth = m; }
                     let btns = (i.status === 'Pending') ? `<div style="margin-top:5px;"><button onclick="updateStatus('${i.id}','Approved')" style="width:30px;padding:5px;margin-right:5px;background:rgba(16,185,129,0.2);color:#10b981"><i class="fa fa-check"></i></button><button onclick="updateStatus('${i.id}','Rejected')" style="width:30px;padding:5px;background:rgba(239,68,68,0.2);color:#ef4444"><i class="fa fa-times"></i></button></div>` : '';
                     
-                    list.innerHTML += `<div class="expense-item ${i.reimbursable||currentUser.role==='guardian'?'reimburse':''}"><div><strong>${escapeHTML(i.item)}</strong><div style="font-size:0.8rem;color:#888">${i.studentName} • ${d.toLocaleDateString()}</div></div><div style="text-align:right"><strong>₹${i.amount}</strong><br><span class="status-badge status-${i.status}">${i.status}</span>${btns}</div></div>`;
+                    const reqAmt = i.requested_amount || i.amount;
+                    const amountDisplay = (reqAmt != i.amount) ? `<strong>₹${reqAmt}</strong><br><span style="font-size:0.75rem; color:#666; text-decoration:line-through;">Total: ₹${i.amount}</span>` : `<strong>₹${i.amount}</strong>`;
+
+                    list.innerHTML += `<div class="expense-item ${i.reimbursable||currentUser.role==='guardian'?'reimburse':''}"><div><strong>${escapeHTML(i.item)}</strong><div style="font-size:0.8rem;color:#888">${i.studentName} • ${d.toLocaleDateString()}</div></div><div style="text-align:right">${amountDisplay}<br><span class="status-badge status-${i.status}">${i.status}</span>${btns}</div></div>`;
                 });
                 return;
             }
 
-            // STUDENT: Collapsible Groups
             const groups = {};
-            items.forEach(i => {
-                const m = new Date(i.date).toLocaleDateString('default', { month: 'long', year: 'numeric' });
-                if(!groups[m]) groups[m] = [];
-                groups[m].push(i);
-            });
-
+            items.forEach(i => { const m = new Date(i.date).toLocaleDateString('default', { month: 'long', year: 'numeric' }); if(!groups[m]) groups[m] = []; groups[m].push(i); });
             for (const [month, expenses] of Object.entries(groups)) {
                 const groupDiv = document.createElement('div'); groupDiv.className = 'month-group';
-                const header = document.createElement('div'); header.className = 'month-header';
-                header.innerHTML = `<span>${month}</span><i class="fa-solid fa-chevron-down"></i>`;
+                const header = document.createElement('div'); header.className = 'month-header'; header.innerHTML = `<span>${month}</span><i class="fa-solid fa-chevron-down"></i>`;
                 const content = document.createElement('div'); content.className = 'month-content';
                 header.onclick = () => { header.classList.toggle('collapsed'); content.classList.toggle('collapsed'); };
 
                 expenses.forEach(i => {
-                    const d = new Date(i.date);
-                    const actions = `<div class="action-icons"><i class="fa-solid fa-pen" onclick="startEditExpense('${i.id}')"></i><i class="fa-solid fa-trash" onclick="deleteItem('${i.id}', 'expense')"></i></div>`;
-                    const itemDiv = document.createElement('div');
-                    itemDiv.className = `expense-item ${i.reimbursable?'reimburse':''}`;
-                    itemDiv.innerHTML = `<div><strong>${escapeHTML(i.item)}</strong><div style="font-size:0.8rem;color:#888">${i.category} • ${d.toLocaleDateString()}</div></div><div style="text-align:right"><strong>₹${i.amount}</strong><br>${(i.reimbursable)?`<span class="status-badge status-${i.status}">${i.status}</span>`:''}${actions}</div>`;
+                    const d = new Date(i.date); const actions = `<div class="action-icons"><i class="fa-solid fa-pen" onclick="startEditExpense('${i.id}')"></i><i class="fa-solid fa-trash" onclick="deleteItem('${i.id}', 'expense')"></i></div>`;
+                    const itemDiv = document.createElement('div'); itemDiv.className = `expense-item ${i.reimbursable?'reimburse':''}`;
+                    
+                    const reqAmt = i.requested_amount || i.amount;
+                    const reqNote = (i.reimbursable && reqAmt != i.amount) ? `<br><span style="font-size:0.75rem; color:var(--accent);">(Req: ₹${reqAmt})</span>` : '';
+
+                    itemDiv.innerHTML = `<div><strong>${escapeHTML(i.item)}</strong><div style="font-size:0.8rem;color:#888">${i.category} • ${d.toLocaleDateString()}</div></div><div style="text-align:right"><strong>₹${i.amount}</strong>${reqNote}<br>${(i.reimbursable)?`<span class="status-badge status-${i.status}">${i.status}</span>`:''}${actions}</div>`;
                     content.appendChild(itemDiv);
                 });
-                groupDiv.appendChild(header); groupDiv.appendChild(content);
-                list.appendChild(groupDiv);
+                groupDiv.appendChild(header); groupDiv.appendChild(content); list.appendChild(groupDiv);
             }
         }
 
@@ -598,10 +587,13 @@
         function renderStats(items, labelMonth = "Total") {
             let total=0; const cats={}; const isGuardian = currentUser.role === 'guardian';
             const targetItems = isGuardian ? items.filter(i => i.status === 'Pending') : items;
-            targetItems.forEach(i => { total += +i.amount; cats[i.category||'Misc']=(cats[i.category||'Misc']||0)+ +i.amount; });
-            
+            targetItems.forEach(i => { 
+                const val = isGuardian && i.requested_amount ? +i.requested_amount : +i.amount;
+                total += val; cats[i.category||'Misc']=(cats[i.category||'Misc']||0)+ val; 
+            });
             const labelEl = document.getElementById('totalLabel'); if(labelEl) labelEl.innerText = isGuardian ? "ACTIVE REQUESTS" : "MONTHLY SPEND";
             document.getElementById('grandTotal').innerText = `₹${total.toLocaleString()}`;
+            if(!isGuardian) updateBudgetUI(currentUser.budget || 0, calculateCurrentMonthSpent());
             
             if(myChart) myChart.destroy();
             const ctx = document.getElementById('expenseChart'); const colors = ['#3b82f6','#10b981','#f59e0b','#ef4444','#8b5cf6', '#ec4899', '#6366f1', '#14b8a6', '#f43f5e', '#64748b'];
@@ -610,19 +602,12 @@
         }
 
         function renderLoanStats() {
-            let totalUnpaid = 0; const people = {};
-            const items = activeLoanTab === 'given' ? givenLoans : takenLoans;
-            items.forEach(l => {
-                if(l.status !== 'Repaid') {
-                    totalUnpaid += +l.amount;
-                    people[l.friend] = (people[l.friend] || 0) + +l.amount;
-                }
-            });
+            let totalUnpaid = 0; const people = {}; const items = activeLoanTab === 'given' ? givenLoans : takenLoans;
+            items.forEach(l => { if(l.status !== 'Repaid') { totalUnpaid += +l.amount; people[l.friend] = (people[l.friend] || 0) + +l.amount; } });
             document.getElementById('grandTotal').innerText = `₹${totalUnpaid.toLocaleString()}`;
             document.getElementById('totalLabel').innerText = activeLoanTab === 'given' ? "TOTAL OWED TO ME" : "TOTAL DEBT I OWE";
             if(myChart) myChart.destroy();
-            const ctx = document.getElementById('expenseChart');
-            const colors = activeLoanTab === 'given' ? ['#8b5cf6','#a78bfa','#c4b5fd'] : ['#f97316','#fb923c','#fdba74'];
+            const ctx = document.getElementById('expenseChart'); const colors = activeLoanTab === 'given' ? ['#8b5cf6','#a78bfa','#c4b5fd'] : ['#f97316','#fb923c','#fdba74'];
             myChart = new Chart(ctx, { type:'doughnut', data: { labels:Object.keys(people), datasets:[{data:Object.values(people), backgroundColor:colors, borderWidth:0}] }, options:{plugins:{legend:{display:false}}} });
             document.getElementById('chartLegend').innerHTML = Object.keys(people).map((c,i) => `<div style="display:flex;justify-content:space-between;margin-bottom:5px;font-size:0.9rem"><span style="color:${colors[i%colors.length]}">● ${c}</span><span>₹${people[c]}</span></div>`).join('');
         }
@@ -631,7 +616,7 @@
         
         function toggleProfileModal() { const m = document.getElementById('profileModal'); m.classList.toggle('show'); if(m.classList.contains('show')) { document.getElementById('modalName').innerText = currentUser.name; document.getElementById('modalEmail').innerText = currentUser.email; if(currentUser.role === 'student') { document.getElementById('studentSection').classList.remove('hidden'); document.getElementById('modalKey').innerText = currentUser.student_key; } else { document.getElementById('studentSection').classList.add('hidden'); } } }
         function saveProfilePic() { const file = document.getElementById('profilePicInput').files[0]; const reader = new FileReader(); reader.onloadend = function() { const uniqueKey = 'vantageProfilePic_' + currentUser.email; localStorage.setItem(uniqueKey, reader.result); document.getElementById('profileBtn').style.backgroundImage = `url(${reader.result})`; document.getElementById('profileBtn').innerText = ""; document.getElementById('modalAvatar').style.backgroundImage = `url(${reader.result})`; document.getElementById('modalAvatar').innerHTML = ""; }; if(file) reader.readAsDataURL(file); }
-        function toggleModalPwd() { const span = document.getElementById('modalPass'); const eye = document.getElementById('modalEye'); if(span.innerText === '••••••') { span.innerText = currentUser.password; eye.classList.remove('fa-eye'); eye.classList.add('fa-eye-slash'); } else { span.innerText = '••••••'; eye.classList.remove('fa-eye-slash'); eye.classList.add('fa-eye'); } }
+        function toggleModalPwd() { const span = document.getElementById('modalPass'); const eye = document.getElementById('modalEye'); if(span.innerText === '••••••') { span.innerText = currentUser.password || "[Hidden]"; eye.classList.remove('fa-eye'); eye.classList.add('fa-eye-slash'); } else { span.innerText = '••••••'; eye.classList.remove('fa-eye-slash'); eye.classList.add('fa-eye'); } }
         async function updatePassword() { const newPass = document.getElementById('modalNewPass').value; if(!newPass) return alert("Enter password"); const res = await apiCall({ action: 'reset_password', email: currentUser.email, password: newPass }); if(res.status === 'success') { alert("Updated!"); currentUser.password = newPass; localStorage.setItem('vantageUser', JSON.stringify(currentUser)); document.getElementById('modalNewPass').value=""; toggleModalPwd(); } else alert(res.message); }
         function copyKey() { navigator.clipboard.writeText(currentUser.student_key); alert("Copied!"); }
         window.onclick = function(event) { if (!event.target.matches('.profile-btn') && !event.target.closest('.profile-modal')) { document.getElementById('profileModal').classList.remove('show'); } }
