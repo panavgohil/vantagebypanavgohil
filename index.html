@@ -82,6 +82,7 @@
         .loan-tab { flex:1; padding:12px; text-align:center; border-radius:10px; border:1px solid var(--input-bg); cursor:pointer; font-size:0.9rem; color:var(--text-sub); font-weight:600; }
         .loan-tab.active { background:var(--input-bg); color:white; }
 
+        /* Monthly Accordions */
         .month-group { margin-bottom: 20px; }
         .month-header { color: var(--text-sub); font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 10px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
         .month-header:hover { color: white; }
@@ -100,14 +101,17 @@
         .status-Rejected { background:rgba(239,68,68,0.2); color:#ef4444; }
         .status-Pending, .status-Active { background:rgba(245,158,11,0.2); color:#f59e0b; }
         
-        .btn-export { background:rgba(16,185,129,0.15); color:var(--accent); padding:6px 12px; border-radius:8px; border:none; cursor:pointer; }
+        .btn-export { background:rgba(16,185,129,0.15); color:var(--accent); padding:6px 12px; border-radius:8px; border:none; cursor:pointer; font-weight:bold; }
         .btn-check { background:rgba(16,185,129,0.2); color:#10b981; width:30px; height:30px; border-radius:50%; border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; }
-        
+        .btn-approve-all { background:rgba(16,185,129,0.2); color:#10b981; border:1px solid rgba(16,185,129,0.5); padding:6px 12px; border-radius:8px; cursor:pointer; font-size:0.85rem; margin:0; width:auto; font-weight:bold; }
+        .btn-approve-all:hover { background:rgba(16,185,129,0.3); }
+
         .action-icons { display: flex; gap: 8px; margin-left: 10px; }
         .action-icons i { cursor: pointer; color: var(--text-sub); font-size: 0.9rem; transition: color 0.2s; }
         .action-icons i.fa-pen:hover { color: var(--primary); }
         .action-icons i.fa-trash:hover { color: var(--danger); }
 
+        /* Budget UI */
         .budget-wrapper { margin-top: 15px; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 12px; }
         .budget-header { display: flex; justify-content: space-between; font-size: 0.85rem; color: var(--text-sub); margin-bottom: 8px; }
         .progress-track { width: 100%; height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden; }
@@ -116,10 +120,12 @@
         .progress-fill.danger { background: #ef4444; }
         .set-budget-btn { background: none; border: none; color: var(--primary); font-size: 0.8rem; cursor: pointer; padding: 0; text-decoration: underline; }
 
+        /* Search UI */
         .search-bar-container { margin-bottom: 15px; position: relative; margin-top: 15px; }
         .search-bar { width: 100%; padding: 12px 40px 12px 15px; border-radius: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; }
         .search-icon { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: var(--text-sub); }
 
+        /* Chart Dropdown */
         .chart-controls { display: flex; justify-content: center; margin-bottom: 15px; }
         .chart-select { background: var(--bg-color); color: white; border: 1px solid rgba(255,255,255,0.1); padding: 5px 15px; border-radius: 20px; font-size: 0.9rem; outline: none; }
 
@@ -259,7 +265,16 @@
                     <div style="font-size:0.75rem; color:#666; margin-top:5px; text-align:right;" id="budgetText">0% used</div>
                 </div>
 
-                <div style="display:flex; justify-content:space-between; margin-bottom:10px; margin-top:20px;"><h4>Recent Activity</h4><button class="btn-export" onclick="exportToExcel()"><i class="fa-solid fa-download"></i> CSV</button></div>
+                <div style="display:flex; justify-content:space-between; margin-bottom:10px; margin-top:20px; align-items:center;">
+                    <h4 style="margin:0;">Recent Activity</h4>
+                    <div style="display:flex; gap:10px;">
+                        <button id="approveAllBtn" class="hidden btn-approve-all" onclick="approveAllRequests()">
+                            <i class="fa-solid fa-check-double"></i> Approve All
+                        </button>
+                        <button class="btn-export" onclick="exportToExcel()"><i class="fa-solid fa-download"></i> CSV</button>
+                    </div>
+                </div>
+                
                 <div class="search-bar-container"><input type="text" class="search-bar" id="searchInput" placeholder="Search..." onkeyup="filterExpenses()"><i class="fa-solid fa-magnifying-glass search-icon"></i></div>
                 
                 <div id="expenseList">Loading...</div>
@@ -296,8 +311,8 @@
 
     <script>
         // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        // PUT YOUR APPS SCRIPT URL HERE
-        const API_URL = 'https://script.google.com/macros/s/AKfycby_OwjN6zuh2yWa0oZCBLeVFALJOdy1CXoAxcutKmsqGHxBguXsePw4a8nWlx7A_Ncf/exec'; 
+        // PUT YOUR APPS SCRIPT DEPLOYMENT URL HERE
+        const API_URL = 'https://script.google.com/macros/s/AKfycbxWmuqYkYSAWzaVjw1SSBIDGXzWFfP-wfdwj_e5hDXNIYLQx9zd-WsbaSDjTA4kGNRW/exec'; 
         // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
         let currentRole = 'student', currentUser = null, currentExpenses = [], myChart = null;
@@ -500,6 +515,12 @@
 
         async function updateStatus(id, stat) { await apiCall({ action:'update_status', expense_id:id, new_status:stat }); fetchData(currentUser.email, 'get_guardian_data'); }
         
+        async function approveAllRequests() {
+            if(!confirm("Are you sure you want to approve ALL pending requests?")) return;
+            await apiCall({ action:'approve_all', email: currentUser.email });
+            fetchData(currentUser.email, 'get_guardian_data');
+        }
+
         async function settleLoan(id, totalAmt) { 
             const input = prompt(`Total Owed: ₹${totalAmt}\nEnter amount paid (or leave empty for Full Settle):`);
             if(input === null) return; 
@@ -543,19 +564,31 @@
             
             if(currentUser.role === 'guardian') {
                 let lastMonth = "";
+                let hasPending = false;
+                
                 items.forEach(i => {
                     const d = new Date(i.date); const m = d.toLocaleDateString('default', { month: 'long', year: 'numeric' });
                     if(m !== lastMonth) { list.innerHTML += `<div class="month-header">${m}</div>`; lastMonth = m; }
-                    let btns = (i.status === 'Pending') ? `<div style="margin-top:5px;"><button onclick="updateStatus('${i.id}','Approved')" style="width:30px;padding:5px;margin-right:5px;background:rgba(16,185,129,0.2);color:#10b981"><i class="fa fa-check"></i></button><button onclick="updateStatus('${i.id}','Rejected')" style="width:30px;padding:5px;background:rgba(239,68,68,0.2);color:#ef4444"><i class="fa fa-times"></i></button></div>` : '';
+                    
+                    let btns = '';
+                    if (i.status === 'Pending') {
+                        hasPending = true;
+                        btns = `<div style="margin-top:5px;"><button onclick="updateStatus('${i.id}','Approved')" style="width:30px;padding:5px;margin-right:5px;background:rgba(16,185,129,0.2);color:#10b981"><i class="fa fa-check"></i></button><button onclick="updateStatus('${i.id}','Rejected')" style="width:30px;padding:5px;background:rgba(239,68,68,0.2);color:#ef4444"><i class="fa fa-times"></i></button></div>`;
+                    }
                     
                     const reqAmt = i.requested_amount || i.amount;
                     const amountDisplay = (reqAmt != i.amount) ? `<strong>₹${reqAmt}</strong><br><span style="font-size:0.75rem; color:#666; text-decoration:line-through;">Total: ₹${i.amount}</span>` : `<strong>₹${i.amount}</strong>`;
 
                     list.innerHTML += `<div class="expense-item ${i.reimbursable||currentUser.role==='guardian'?'reimburse':''}"><div><strong>${escapeHTML(i.item)}</strong><div style="font-size:0.8rem;color:#888">${i.studentName} • ${d.toLocaleDateString()}</div></div><div style="text-align:right">${amountDisplay}<br><span class="status-badge status-${i.status}">${i.status}</span>${btns}</div></div>`;
                 });
+                
+                const approveAllBtn = document.getElementById('approveAllBtn');
+                if (hasPending) { approveAllBtn.classList.remove('hidden'); } else { approveAllBtn.classList.add('hidden'); }
                 return;
             }
 
+            // Student UI
+            document.getElementById('approveAllBtn').classList.add('hidden');
             const groups = {};
             items.forEach(i => { const m = new Date(i.date).toLocaleDateString('default', { month: 'long', year: 'numeric' }); if(!groups[m]) groups[m] = []; groups[m].push(i); });
             for (const [month, expenses] of Object.entries(groups)) {
@@ -614,6 +647,7 @@
 
         function escapeHTML(str) { if(!str) return ''; return str.toString().replace(/[&<>"']/g, function(m) { return {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;'}[m]; }); }
         
+        // Profile & Config
         function toggleProfileModal() { const m = document.getElementById('profileModal'); m.classList.toggle('show'); if(m.classList.contains('show')) { document.getElementById('modalName').innerText = currentUser.name; document.getElementById('modalEmail').innerText = currentUser.email; if(currentUser.role === 'student') { document.getElementById('studentSection').classList.remove('hidden'); document.getElementById('modalKey').innerText = currentUser.student_key; } else { document.getElementById('studentSection').classList.add('hidden'); } } }
         function saveProfilePic() { const file = document.getElementById('profilePicInput').files[0]; const reader = new FileReader(); reader.onloadend = function() { const uniqueKey = 'vantageProfilePic_' + currentUser.email; localStorage.setItem(uniqueKey, reader.result); document.getElementById('profileBtn').style.backgroundImage = `url(${reader.result})`; document.getElementById('profileBtn').innerText = ""; document.getElementById('modalAvatar').style.backgroundImage = `url(${reader.result})`; document.getElementById('modalAvatar').innerHTML = ""; }; if(file) reader.readAsDataURL(file); }
         function toggleModalPwd() { const span = document.getElementById('modalPass'); const eye = document.getElementById('modalEye'); if(span.innerText === '••••••') { span.innerText = currentUser.password || "[Hidden]"; eye.classList.remove('fa-eye'); eye.classList.add('fa-eye-slash'); } else { span.innerText = '••••••'; eye.classList.remove('fa-eye-slash'); eye.classList.add('fa-eye'); } }
