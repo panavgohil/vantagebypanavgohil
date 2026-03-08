@@ -17,157 +17,133 @@
     
     <style>
         :root {
-            /* Dark Liquid Glassmorphism Theme */
-            --bg-color: #0f172a; /* Slate 900 */
-            --card-bg: rgba(255, 255, 255, 0.03); /* Frosted Glass */
+            --bg-color: #0f172a; 
+            --card-bg: rgba(255, 255, 255, 0.05); 
             --card-border: rgba(255, 255, 255, 0.1);
-            --primary: #38bdf8; /* Sky 400 */
-            --primary-hover: #0ea5e9;
-            --accent: #10b981; /* Emerald 500 */
-            --danger: #ef4444; /* Rose 500 */
-            --text-main: #f8fafc; /* Slate 50 */
-            --text-sub: #94a3b8; /* Slate 400 */
+            --primary: #0ea5e9; 
+            --primary-hover: #38bdf8; 
+            --accent: #10b981; 
+            --danger: #f43f5e; 
+            --text-main: #f1f5f9; 
+            --text-sub: #94a3b8; 
             --input-bg: rgba(255, 255, 255, 0.05);
             --gradient: linear-gradient(135deg, #0ea5e9 0%, #3b82f6 100%);
-            --loan-given: #8b5cf6; /* Violet 500 */
-            --loan-taken: #f97316; /* Orange 500 */
+            --loan-given: #8b5cf6; 
+            --loan-taken: #f97316;
             --glass-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
         }
 
         * { box-sizing: border-box; transition: all 0.2s ease; }
         
-        body { 
-            margin: 0; 
-            font-family: 'Inter', sans-serif; 
-            background-color: var(--bg-color); 
-            color: var(--text-main); 
-            min-height: 100vh; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            -webkit-tap-highlight-color: transparent; 
-        }
+        body { margin: 0; font-family: 'Inter', sans-serif; background-color: var(--bg-color); color: var(--text-main); min-height: 100vh; display: flex; justify-content: center; align-items: center; -webkit-tap-highlight-color: transparent; overflow-x: hidden; }
 
-        /* Animated Liquid Background */
         .liquid-bg { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; overflow: hidden; background: radial-gradient(circle at top right, #1e293b, #0f172a), radial-gradient(circle at bottom left, #1e1b4b, #0f172a); }
-        .blob { position: absolute; filter: blur(90px); border-radius: 50%; animation: float 20s infinite ease-in-out; opacity: 0.5; }
-        .blob-1 { width: 500px; height: 500px; background: rgba(56, 189, 248, 0.25); top: -10%; left: -10%; animation-delay: 0s; }
-        .blob-2 { width: 450px; height: 450px; background: rgba(139, 92, 246, 0.2); bottom: -10%; right: -10%; animation-delay: -5s; }
-        .blob-3 { width: 400px; height: 400px; background: rgba(16, 185, 129, 0.15); top: 30%; left: 30%; animation-delay: -10s; }
+        .blob { position: absolute; filter: blur(90px); border-radius: 50%; animation: float 20s infinite ease-in-out; opacity: 0.6; }
+        .blob-1 { width: 500px; height: 500px; background: rgba(56, 189, 248, 0.15); top: -10%; left: -10%; animation-delay: 0s; }
+        .blob-2 { width: 450px; height: 450px; background: rgba(139, 92, 246, 0.15); bottom: -10%; right: -10%; animation-delay: -5s; }
+        .blob-3 { width: 400px; height: 400px; background: rgba(16, 185, 129, 0.1); top: 30%; left: 30%; animation-delay: -10s; }
         
-        @keyframes float {
-            0%, 100% { transform: translate(0, 0) scale(1); }
-            33% { transform: translate(30px, -50px) scale(1.1); }
-            66% { transform: translate(-20px, 20px) scale(0.9); }
-        }
+        @keyframes float { 0%, 100% { transform: translate(0, 0) scale(1); } 33% { transform: translate(30px, -50px) scale(1.1); } 66% { transform: translate(-20px, 20px) scale(0.9); } }
 
         #loader-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(15,23,42,0.8); z-index:9999; display:flex; justify-content:center; align-items:center; backdrop-filter:blur(8px); }
-        .spinner { width:50px; height:50px; border:4px solid rgba(56, 189, 248, 0.2); border-top:4px solid var(--primary); border-radius:50%; animation:spin 1s linear infinite; }
+        .spinner { width:50px; height:50px; border:4px solid rgba(14, 165, 233, 0.2); border-top:4px solid var(--primary); border-radius:50%; animation:spin 1s linear infinite; }
         @keyframes spin { 0% { transform:rotate(0deg); } 100% { transform:rotate(360deg); } }
 
-        /* Glass Cards */
-        .auth-container, .dash-card, .profile-modal, #studentControls > div, #loanFormContainer {
-            background: var(--card-bg);
-            border-radius: 24px;
-            border: 1px solid var(--card-border);
-            box-shadow: var(--glass-shadow);
-            backdrop-filter: blur(24px);
-            -webkit-backdrop-filter: blur(24px);
-        }
-
-        .auth-container { width:100%; max-width:420px; padding:2.5rem; margin: 20px; }
-        .dashboard-wrapper { display:none; width:100%; max-width:1200px; padding:20px; grid-template-columns:1.5fr 1fr; gap:25px; height:90vh; }
+        .auth-wrapper { display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; width: 100%;}
+        .dashboard-wrapper { display:none; width:100%; max-width:1200px; padding:20px; grid-template-columns:1.5fr 1fr; gap:25px; margin: 20px auto; align-items: start; }
         @media (max-width:850px) { .dashboard-wrapper { grid-template-columns:1fr; height:auto; } }
-        .dash-card { padding:25px; overflow-y:auto; position: relative; }
 
-        /* Typography */
+        .glass-card { background: var(--card-bg); border-radius: 24px; border: 1px solid var(--card-border); box-shadow: var(--glass-shadow); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); padding: 25px; }
+
+        .auth-container { width:100%; max-width:420px; margin: 20px; }
+        
         .brand-wrapper { text-align: center; margin-bottom: 30px; }
-        .app-title { font-family: 'Playfair Display', serif; font-size: 2.5rem; margin: 0; display: flex; align-items: center; justify-content: center; gap: 12px; color: white; }
+        .app-title { font-family: 'Playfair Display', serif; font-size: 3rem; margin: 0; color: white; letter-spacing: -1px; }
         .brand-subtitle { font-size: 0.75rem; color: var(--primary); text-transform: uppercase; letter-spacing: 3px; margin-top: 5px; font-weight: 600; }
 
-        .dash-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; }
-        .dash-header h3 { font-size: 1.8rem; color: white; }
+        .dash-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:25px; }
+        .dash-header h3 { font-size: 2rem; color: white; font-family: 'Playfair Display', serif; margin: 0;}
+        .dash-header p { color: var(--text-sub); margin: 5px 0 0 0; font-size: 0.95rem; font-weight: 500;}
         
-        /* Profile Button */
-        .profile-btn { width: 45px; height: 45px; border-radius: 50%; background: var(--gradient); display: flex; justify-content: center; align-items: center; color: white; font-weight: bold; cursor: pointer; border: 2px solid rgba(255,255,255,0.5); box-shadow: 0 4px 10px rgba(0,0,0,0.3); overflow: hidden; background-size: cover; background-position: center; }
+        .profile-btn { width: 50px; height: 50px; border-radius: 16px; background: var(--gradient); display: flex; justify-content: center; align-items: center; color: white; font-weight: bold; cursor: pointer; border: 1px solid rgba(255,255,255,0.2); box-shadow: 0 4px 15px rgba(14, 165, 233, 0.3); overflow: hidden; background-size: cover; background-position: center; font-size: 1.2rem;}
+        .profile-btn:hover { transform: scale(1.05); }
+
+        .profile-modal { position: absolute; top: 90px; right: 20px; width: 340px; padding: 25px; z-index: 100; display: none; flex-direction: column; align-items: center; background: rgba(15, 23, 42, 0.95); }
+        .profile-modal.show { display: flex; animation: fadeDown 0.3s ease; }
+        @keyframes fadeDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
         
-        /* Profile Modal */
-        .profile-modal { position: absolute; top: 75px; right: 20px; width: 320px; padding: 25px; z-index: 100; display: none; flex-direction: column; align-items: center; background: rgba(30, 41, 59, 0.85); }
-        .profile-modal.show { display: flex; }
-        .modal-avatar { width: 80px; height: 80px; border-radius: 50%; background: var(--input-bg); margin-bottom: 10px; display: flex; justify-content: center; align-items: center; font-size: 2rem; color: var(--primary); cursor: pointer; position: relative; background-size: cover; background-position: center; border: 2px dashed var(--primary); }
-        .modal-section { width: 100%; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px; margin-top: 10px; }
-        .modal-label { font-size: 0.75rem; color: var(--text-sub); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; display: block; font-weight: 600;}
-        .modal-value { background: rgba(255,255,255,0.05); padding: 12px 15px; border-radius: 12px; font-size: 0.9rem; color: var(--text-main); margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border: 1px solid rgba(255,255,255,0.1); }
+        .modal-avatar { width: 85px; height: 85px; border-radius: 24px; background: var(--gradient); margin-bottom: 15px; display: flex; justify-content: center; align-items: center; font-size: 2.5rem; color: white; font-weight: bold; cursor: pointer; position: relative; background-size: cover; background-position: center; border: 2px solid rgba(255,255,255,0.2); box-shadow: 0 10px 20px rgba(14, 165, 233, 0.3);}
+        .modal-section { width: 100%; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 15px; margin-top: 10px; }
+        .modal-label { font-size: 0.7rem; color: var(--text-sub); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 8px; display: block; font-weight: 600;}
+        .modal-value { background: rgba(255,255,255,0.03); padding: 14px 16px; border-radius: 12px; font-size: 0.95rem; color: var(--text-main); margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border: 1px solid rgba(255,255,255,0.05); }
         .copy-btn { background: transparent; border: none; color: var(--primary); cursor: pointer; font-size: 1rem; }
-        .logout-btn-modal { width: 100%; background: rgba(239, 68, 68, 0.15); color: #f87171; margin-top: 15px; border: 1px solid rgba(239, 68, 68, 0.3); }
+        .copy-btn:hover { color: white; }
 
-        /* Auth Tabs & Selectors */
         .role-wrapper { margin-bottom: 25px; text-align: center; }
-        .role-selector { display:flex; background: rgba(0,0,0,0.2); padding:6px; border-radius:14px; border: 1px solid rgba(255,255,255,0.05); }
-        .role-opt { flex:1; text-align:center; padding:10px; border-radius:10px; cursor:pointer; font-size:0.95rem; color: var(--text-sub); font-weight: 500; }
-        .role-opt.active { background: var(--gradient); color: white; font-weight:700; box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+        .role-selector { display:flex; background: rgba(0,0,0,0.2); padding:6px; border-radius:16px; border: 1px solid rgba(255,255,255,0.05); }
+        .role-opt { flex:1; text-align:center; padding:12px; border-radius:12px; cursor:pointer; font-size:0.9rem; color: var(--text-sub); font-weight: 600; }
+        .role-opt.active { background: var(--gradient); color: white; box-shadow: 0 4px 10px rgba(14, 165, 233, 0.3); }
 
-        .auth-tabs { display:flex; margin-bottom:25px; border-bottom:2px solid rgba(255,255,255,0.1); }
-        .auth-tab { flex:1; text-align:center; padding:15px; cursor:pointer; font-weight:600; color:var(--text-sub); }
+        .auth-tabs { display:flex; margin-bottom:25px; border-bottom:2px solid rgba(255,255,255,0.05); }
+        .auth-tab { flex:1; text-align:center; padding:15px; cursor:pointer; font-weight:600; color:var(--text-sub); font-size: 1.05rem;}
         .auth-tab.active { color:var(--primary); border-bottom:2px solid var(--primary); margin-bottom:-2px; }
 
-        /* Inputs */
         .input-group { position:relative; margin-bottom:15px; }
-        .input-group .icon-left { position:absolute; left:15px; top:50%; transform:translateY(-50%); color: var(--primary); opacity: 0.8; }
-        .input-group .icon-right { position:absolute; right:15px; top:50%; transform:translateY(-50%); color: var(--text-sub); cursor:pointer; }
-        input, select, textarea { width:100%; padding:14px 45px; background: var(--input-bg); border: 1px solid rgba(255,255,255,0.1); border-radius:12px; color: white; font-size:16px !important; outline:none; font-weight: 500;}
-        input:focus, select:focus { border-color:var(--primary); background: rgba(255,255,255,0.08); box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.15); }
+        .input-group .icon-left { position:absolute; left:16px; top:50%; transform:translateY(-50%); color: var(--text-sub); font-size: 1.1rem;}
+        .input-group .icon-right { position:absolute; right:16px; top:50%; transform:translateY(-50%); color: var(--text-sub); cursor:pointer; }
+        input, select, textarea { width:100%; padding:14px 45px; background: var(--input-bg); border: 1px solid rgba(255,255,255,0.1); border-radius:12px; color: white; font-size:15px !important; outline:none; font-weight: 500;}
+        input:focus, select:focus { border-color:var(--primary); background: rgba(255,255,255,0.08); box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.15); }
         input::placeholder { color: #64748b; font-weight: 400;}
         select option { background: #1e293b; color: white; }
 
-        /* Buttons */
-        button { width:100%; padding:14px; border:none; border-radius:12px; background:var(--gradient); color:white; font-weight:700; cursor:pointer; margin-top:10px; font-size:1rem; box-shadow: 0 4px 15px rgba(14, 165, 233, 0.3); }
-        button:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(14, 165, 233, 0.4); }
-        button:active { transform: translateY(0); }
-        button.secondary { background: rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:var(--text-main); box-shadow: none; }
+        button.btn-primary { width:100%; padding:14px; border:none; border-radius:12px; background:var(--gradient); color:white; font-weight:600; cursor:pointer; margin-top:10px; font-size:1rem; box-shadow: 0 4px 15px rgba(14, 165, 233, 0.3); }
+        button.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(14, 165, 233, 0.4); }
+        button.btn-primary:active { transform: translateY(0); }
+        button.btn-danger { width:100%; padding:14px; border:none; border-radius:12px; background:var(--danger); color:white; font-weight:600; cursor:pointer; margin-top:10px; font-size:1rem; box-shadow: 0 4px 15px rgba(244, 63, 94, 0.3); }
+        button.btn-danger:hover { filter: brightness(1.1); }
+        button.secondary { background: rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:var(--text-main); border-radius: 12px; width: 100%; padding: 14px; margin-top: 10px; font-weight: 600; cursor: pointer;}
         button.secondary:hover { background: rgba(255,255,255,0.1); }
-        button.text-btn { background:transparent; color:var(--primary); width:auto; padding:5px 10px; font-size:0.9rem; margin-top:0; border:none; text-decoration:underline; box-shadow: none;}
+        button.text-btn { background:transparent; color:var(--text-sub); width:auto; padding:5px 10px; font-size:0.9rem; margin-top:0; border:none; font-weight: 600; cursor: pointer;}
+        button.text-btn:hover { color: white; }
 
         .forgot-link { display:block; text-align:right; font-size:0.85rem; color:var(--primary); text-decoration:none; margin-top:-10px; margin-bottom:15px; cursor:pointer; font-weight: 500;}
         
-        /* Analysis Card */
-        .total-card { background:var(--gradient); padding:30px; border-radius:20px; color:white; text-align:center; margin-bottom:25px; position:relative; overflow:hidden; box-shadow: 0 10px 25px rgba(14, 165, 233, 0.2); border: 1px solid rgba(255,255,255,0.1);}
-        .total-amount { font-size:3rem; font-weight:800; display:block; margin:10px 0; letter-spacing: -1px;}
-        
-        .dash-toggle { display:flex; background: rgba(0,0,0,0.2); border-radius:14px; padding:6px; margin-bottom:20px; border: 1px solid rgba(255,255,255,0.05);}
-        .dash-opt { flex:1; text-align:center; padding:10px; cursor:pointer; border-radius:10px; color:var(--text-sub); font-size:0.9rem; font-weight:600; }
-        .dash-opt.active { background:var(--gradient); color:white; box-shadow: 0 2px 8px rgba(0,0,0,0.2);}
+        .dash-toggle { display:flex; background: rgba(0,0,0,0.2); border-radius:16px; padding:6px; margin-bottom:20px; border: 1px solid rgba(255,255,255,0.05);}
+        .dash-opt { flex:1; text-align:center; padding:12px; cursor:pointer; border-radius:12px; color:var(--text-sub); font-size:0.95rem; font-weight:600; display: flex; justify-content: center; align-items: center; gap: 8px;}
+        .dash-opt.active { background: var(--card-bg); color: white; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 4px 15px rgba(0,0,0,0.2);}
 
         .loan-tabs { display:flex; gap:10px; margin-bottom:15px; }
-        .loan-tab { flex:1; padding:12px; text-align:center; border-radius:12px; background: rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); cursor:pointer; font-size:0.9rem; color:var(--text-sub); font-weight:600; }
-        .loan-tab.active { background: rgba(255,255,255,0.1); color:var(--primary); border-color: var(--primary);}
+        .loan-tab { flex:1; padding:12px; text-align:center; border-radius:12px; background: rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); cursor:pointer; font-size:0.95rem; color:var(--text-sub); font-weight:600; }
+        .loan-tab.active { background: rgba(255,255,255,0.08); color:white; border-color: var(--primary);}
 
-        /* Monthly Accordions & Lists */
-        .month-group { margin-bottom: 20px; background: rgba(0,0,0,0.15); border-radius: 16px; padding: 5px; border: 1px solid rgba(255,255,255,0.05);}
-        .month-header { color: var(--primary); font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; padding: 12px 15px; border-radius: 12px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.05);}
-        .month-header:hover { background: rgba(255,255,255,0.08); }
-        .month-header i { transition: transform 0.2s; }
-        .month-header.collapsed i { transform: rotate(-90deg); }
+        .month-group { margin-bottom: 20px; background: rgba(255,255,255,0.02); border-radius: 20px; padding: 5px; border: 1px solid rgba(255,255,255,0.05);}
+        .month-header { color: var(--primary); font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; padding: 15px; border-radius: 16px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.03); transition: all 0.2s;}
+        .month-header:hover { background: rgba(255,255,255,0.06); }
+        .month-header i.fa-chevron-down { transition: transform 0.3s; }
+        .month-header.collapsed i.fa-chevron-down { transform: rotate(-90deg); }
         .month-content { transition: all 0.3s ease; overflow: hidden; padding: 5px; }
         .month-content.collapsed { display: none; }
 
-        .expense-item { background: rgba(255,255,255,0.05); padding:16px; border-radius:16px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; border: 1px solid rgba(255,255,255,0.05); border-left:4px solid var(--primary); }
+        .expense-item { background: rgba(255,255,255,0.03); padding:18px; border-radius:16px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; border: 1px solid rgba(255,255,255,0.05); border-left:4px solid var(--primary); transition: all 0.2s;}
+        .expense-item:hover { background: rgba(255,255,255,0.06); transform: translateX(2px); }
         .expense-item.reimburse { border-left-color:var(--accent); }
         .expense-item.loan-given { border-left-color:var(--loan-given); }
         .expense-item.loan-taken { border-left-color:var(--loan-taken); }
         
-        .status-badge { font-size:0.75rem; padding:5px 12px; border-radius:20px; font-weight: 700; display: inline-block; margin-top: 5px;}
+        .status-badge { font-size:0.7rem; padding:4px 10px; border-radius:8px; font-weight: 700; display: inline-block; margin-top: 5px; text-transform: uppercase; letter-spacing: 1px;}
         .status-Approved, .status-Repaid { background: rgba(16,185,129,0.15); color: #34d399; border: 1px solid rgba(16,185,129,0.3);}
-        .status-Rejected { background: rgba(239,68,68,0.15); color: #f87171; border: 1px solid rgba(239,68,68,0.3);}
+        .status-Rejected { background: rgba(244,63,94,0.15); color: #f43f5e; border: 1px solid rgba(244,63,94,0.3);}
         .status-Pending, .status-Active { background: rgba(245,158,11,0.15); color: #fbbf24; border: 1px solid rgba(245,158,11,0.3);}
         
-        .btn-export { background: rgba(255,255,255,0.05); color:var(--text-main); padding:8px 16px; border-radius:12px; border:1px solid rgba(255,255,255,0.2); cursor:pointer; font-weight:600; width: auto;}
+        .btn-export { background: rgba(255,255,255,0.05); color:var(--text-main); padding:8px 16px; border-radius:10px; border:1px solid rgba(255,255,255,0.1); cursor:pointer; font-weight:600; width: auto; font-size: 0.85rem;}
         .btn-export:hover { background: rgba(255,255,255,0.1); }
         
-        .btn-check { background: rgba(16,185,129,0.2); color: #34d399; width:32px; height:32px; border-radius:50%; border:1px solid rgba(16,185,129,0.5); cursor:pointer; display:flex; align-items:center; justify-content:center;}
-        .btn-check:hover { background: var(--accent); color: white; }
+        .btn-check { background: rgba(16,185,129,0.2); color: #34d399; width:36px; height:36px; border-radius:10px; border:1px solid rgba(16,185,129,0.3); cursor:pointer; display:flex; align-items:center; justify-content:center; transition: all 0.2s;}
+        .btn-check:hover { background: var(--accent); color: white; transform: scale(1.05);}
+        .btn-reject { background: rgba(244,63,94,0.2); color: #f43f5e; width:36px; height:36px; border-radius:10px; border:1px solid rgba(244,63,94,0.3); cursor:pointer; display:flex; align-items:center; justify-content:center; transition: all 0.2s;}
+        .btn-reject:hover { background: var(--danger); color: white; transform: scale(1.05);}
         
-        .btn-approve-all { background: rgba(16,185,129,0.2); color: #34d399; border:1px solid rgba(16,185,129,0.5); padding:8px 16px; border-radius:12px; cursor:pointer; font-size:0.85rem; margin:0; width:auto; font-weight:bold; }
+        .btn-approve-all { background: rgba(16,185,129,0.15); color: #34d399; border:1px solid rgba(16,185,129,0.3); padding:8px 16px; border-radius:10px; cursor:pointer; font-size:0.85rem; margin:0; width:auto; font-weight:bold; transition: all 0.2s;}
         .btn-approve-all:hover { background: var(--accent); color: white; }
 
         .action-icons { display: flex; gap: 12px; margin-left: 15px; }
@@ -175,29 +151,35 @@
         .action-icons i.fa-pen:hover { color: var(--primary); }
         .action-icons i.fa-trash:hover { color: var(--danger); }
 
-        #studentControls > div, #loanFormContainer { padding: 25px; }
+        #studentControls > div, #loanFormContainer { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 20px; padding: 25px; margin-bottom: 25px; }
 
-        /* Budget UI */
-        .budget-wrapper { margin-top: 15px; background: rgba(0,0,0,0.2); padding: 20px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.05); }
-        .budget-header { display: flex; justify-content: space-between; font-size: 0.9rem; color: var(--text-main); margin-bottom: 12px; font-weight: 600;}
-        .progress-track { width: 100%; height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden; }
-        .progress-fill { height: 100%; background: var(--gradient); width: 0%; transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1); border-radius: 4px;}
+        .budget-wrapper { background: rgba(0,0,0,0.2); padding: 20px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 25px;}
+        .budget-header { display: flex; justify-content: space-between; align-items: center; font-size: 0.9rem; color: var(--text-sub); margin-bottom: 12px; font-weight: 600;}
+        .progress-track { width: 100%; height: 10px; background: rgba(255,255,255,0.05); border-radius: 5px; overflow: hidden; box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);}
+        .progress-fill { height: 100%; background: var(--gradient); width: 0%; transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1); border-radius: 5px;}
         .progress-fill.warning { background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); } 
         .progress-fill.danger { background: linear-gradient(135deg, #f87171 0%, #ef4444 100%); }
-        
-        /* Search UI */
-        .search-bar-container { margin-bottom: 20px; position: relative; margin-top: 15px; }
-        .search-bar { width: 100%; padding: 14px 45px 14px 45px; border-radius: 12px; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); color: white; font-size: 1rem; }
-        .search-icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--primary); font-size: 1.2rem;}
+        .set-budget-btn { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; font-size: 0.75rem; cursor: pointer; padding: 6px 12px; border-radius: 8px; font-weight: 600; transition: background 0.2s;}
+        .set-budget-btn:hover { background: rgba(255,255,255,0.1); }
 
-        /* Chart Dropdown */
+        .search-bar-container { margin-bottom: 20px; position: relative; }
+        .search-bar { width: 100%; padding: 14px 45px 14px 45px; border-radius: 12px; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.05); color: white; font-size: 0.95rem; }
+        .search-icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-sub); font-size: 1.1rem;}
+
+        .total-card { background: var(--gradient); padding:30px; color:white; text-align:center; position:relative; overflow:hidden; }
+        .total-amount { font-size:3.5rem; font-weight:800; display:block; margin:5px 0; letter-spacing: -2px;}
         .chart-controls { display: flex; justify-content: center; margin-bottom: 20px; }
-        .chart-select { background: rgba(0,0,0,0.3); color: var(--primary); border: 1px solid rgba(255,255,255,0.1); padding: 8px 20px; border-radius: 12px; font-size: 0.9rem; outline: none; font-weight: 600; }
+        .chart-select { background: rgba(0,0,0,0.3); color: white; border: 1px solid rgba(255,255,255,0.1); padding: 8px 20px; border-radius: 10px; font-size: 0.9rem; outline: none; font-weight: 600; cursor: pointer;}
 
         .hidden { display:none !important; }
-        .step-indicator { font-size:0.8rem; color:var(--primary); margin-bottom:10px; text-align:right; font-weight: 600;}
+        .step-indicator { font-size:0.8rem; color:var(--primary); margin-bottom:10px; text-align:right; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;}
         h4 { color: white; font-weight: 700; font-size: 1.2rem; }
-        input[type="checkbox"] { width: 20px; height: 20px; accent-color: var(--primary); cursor: pointer;}
+        input[type="checkbox"] { width: 20px; height: 20px; accent-color: var(--primary); cursor: pointer; border-radius: 6px;}
+
+        .custom-scroll::-webkit-scrollbar { width: 6px; }
+        .custom-scroll::-webkit-scrollbar-track { background: transparent; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
+        .custom-scroll::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
     </style>
 </head>
 <body>
@@ -208,195 +190,282 @@
         <div class="blob blob-3"></div>
     </div>
 
-    <div id="loader-overlay" class="hidden"><div class="spinner"></div></div>
-
-    <div class="auth-container" id="authSection">
-        <div class="brand-wrapper">
-            <h2 class="app-title">
-                <div style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); padding: 10px; border-radius: 16px; display: flex; align-items: center; justify-content: center; width: 50px; height: 50px;">
-                    <i class="fa-solid fa-chart-line" style="color:var(--primary); font-size:1.2em;"></i>
-                </div>
-                Vantage
-            </h2>
-            <div class="brand-subtitle">Finance Tracker</div>
+    <div id="loader-overlay" class="hidden">
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 15px;">
+            <div class="spinner"></div>
+            <div style="color: var(--primary); font-weight: 600; letter-spacing: 2px; text-transform: uppercase; font-size: 0.85rem;">Syncing...</div>
         </div>
-        
-        <div id="authContent">
-            <div class="role-wrapper">
-                <span class="role-label" style="font-size:0.8rem; color:var(--text-sub); font-weight:600; text-transform:uppercase; letter-spacing:1px; margin-bottom:8px; display:block;">Login as</span>
-                <div class="role-selector">
-                    <div id="role-student" class="role-opt active" onclick="setGlobalRole('student')">Student</div>
-                    <div id="role-guardian" class="role-opt" onclick="setGlobalRole('guardian')">Guardian</div>
+    </div>
+
+    <div id="authSection" class="auth-wrapper">
+        <div class="glass-card auth-container">
+            <div class="brand-wrapper">
+                <h2 class="app-title">Vantage</h2>
+                <div class="brand-subtitle">Finance Tracker</div>
+            </div>
+            
+            <div id="authContent">
+                <div class="role-wrapper">
+                    <span style="font-size:0.75rem; color:var(--text-sub); font-weight:700; text-transform:uppercase; letter-spacing:2px; margin-bottom:10px; display:block;">Login as</span>
+                    <div class="role-selector">
+                        <div id="role-student" class="role-opt active" onclick="setGlobalRole('student')">Student</div>
+                        <div id="role-guardian" class="role-opt" onclick="setGlobalRole('guardian')">Guardian</div>
+                    </div>
+                </div>
+
+                <div class="auth-tabs">
+                    <div id="tabLogin" class="auth-tab active" onclick="switchTab('login')">Sign In</div>
+                    <div id="tabRegister" class="auth-tab" onclick="switchTab('register')">Sign Up</div>
+                </div>
+
+                <div id="loginForm">
+                    <div class="input-group">
+                        <i class="fa-regular fa-envelope icon-left"></i>
+                        <input type="email" id="l-email" placeholder="Email Address">
+                    </div>
+                    <div class="input-group">
+                        <i class="fa-solid fa-lock icon-left"></i>
+                        <input type="password" id="l-password" placeholder="Password">
+                        <i class="fa-regular fa-eye-slash icon-right" onclick="togglePwd('l-password')"></i>
+                    </div>
+                    <div class="forgot-link" onclick="showReset()">Forgot Password?</div>
+                    <button class="btn-primary" onclick="doLogin()">Login Securely</button>
+                </div>
+
+                <div id="registerForm" class="hidden">
+                    <div id="reg-step-1">
+                        <div class="step-indicator">Step 1 of 3</div>
+                        <div class="input-group">
+                            <i class="fa-regular fa-envelope icon-left"></i>
+                            <input type="email" id="r-email" placeholder="Enter your email">
+                        </div>
+                        <button class="btn-primary" onclick="sendOtp('register')">Send Verification Code</button>
+                    </div>
+                    <div id="reg-step-2" class="hidden">
+                        <div class="step-indicator">Step 2 of 3</div>
+                        <p style="color:var(--text-sub); text-align:center; font-size:0.9rem; font-weight:500; margin-bottom: 15px;">Code sent to your email.</p>
+                        <div class="input-group">
+                            <i class="fa-solid fa-key icon-left"></i>
+                            <input type="text" id="r-otp" placeholder="Enter 4-digit Code">
+                        </div>
+                        <button class="btn-primary" onclick="verifyOtp('register')">Verify Code</button>
+                        <button class="secondary" onclick="resetReg()">Back</button>
+                    </div>
+                    <div id="reg-step-3" class="hidden">
+                        <div class="step-indicator">Step 3 of 3</div>
+                        <div class="input-group">
+                            <i class="fa-regular fa-user icon-left"></i>
+                            <input type="text" id="r-name" placeholder="Full Name">
+                        </div>
+                        <div class="input-group">
+                            <i class="fa-solid fa-lock icon-left"></i>
+                            <input type="password" id="r-password" placeholder="Create Password">
+                            <i class="fa-regular fa-eye-slash icon-right" onclick="togglePwd('r-password')"></i>
+                        </div>
+                        <div class="input-group hidden" id="r-guardian-field">
+                            <i class="fa-solid fa-link icon-left"></i>
+                            <input type="text" id="r-student-key" placeholder="Student Key (Required)">
+                        </div>
+                        <button class="btn-primary" onclick="doRegister()">Create Account</button>
+                    </div>
                 </div>
             </div>
 
-            <div class="auth-tabs">
-                <div id="tabLogin" class="auth-tab active" onclick="switchTab('login')">Sign In</div>
-                <div id="tabRegister" class="auth-tab" onclick="switchTab('register')">Sign Up</div>
-            </div>
-
-            <div id="loginForm">
-                <div class="input-group"><i class="fa-solid fa-envelope icon-left"></i><input type="email" id="l-email" placeholder="Email Address"></div>
-                <div class="input-group"><i class="fa-solid fa-lock icon-left"></i><input type="password" id="l-password" placeholder="Password"><i class="fa-solid fa-eye icon-right" onclick="togglePwd('l-password')"></i></div>
-                <div class="forgot-link" onclick="showReset()">Forgot Password?</div>
-                <button onclick="doLogin()">Login Securely</button>
-            </div>
-
-            <div id="registerForm" class="hidden">
-                <div id="reg-step-1">
-                    <div class="step-indicator">Step 1 of 3</div>
-                    <div class="input-group"><i class="fa-solid fa-envelope icon-left"></i><input type="email" id="r-email" placeholder="Enter your email"></div>
-                    <button onclick="sendOtp('register')">Send Verification Code</button>
+            <div id="resetForm" class="hidden">
+                <h3 style="text-align:center; color:white; margin-top:0; font-family: 'Playfair Display', serif; font-size: 1.8rem;">Reset Password</h3>
+                <div id="reset-step-1">
+                    <div class="input-group"><i class="fa-regular fa-envelope icon-left"></i><input type="email" id="reset-email" placeholder="Enter registered email"></div>
+                    <button class="btn-primary" onclick="sendOtp('reset')">Send OTP</button>
+                    <button class="secondary" onclick="hideReset()">Back to Login</button>
                 </div>
-                <div id="reg-step-2" class="hidden">
-                    <div class="step-indicator">Step 2 of 3</div>
-                    <p style="color:var(--text-sub); text-align:center; font-size:0.9rem; font-weight:500;">Code sent to your email.</p>
-                    <div class="input-group"><i class="fa-solid fa-key icon-left"></i><input type="text" id="r-otp" placeholder="Enter 4-digit Code"></div>
-                    <button onclick="verifyOtp('register')">Verify Code</button>
-                    <button class="secondary" onclick="resetReg()">Back</button>
+                <div id="reset-step-2" class="hidden">
+                    <p style="color:var(--text-sub); text-align:center; font-size:0.9rem; font-weight:500; margin-bottom: 15px;">Enter OTP sent to your email.</p>
+                    <div class="input-group"><i class="fa-solid fa-key icon-left"></i><input type="text" id="reset-otp" placeholder="4-digit Code"></div>
+                    <button class="btn-primary" onclick="verifyOtp('reset')">Verify</button>
+                    <button class="secondary" onclick="hideReset()">Cancel</button>
                 </div>
-                <div id="reg-step-3" class="hidden">
-                    <div class="step-indicator">Step 3 of 3</div>
-                    <div class="input-group"><i class="fa-solid fa-user icon-left"></i><input type="text" id="r-name" placeholder="Full Name"></div>
-                    <div class="input-group"><i class="fa-solid fa-lock icon-left"></i><input type="password" id="r-password" placeholder="Create Password"><i class="fa-solid fa-eye icon-right" onclick="togglePwd('r-password')"></i></div>
-                    <div class="input-group hidden" id="r-guardian-field"><i class="fa-solid fa-link icon-left"></i><input type="text" id="r-student-key" placeholder="Student Key (Required)"></div>
-                    <button onclick="doRegister()">Create Account</button>
+                <div id="reset-step-3" class="hidden">
+                    <div class="input-group"><i class="fa-solid fa-lock icon-left"></i><input type="password" id="reset-new-pass" placeholder="New Password"><i class="fa-regular fa-eye-slash icon-right" onclick="togglePwd('reset-new-pass')"></i></div>
+                    <button class="btn-primary" onclick="doReset()">Set New Password</button>
                 </div>
             </div>
+            <p id="authMsg" style="color:var(--danger); text-align:center; margin-top:15px; min-height:20px; font-weight:600;"></p>
         </div>
-
-        <div id="resetForm" class="hidden">
-            <h3 style="text-align:center; color:white; margin-top:0;">Reset Password</h3>
-            <div id="reset-step-1"><div class="input-group"><i class="fa-solid fa-envelope icon-left"></i><input type="email" id="reset-email" placeholder="Enter registered email"></div><button onclick="sendOtp('reset')">Send OTP</button><button class="secondary" onclick="hideReset()">Back to Login</button></div>
-            <div id="reset-step-2" class="hidden"><p style="color:var(--text-sub); text-align:center; font-size:0.9rem; font-weight:500;">Enter OTP sent to your email.</p><div class="input-group"><i class="fa-solid fa-key icon-left"></i><input type="text" id="reset-otp" placeholder="4-digit Code"></div><button onclick="verifyOtp('reset')">Verify</button><button class="secondary" onclick="hideReset()">Cancel</button></div>
-            <div id="reset-step-3" class="hidden"><div class="input-group"><i class="fa-solid fa-lock icon-left"></i><input type="password" id="reset-new-pass" placeholder="New Password"><i class="fa-solid fa-eye icon-right" onclick="togglePwd('reset-new-pass')"></i></div><button onclick="doReset()">Set New Password</button></div>
-        </div>
-        <p id="authMsg" style="color:var(--danger); text-align:center; margin-top:15px; min-height:20px; font-weight:600;"></p>
     </div>
 
     <div class="dashboard-wrapper" id="dashboardSection">
-        <div class="dash-card">
+        
+        <div style="display: flex; flex-direction: column; gap: 0;">
             <div class="dash-header">
-                <h3 id="dashTitle" style="margin:0; font-family:'Playfair Display', serif;">Dashboard</h3>
+                <div>
+                    <h3 id="dashTitle">Dashboard</h3>
+                    <p id="dashGreeting">Welcome back!</p>
+                </div>
                 
                 <div class="profile-btn" id="profileBtn" onclick="toggleProfileModal()">A</div>
                 
-                <div id="profileModal" class="profile-modal">
+                <div id="profileModal" class="glass-card profile-modal">
+                    <div style="width: 100%; display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px;">
+                        <h4 style="margin:0; font-size:1.2rem;">Profile</h4>
+                        <i class="fa-solid fa-xmark" style="cursor:pointer; color:var(--text-sub); font-size:1.2rem;" onclick="toggleProfileModal()"></i>
+                    </div>
+
                     <input type="file" id="profilePicInput" style="display:none;" accept="image/*" onchange="saveProfilePic()">
-                    <div class="modal-avatar" onclick="document.getElementById('profilePicInput').click()" id="modalAvatar"><span><i class="fa-solid fa-camera"></i></span></div>
-                    <h3 class="modal-name" id="modalName" style="margin:10px 0 0 0; color:white;">User Name</h3>
-                    <p class="modal-email" id="modalEmail" style="margin:5px 0 15px 0; color:var(--text-sub); font-size:0.9rem;">user@example.com</p>
+                    <div class="modal-avatar" onclick="document.getElementById('profilePicInput').click()" id="modalAvatar"></div>
+                    <h3 class="modal-name" id="modalName" style="margin:5px 0 0 0; color:white; font-size: 1.4rem;">User Name</h3>
+                    <p class="modal-email" id="modalEmail" style="margin:0 0 15px 0; color:var(--text-sub); font-size:0.85rem;">user@example.com</p>
                     
                     <div class="modal-section" id="studentSection">
-                        <span class="modal-label">Student Key</span>
-                        <div class="modal-value"><span id="modalKey" style="font-weight:700; font-family:monospace; color: var(--primary);">STU-XXXX</span><button class="copy-btn" onclick="copyKey()"><i class="fa-regular fa-copy"></i></button></div>
+                        <span class="modal-label">Your Student ID</span>
+                        <div class="modal-value">
+                            <span id="modalKey" style="font-weight:700; font-family:monospace; color: var(--primary); letter-spacing: 1px;">STU-XXXX</span>
+                            <button class="copy-btn" onclick="copyKey()"><i class="fa-regular fa-copy"></i></button>
+                        </div>
+                        <div class="input-group" style="margin-top:10px; margin-bottom:0;">
+                            <i class="fa-solid fa-id-card icon-left" style="font-size:0.9rem;"></i>
+                            <input type="text" id="modalNewStudentKey" placeholder="Create Custom ID" style="padding:12px 15px 12px 35px; font-size:0.85rem; font-family:monospace;">
+                        </div>
+                        <button class="btn-primary" style="padding:10px; font-size:0.85rem; margin-top:10px;" onclick="updateStudentKey()"><i class="fa-solid fa-arrows-rotate" style="margin-right:5px;"></i> Update ID</button>
                     </div>
                     
                     <div class="modal-section">
-                        <span class="modal-label">Your Password</span>
+                        <span class="modal-label">Security</span>
                         <div class="modal-value">
-                            <span id="modalPass" style="letter-spacing:2px; font-family: monospace;">••••••</span>
+                            <span id="modalPass" style="letter-spacing:3px; font-family: monospace;">••••••</span>
                             <button class="copy-btn" onclick="toggleModalPwd()"><i class="fa-solid fa-eye" id="modalEye"></i></button>
                         </div>
                         <div class="input-group" style="margin-top:10px; margin-bottom:0;">
-                            <input type="password" id="modalNewPass" placeholder="New Password" style="padding:12px; font-size:0.9rem;">
+                            <input type="password" id="modalNewPass" placeholder="New Password" style="padding:12px 15px; font-size:0.85rem;">
                         </div>
-                        <button style="margin-top:10px; padding:10px; font-size:0.9rem;" onclick="updatePassword()">Update Password</button>
+                        <button class="btn-primary" style="padding:10px; font-size:0.85rem; margin-top:10px;" onclick="updatePassword()">Update Password</button>
                     </div>
-                    <button class="logout-btn-modal" onclick="logout()">Sign Out</button>
+                    <button class="btn-danger" style="margin-top: 20px;" onclick="logout()"><i class="fa-solid fa-right-from-bracket" style="margin-right:8px;"></i> Sign Out</button>
                 </div>
             </div>
 
             <div id="dashToggle" class="dash-toggle hidden">
-                <div id="mode-spend" class="dash-opt active" onclick="setDashMode('spend')"><i class="fa-solid fa-wallet" style="margin-right:5px;"></i> Spending</div>
-                <div id="mode-lend" class="dash-opt" onclick="setDashMode('lend')"><i class="fa-solid fa-hand-holding-dollar" style="margin-right:5px;"></i> Loans</div>
+                <div id="mode-spend" class="dash-opt active" onclick="setDashMode('spend')"><i class="fa-solid fa-wallet" style="margin-right:6px;"></i> Spending</div>
+                <div id="mode-lend" class="dash-opt" onclick="setDashMode('lend')"><i class="fa-solid fa-hand-holding-dollar" style="margin-right:6px;"></i> Loans</div>
             </div>
 
             <div id="section-spend">
                 <div id="studentControls" class="hidden">
-                    <div>
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-                            <h4 style="margin:0; color:var(--primary);" id="expFormTitle"><i class="fa-solid fa-cart-plus"></i> Add Expense</h4>
+                    <div class="form-card">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                            <h4 style="margin:0; color:var(--primary);" id="expFormTitle"><i class="fa-solid fa-cart-plus" style="margin-right:8px;"></i>Add Expense</h4>
                             <button class="text-btn" onclick="togglePastEntry()">+ Add Past Entry</button>
                         </div>
-                        <div class="input-group"><i class="fa-solid fa-tag icon-left"></i><input id="expItem" placeholder="Item Name"></div>
-                        <div style="display:flex; gap:10px;">
-                            <div class="input-group" style="flex:1;"><i class="fa-solid fa-indian-rupee-sign icon-left"></i><input type="number" id="expAmount" placeholder="Total Cost"></div>
-                            <div class="input-group" style="flex:1;"><i class="fa-solid fa-list icon-left"></i><select id="expCategory" style="padding-left:45px;"><option>Essentials</option><option>Food</option><option>Travel</option><option>Study</option><option>Rent</option><option>Utilities</option><option>Health</option><option>Fashion</option><option>Entertainment</option><option>Others</option></select></div>
-                        </div>
-                        <div id="pastDateGroup" class="hidden" style="margin-bottom:10px;"><div class="input-group"><i class="fa-solid fa-calendar icon-left"></i><input type="date" id="expDate"></div></div>
                         
-                        <div style="background: rgba(0,0,0,0.2); padding: 12px 15px; border-radius: 12px; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.05);">
-                            <label style="color:white; display:flex; align-items:center; gap:10px; cursor:pointer; font-weight:500;">
-                                <input type="checkbox" id="expReimburse" onchange="toggleReimburseAmt()"> Request Reimbursement
+                        <div class="grid" style="display: grid; grid-template-columns: 1fr; gap: 15px;">
+                            <div class="input-group" style="margin:0;"><i class="fa-solid fa-tag icon-left"></i><input id="expItem" placeholder="Item Name"></div>
+                            
+                            <div style="display:flex; gap:15px;">
+                                <div class="input-group" style="flex:1; margin:0;"><i class="fa-solid fa-indian-rupee-sign icon-left"></i><input type="number" id="expAmount" placeholder="Total Cost"></div>
+                                <div class="input-group" style="flex:1; margin:0;"><i class="fa-solid fa-list icon-left"></i>
+                                    <select id="expCategory" style="padding-left:45px; appearance:none;">
+                                        <option>Essentials</option><option>Food</option><option>Travel</option><option>Study</option><option>Rent</option><option>Utilities</option><option>Health</option><option>Fashion</option><option>Entertainment</option><option>Others</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div id="pastDateGroup" class="hidden input-group" style="margin:0;"><i class="fa-regular fa-calendar icon-left"></i><input type="date" id="expDate"></div>
+                        </div>
+                        
+                        <div style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 12px; margin-top: 15px; border: 1px solid rgba(255,255,255,0.05);">
+                            <label style="color:white; display:flex; align-items:center; gap:12px; cursor:pointer; font-weight:500; font-size:0.95rem;">
+                                <input type="checkbox" id="expReimburse" onchange="toggleReimburseAmt()"> Request Reimbursement from Guardian
                             </label>
                             <div id="reimburseAmtGroup" class="hidden input-group" style="margin-top:15px; margin-bottom:0;">
-                                <i class="fa-solid fa-hand-holding-dollar icon-left"></i>
-                                <input type="number" id="expReqAmount" placeholder="Partial Amount (Leave blank for full)">
+                                <i class="fa-solid fa-hand-holding-dollar icon-left" style="color:var(--accent);"></i>
+                                <input type="number" id="expReqAmount" placeholder="Partial Amount (Leave blank for full amount)" style="border-color: rgba(16,185,129,0.3);">
                             </div>
                         </div>
 
-                        <button onclick="addExpense()" id="expBtn">Save Expense</button>
+                        <button class="btn-primary" onclick="addExpense()" id="expBtn" style="margin-top: 20px;">Save Expense</button>
                     </div>
                 </div>
                 
                 <div class="budget-wrapper hidden" id="budgetCard">
-                    <div class="budget-header"><span>Monthly Budget: <strong id="budgetDisplay" style="color:var(--primary); font-size:1.1rem;">₹0</strong></span><button class="set-budget-btn" onclick="promptBudget()"><i class="fa-solid fa-pen"></i> Set Limit</button></div>
+                    <div class="budget-header">
+                        <span>Monthly Budget Limit</span>
+                        <button class="set-budget-btn" onclick="promptBudget()"><i class="fa-solid fa-pen" style="margin-right:5px;"></i> Set Limit</button>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-top: 5px;">
+                        <strong id="budgetDisplay" style="color:white; font-size:1.4rem; letter-spacing: -0.5px;">₹0</strong>
+                        <div style="font-size:0.8rem; color:var(--text-sub); font-weight:600;" id="budgetText">0% used</div>
+                    </div>
                     <div class="progress-track"><div class="progress-fill" id="budgetBar"></div></div>
-                    <div style="font-size:0.75rem; color:var(--text-sub); margin-top:8px; text-align:right; font-weight:600;" id="budgetText">0% used</div>
                 </div>
 
-                <div style="display:flex; justify-content:space-between; margin-bottom:15px; margin-top:25px; align-items:center;">
-                    <h4 style="margin:0;"><i class="fa-solid fa-clock-rotate-left" style="color:var(--primary);"></i> Activity</h4>
+                <div style="display:flex; justify-content:space-between; margin-bottom:15px; margin-top:30px; align-items:center;">
+                    <h4 style="margin:0; display:flex; align-items:center; gap:8px;"><i class="fa-solid fa-clock-rotate-left" style="color:var(--primary);"></i> Activity</h4>
                     <div style="display:flex; gap:10px;">
                         <button id="approveAllBtn" class="hidden btn-approve-all" onclick="approveAllRequests()">
-                            <i class="fa-solid fa-check-double"></i> Approve All
+                            <i class="fa-solid fa-check-double" style="margin-right:5px;"></i> Approve All
                         </button>
-                        <button class="btn-export" onclick="exportToExcel()"><i class="fa-solid fa-download"></i> CSV</button>
+                        <button class="btn-export" onclick="exportToExcel()"><i class="fa-solid fa-download" style="margin-right:5px;"></i> CSV</button>
                     </div>
                 </div>
                 
-                <div class="search-bar-container"><input type="text" class="search-bar" id="searchInput" placeholder="Search records..." onkeyup="filterExpenses()"><i class="fa-solid fa-magnifying-glass search-icon"></i></div>
+                <div class="search-bar-container">
+                    <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                    <input type="text" class="search-bar" id="searchInput" placeholder="Search records..." onkeyup="filterExpenses()">
+                </div>
                 
                 <div id="expenseList">Loading...</div>
             </div>
 
             <div id="section-lend" class="hidden">
-                <div id="loanFormContainer">
-                    <h4 style="margin:0 0 15px 0; color:var(--loan-given);" id="loanFormTitle"><i class="fa-solid fa-hand-holding-hand"></i> Record Loan Given</h4>
-                    <div class="input-group"><i class="fa-solid fa-user-group icon-left"></i><input id="loanName" placeholder="Friend's Name"></div>
-                    <div class="input-group" id="loanKeyGroup"><i class="fa-solid fa-key icon-left"></i><input id="loanFriendKey" placeholder="Friend's Student Key (Optional)"></div>
-                    <div class="input-group"><i class="fa-solid fa-calendar icon-left"></i><input type="date" id="loanDate"></div>
-                    <div class="input-group"><i class="fa-solid fa-indian-rupee-sign icon-left"></i><input type="number" id="loanAmount" placeholder="Amount"></div>
-                    <div class="input-group"><i class="fa-solid fa-note-sticky icon-left"></i><input id="loanRemarks" placeholder="Remarks/Notes (Optional)"></div>
-                    <button style="background:var(--loan-given); box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);" onclick="addLoan()" id="loanBtn">Save Record</button>
+                <div class="form-card" id="loanFormContainer" style="border-top: 3px solid var(--loan-given);">
+                    <h4 style="margin:0 0 20px 0; color:var(--loan-given); display:flex; align-items:center; gap:8px;" id="loanFormTitle"><i class="fa-solid fa-hand-holding-hand"></i> Record Loan Given</h4>
+                    <div style="display: grid; grid-template-columns: 1fr; gap: 15px;">
+                        <div class="input-group" style="margin:0;"><i class="fa-solid fa-user-group icon-left"></i><input id="loanName" placeholder="Friend's Name"></div>
+                        <div style="display:flex; gap:15px;">
+                            <div class="input-group" style="flex:1; margin:0;"><i class="fa-solid fa-indian-rupee-sign icon-left"></i><input type="number" id="loanAmount" placeholder="Amount"></div>
+                            <div class="input-group" style="flex:1; margin:0;"><i class="fa-regular fa-calendar icon-left"></i><input type="date" id="loanDate"></div>
+                        </div>
+                        <div class="input-group" style="margin:0;" id="loanKeyGroup"><i class="fa-solid fa-key icon-left"></i><input id="loanFriendKey" placeholder="Friend's Student Key (Optional - for alerts)"></div>
+                        <div class="input-group" style="margin:0;"><i class="fa-solid fa-note-sticky icon-left"></i><input id="loanRemarks" placeholder="Remarks / Notes (Optional)"></div>
+                    </div>
+                    <button class="btn-primary" style="background:var(--loan-given); box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3); margin-top: 20px;" onclick="addLoan()" id="loanBtn">Save Record</button>
                 </div>
                 
-                <div class="loan-tabs" style="margin-top: 25px;">
+                <div class="loan-tabs" style="margin-top: 30px;">
                     <div id="tab-given" class="loan-tab active" onclick="switchLoanTab('given')">Money Given</div>
                     <div id="tab-taken" class="loan-tab" onclick="switchLoanTab('taken')">Money Taken</div>
                 </div>
 
-                <div id="loanList" style="margin-top: 15px;">Loading...</div>
+                <div id="loanList" style="margin-top: 20px;">Loading...</div>
             </div>
         </div>
 
-        <div class="dash-card">
-            <div class="total-card">
-                <span id="totalLabel" style="opacity:0.9; font-size:0.9rem; font-weight:600; letter-spacing:1px;">TOTAL SPENT</span>
-                <span class="total-amount" id="grandTotal">₹0</span>
+        <div>
+            <div class="glass-card" style="padding:0; overflow:hidden;">
+                <div class="total-card" style="border-radius:0; margin:0; border:none; border-bottom: 1px solid rgba(255,255,255,0.1);">
+                    <span id="totalLabel" style="opacity:0.8; font-size:0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 2px;">TOTAL SPENT</span>
+                    <span class="total-amount" id="grandTotal">₹0</span>
+                </div>
+                <div style="padding: 25px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px;">
+                        <h4 style="margin:0; font-size:1.1rem; display:flex; align-items:center; gap:8px;"><i class="fa-solid fa-chart-pie" style="color:var(--primary);"></i> Analysis</h4>
+                        <div class="chart-controls" style="margin:0;">
+                            <select id="chartMonthSelect" class="chart-select" onchange="filterChartByMonth()"></select>
+                        </div>
+                    </div>
+                    
+                    <div style="height:220px; position:relative; width:100%;"><canvas id="expenseChart"></canvas></div>
+                    
+                    <div id="chartLegend" class="custom-scroll" style="margin-top:25px; max-height: 200px; overflow-y: auto; padding-right: 5px;"></div>
+                </div>
             </div>
-            <h4 style="text-align:center; margin-top:0;"><i class="fa-solid fa-chart-pie" style="color:var(--primary);"></i> Analysis</h4>
-            <div class="chart-controls"><select id="chartMonthSelect" class="chart-select" onchange="filterChartByMonth()"></select></div>
-            <div style="height:250px; position:relative;"><canvas id="expenseChart"></canvas></div>
-            <div id="chartLegend" style="margin-top:25px;"></div>
         </div>
+
     </div>
 
     <script>
         // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         // PUT YOUR APPS SCRIPT DEPLOYMENT URL HERE
-        const API_URL = 'https://script.google.com/macros/s/AKfycbxWmuqYkYSAWzaVjw1SSBIDGXzWFfP-wfdwj_e5hDXNIYLQx9zd-WsbaSDjTA4kGNRW/exec'; 
+        const API_URL = 'https://script.google.com/macros/s/AKfycby3Ebh2Hu6NsPmNbDxvT3fcwG_kWJhBSuvbGoE3SXRPQ-5vFcQOMj5FTI-4XZadAedw/exec'; 
         // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
         let currentRole = 'student', currentUser = null, currentExpenses = [], myChart = null;
@@ -409,7 +478,12 @@
         function setGlobalRole(r) { currentRole = r; document.getElementById('role-student').classList.toggle('active', r==='student'); document.getElementById('role-guardian').classList.toggle('active', r==='guardian'); document.getElementById('r-guardian-field').classList.toggle('hidden', r!=='guardian'); msg(""); }
         function switchTab(t) { document.getElementById('tabLogin').classList.toggle('active', t==='login'); document.getElementById('tabRegister').classList.toggle('active', t==='register'); document.getElementById('loginForm').classList.toggle('hidden', t!=='login'); document.getElementById('registerForm').classList.toggle('hidden', t!=='register'); msg(""); }
         function resetReg() { document.getElementById('reg-step-1').classList.remove('hidden'); document.getElementById('reg-step-2').classList.add('hidden'); document.getElementById('reg-step-3').classList.add('hidden'); msg(""); }
-        function togglePwd(id) { const x = document.getElementById(id); x.type = (x.type === "password") ? "text" : "password"; }
+        function togglePwd(id) { 
+            const x = document.getElementById(id); 
+            const icon = x.nextElementSibling;
+            if(x.type === "password") { x.type = "text"; icon.classList.remove('fa-eye-slash'); icon.classList.add('fa-eye'); } 
+            else { x.type = "password"; icon.classList.remove('fa-eye'); icon.classList.add('fa-eye-slash'); } 
+        }
         function showReset() { document.getElementById('authContent').classList.add('hidden'); document.getElementById('resetForm').classList.remove('hidden'); msg(""); }
         function hideReset() { document.getElementById('authContent').classList.remove('hidden'); document.getElementById('resetForm').classList.add('hidden'); resetResetFlow(); msg(""); }
         function resetResetFlow() { document.getElementById('reset-step-1').classList.remove('hidden'); document.getElementById('reset-step-2').classList.add('hidden'); document.getElementById('reset-step-3').classList.add('hidden'); }
@@ -427,10 +501,13 @@
 
         function loadDashboard(user) {
             currentUser = user; document.getElementById('authSection').style.display='none'; document.getElementById('dashboardSection').style.display='grid';
-            document.getElementById('dashTitle').innerText = `Hi, ${user.name.split(' ')[0]}`;
+            document.getElementById('dashGreeting').innerText = `Welcome back, ${user.name.split(' ')[0]}`;
             
             const btn = document.getElementById('profileBtn'), modalAvatar = document.getElementById('modalAvatar');
-            btn.innerText = user.name.charAt(0).toUpperCase(); btn.style.backgroundImage = 'none'; modalAvatar.style.backgroundImage = 'none'; modalAvatar.innerHTML = '<span><i class="fa-solid fa-camera"></i></span>';
+            btn.innerText = user.name.charAt(0).toUpperCase(); btn.style.backgroundImage = 'none'; modalAvatar.style.backgroundImage = 'none'; modalAvatar.innerHTML = user.name.charAt(0).toUpperCase();
+            document.getElementById('modalName').innerText = user.name;
+            document.getElementById('modalEmail').innerText = user.email;
+
             const uniqueKey = 'vantageProfilePic_' + user.email; const savedPic = localStorage.getItem(uniqueKey);
             if(savedPic) { btn.style.backgroundImage = `url(${savedPic})`; btn.innerText = ""; modalAvatar.style.backgroundImage = `url(${savedPic})`; modalAvatar.innerHTML = ""; }
             
@@ -439,6 +516,11 @@
                 document.getElementById('dashToggle').classList.remove('hidden'); 
                 document.getElementById('budgetCard').classList.remove('hidden'); 
                 document.querySelector('.chart-controls').classList.remove('hidden');
+                
+                // Show Student ID editing section
+                document.getElementById('studentSection').classList.remove('hidden');
+                document.getElementById('modalKey').innerText = user.student_key;
+                
                 updateBudgetUI(user.budget||0, 0); 
                 fetchData(user.student_key, 'get_expenses'); 
             } else { 
@@ -446,6 +528,10 @@
                 document.getElementById('dashToggle').classList.add('hidden'); 
                 document.getElementById('budgetCard').classList.add('hidden'); 
                 document.querySelector('.chart-controls').classList.add('hidden');
+                
+                // Hide Student ID editing section for Guardian
+                document.getElementById('studentSection').classList.add('hidden');
+                
                 fetchData(user.email, 'get_guardian_data'); 
             }
         }
@@ -471,12 +557,12 @@
 
         function switchLoanTab(type) {
             activeLoanTab = type; document.getElementById('tab-given').classList.toggle('active', type==='given'); document.getElementById('tab-taken').classList.toggle('active', type==='taken');
-            editingLoanId = null; document.getElementById('loanBtn').innerText = type === 'given' ? "Record Loan Given" : "Record Debt";
+            editingLoanId = null; document.getElementById('loanBtn').innerText = type === 'given' ? "Save Record" : "Save Record";
             const container = document.getElementById('loanFormContainer'), title = document.getElementById('loanFormTitle');
             const nameInput = document.getElementById('loanName'), keyInput = document.getElementById('loanFriendKey');
             const amtInput = document.getElementById('loanAmount'), btn = document.getElementById('loanBtn');
-            if(type === 'given') { container.style.borderColor = 'var(--loan-given)'; title.style.color = 'var(--loan-given)'; title.innerHTML = '<i class="fa-solid fa-hand-holding-hand"></i> Record Loan Given'; nameInput.placeholder = "Friend's Name"; keyInput.placeholder = "Friend's Student Key (Optional)"; amtInput.placeholder = "Amount Given"; btn.style.backgroundColor = 'var(--loan-given)'; btn.style.boxShadow = '0 4px 15px rgba(139, 92, 246, 0.3)'; } 
-            else { container.style.borderColor = 'var(--loan-taken)'; title.style.color = 'var(--loan-taken)'; title.innerHTML = '<i class="fa-solid fa-hand-holding-dollar"></i> Record Debt (Money Taken)'; nameInput.placeholder = "Lender's Name"; keyInput.placeholder = "Lender's Student Key (Optional)"; amtInput.placeholder = "Amount Borrowed"; btn.style.backgroundColor = 'var(--loan-taken)'; btn.style.boxShadow = '0 4px 15px rgba(249, 115, 22, 0.3)';}
+            if(type === 'given') { container.style.borderTopColor = 'var(--loan-given)'; title.style.color = 'var(--loan-given)'; title.innerHTML = '<i class="fa-solid fa-hand-holding-hand"></i> Record Loan Given'; nameInput.placeholder = "Friend's Name"; keyInput.placeholder = "Friend's Student Key (Optional - for alerts)"; amtInput.placeholder = "Amount Given"; btn.style.background = 'var(--loan-given)'; btn.style.boxShadow = '0 4px 15px rgba(139, 92, 246, 0.3)'; } 
+            else { container.style.borderTopColor = 'var(--loan-taken)'; title.style.color = 'var(--loan-taken)'; title.innerHTML = '<i class="fa-solid fa-hand-holding-dollar"></i> Record Debt (Money Taken)'; nameInput.placeholder = "Lender's Name"; keyInput.placeholder = "Lender's Student Key (Optional - for alerts)"; amtInput.placeholder = "Amount Borrowed"; btn.style.background = 'var(--loan-taken)'; btn.style.boxShadow = '0 4px 15px rgba(249, 115, 22, 0.3)';}
             renderLoanList(); renderLoanStats();
         }
 
@@ -484,7 +570,7 @@
             const group = document.getElementById('pastDateGroup'); group.classList.toggle('hidden'); 
             const btn = document.querySelector('.text-btn'); 
             if(!group.classList.contains('hidden')) { btn.innerText = "Cancel Past Entry"; btn.style.color = "var(--danger)"; } 
-            else { btn.innerText = "+ Add Past Entry"; btn.style.color = "var(--primary)"; document.getElementById('expDate').value = ""; } 
+            else { btn.innerHTML = "+ Add Past Entry"; btn.style.color = "var(--primary)"; document.getElementById('expDate').value = ""; } 
         }
 
         function toggleReimburseAmt() {
@@ -508,7 +594,7 @@
             if(limit <= 0) { document.getElementById('budgetBar').style.width = '0%'; return; }
             let pct = (spent / limit) * 100;
             const bar = document.getElementById('budgetBar'); bar.style.width = `${Math.min(pct, 100)}%`; bar.className = 'progress-fill';
-            if(pct > 90) bar.classList.add('danger'); else if(pct > 75) bar.classList.add('warning');
+            if(pct > 90) bar.classList.add('danger'); else if(pct > 75) bar.classList.add('warning'); else bar.classList.remove('danger', 'warning');
             document.getElementById('budgetText').innerText = `${Math.round(pct)}% used of ₹${limit}`;
         }
         function calculateCurrentMonthSpent() {
@@ -539,13 +625,14 @@
                 amount:document.getElementById('expAmount').value, category:document.getElementById('expCategory').value, 
                 is_reimbursable: isReimburse 
             };
+            if(!payload.item_name || !payload.amount) return alert("Please fill item name and amount.");
             if(isReimburse) { const reqAmt = document.getElementById('expReqAmount').value; if(reqAmt) payload.requested_amount = reqAmt; }
             if(dateInput) payload.date = dateInput;
             
             if(editingExpenseId) { payload.action = 'update_expense'; payload.id = editingExpenseId; } else { payload.action = 'add_expense'; }
             await apiCall(payload);
             
-            editingExpenseId = null; document.getElementById('expBtn').innerHTML = "Save Expense"; document.getElementById('expFormTitle').innerHTML = '<i class="fa-solid fa-cart-plus"></i> Add Expense';
+            editingExpenseId = null; document.getElementById('expBtn').innerHTML = "Save Expense"; document.getElementById('expFormTitle').innerHTML = '<i class="fa-solid fa-cart-plus" style="margin-right:8px;"></i> Add Expense';
             document.getElementById('expItem').value=""; document.getElementById('expAmount').value=""; document.getElementById('expDate').value=""; document.getElementById('expReqAmount').value="";
             if(!document.getElementById('pastDateGroup').classList.contains('hidden')) togglePastEntry();
             document.getElementById('expReimburse').checked = false; toggleReimburseAmt();
@@ -560,7 +647,7 @@
             if(editingLoanId) { payload.action = 'update_loan'; payload.id = editingLoanId; } else { payload.action = 'add_loan'; }
             await apiCall(payload);
             editingLoanId = null;
-            document.getElementById('loanName').value=""; document.getElementById('loanAmount').value=""; document.getElementById('loanFriendKey').value=""; document.getElementById('loanRemarks').value="";
+            document.getElementById('loanName').value=""; document.getElementById('loanAmount').value=""; document.getElementById('loanFriendKey').value=""; document.getElementById('loanRemarks').value=""; document.getElementById('loanDate').value="";
             document.getElementById('loanBtn').innerText = "Save Record";
             document.getElementById('loanFormTitle').innerHTML = activeLoanTab === 'given' ? '<i class="fa-solid fa-hand-holding-hand"></i> Record Loan Given' : '<i class="fa-solid fa-hand-holding-dollar"></i> Record Debt';
             fetchLoans();
@@ -568,7 +655,7 @@
 
         function startEditExpense(id) {
             const exp = currentExpenses.find(e => e.id === id); if(!exp) return;
-            editingExpenseId = id; document.getElementById('expFormTitle').innerHTML = '<i class="fa-solid fa-pen-to-square"></i> Edit Expense'; document.getElementById('expBtn').innerText = "Update Expense";
+            editingExpenseId = id; document.getElementById('expFormTitle').innerHTML = '<i class="fa-solid fa-pen-to-square" style="margin-right:8px;"></i> Edit Expense'; document.getElementById('expBtn').innerText = "Update Expense";
             document.getElementById('expItem').value = exp.item; document.getElementById('expAmount').value = exp.amount; document.getElementById('expCategory').value = exp.category;
             document.getElementById('expReimburse').checked = exp.reimbursable;
             
@@ -634,34 +721,34 @@
 
         function renderLoanList() {
             const list = document.getElementById('loanList'); list.innerHTML=""; const items = activeLoanTab === 'given' ? givenLoans : takenLoans;
-            if(!items.length) return list.innerHTML="<p style='color:var(--text-sub); text-align:center;'>No records.</p>";
+            if(!items.length) return list.innerHTML="<div style='text-align:center; padding:30px; background:rgba(255,255,255,0.02); border-radius:16px; border:1px dashed rgba(255,255,255,0.1); color:var(--text-sub);'>No records found.</div>";
             items.reverse().forEach(l => {
                 const nameLabel = activeLoanTab === 'given' ? l.friend : `Lender: ${l.friend}`; const isRepaid = l.status === 'Repaid';
-                const btn = (activeLoanTab === 'given' && !isRepaid) ? `<button class="btn-check" onclick="settleLoan('${l.id}', '${l.amount}')"><i class="fa fa-check"></i></button>` : '';
+                const btn = (activeLoanTab === 'given' && !isRepaid) ? `<button class="btn-check" onclick="settleLoan('${l.id}', '${l.amount}')" title="Settle Loan"><i class="fa fa-check"></i></button>` : '';
                 const cssClass = activeLoanTab === 'given' ? 'loan-given' : 'loan-taken';
                 const actions = `<div class="action-icons"><i class="fa-solid fa-pen" onclick="startEditLoan('${l.id}')"></i><i class="fa-solid fa-trash" onclick="deleteItem('${l.id}', 'loan')"></i></div>`;
-                const remarksHTML = l.remarks ? `<div style="font-size:0.75rem; color:var(--text-sub); margin-top:4px;"><i class="fa-solid fa-note-sticky" style="font-size:0.7rem;"></i> ${l.remarks}</div>` : '';
-                list.innerHTML += `<div class="expense-item ${cssClass}"><div><strong style="color:var(--text-main); font-size:1.05rem;">${nameLabel}</strong><br><span style="color:var(--text-sub);font-size:0.8rem"><i class="fa-regular fa-calendar" style="margin-right:3px;"></i>${new Date(l.date).toLocaleDateString()}</span>${remarksHTML}</div><div style="text-align:right; display:flex; gap:12px; align-items:center;"><strong style="font-size:1.1rem; color:var(--text-main);">₹${l.amount}</strong><span class="status-badge status-${l.status}">${l.status}</span>${btn}${actions}</div></div>`;
+                const remarksHTML = l.remarks ? `<div style="font-size:0.75rem; color:var(--text-sub); margin-top:6px; background:rgba(0,0,0,0.2); padding:4px 8px; border-radius:6px; display:inline-block;"><i class="fa-regular fa-file-lines" style="margin-right:4px;"></i> ${escapeHTML(l.remarks)}</div>` : '';
+                list.innerHTML += `<div class="expense-item ${cssClass}"><div style="display:flex; gap:15px; align-items:center;"><div style="width:45px; height:45px; border-radius:12px; background:rgba(255,255,255,0.05); display:flex; justify-content:center; align-items:center; color:var(--text-main); font-size:1.2rem;"><i class="fa-regular fa-user"></i></div><div><strong style="color:var(--text-main); font-size:1.05rem;">${escapeHTML(nameLabel)}</strong><div style="color:var(--text-sub);font-size:0.8rem; margin-top:3px;"><i class="fa-regular fa-calendar" style="margin-right:4px;"></i>${new Date(l.date).toLocaleDateString('default', { month: 'short', day: 'numeric', year: 'numeric'})}</div>${remarksHTML}</div></div><div style="text-align:right; display:flex; gap:12px; align-items:center;"><div style="display:flex; flex-direction:column; align-items:flex-end;"><strong style="font-size:1.2rem; color:var(--text-main);">₹${l.amount}</strong><span class="status-badge status-${l.status}">${l.status}</span></div>${btn}${actions}</div></div>`;
             });
         }
 
         function renderList(items) {
             const list = document.getElementById('expenseList'); list.innerHTML=""; 
-            if(!items.length) return list.innerHTML="<p style='text-align:center; color:var(--text-sub); padding:20px 0;'>No expenses found.</p>";
+            if(!items.length) return list.innerHTML="<div style='text-align:center; padding:30px; background:rgba(255,255,255,0.02); border-radius:16px; border:1px dashed rgba(255,255,255,0.1); color:var(--text-sub);'>No expenses recorded yet.</div>";
             
             if(currentUser.role === 'guardian') {
                 let lastMonth = ""; let hasPending = false;
                 items.forEach(i => {
                     const d = new Date(i.date); const m = d.toLocaleDateString('default', { month: 'long', year: 'numeric' });
-                    if(m !== lastMonth) { list.innerHTML += `<div class="month-header" style="background:transparent; cursor:default;"><span style="color:var(--text-sub);">${m}</span></div>`; lastMonth = m; }
+                    if(m !== lastMonth) { list.innerHTML += `<div class="month-header" style="background:transparent; cursor:default; padding: 10px 0;"><span style="color:var(--text-sub);"><i class="fa-regular fa-calendar-days" style="margin-right:8px;"></i>${m}</span></div>`; lastMonth = m; }
                     let btns = '';
                     if (i.status === 'Pending') {
                         hasPending = true;
-                        btns = `<div style="margin-top:8px; display:flex; justify-content:flex-end; gap:5px;"><button onclick="updateStatus('${i.id}','Approved')" class="btn-check"><i class="fa fa-check"></i></button><button onclick="updateStatus('${i.id}','Rejected')" style="background:rgba(239,68,68,0.2); color: #f87171; width:32px; height:32px; border-radius:50%; border:1px solid rgba(239,68,68,0.5); cursor:pointer; display:flex; align-items:center; justify-content:center;"><i class="fa fa-times"></i></button></div>`;
+                        btns = `<div style="margin-top:10px; display:flex; justify-content:flex-end; gap:8px;"><button onclick="updateStatus('${i.id}','Approved')" class="btn-check"><i class="fa fa-check"></i></button><button onclick="updateStatus('${i.id}','Rejected')" class="btn-reject"><i class="fa fa-times"></i></button></div>`;
                     }
                     const reqAmt = i.requested_amount || i.amount;
-                    const amountDisplay = (reqAmt != i.amount) ? `<strong style="font-size:1.1rem; color:var(--text-main);">₹${reqAmt}</strong><br><span style="font-size:0.75rem; color:var(--text-sub); text-decoration:line-through;">Total: ₹${i.amount}</span>` : `<strong style="font-size:1.1rem; color:var(--text-main);">₹${i.amount}</strong>`;
-                    list.innerHTML += `<div class="expense-item ${i.reimbursable||currentUser.role==='guardian'?'reimburse':''}"><div><strong style="color:var(--text-main); font-size:1.05rem;">${escapeHTML(i.item)}</strong><div style="font-size:0.8rem;color:var(--text-sub); margin-top:3px;"><i class="fa-solid fa-user" style="margin-right:3px;"></i>${i.studentName} <br> <i class="fa-regular fa-calendar" style="margin-right:3px;"></i>${d.toLocaleDateString()}</div></div><div style="text-align:right">${amountDisplay}<br><span class="status-badge status-${i.status}">${i.status}</span>${btns}</div></div>`;
+                    const amountDisplay = (reqAmt != i.amount) ? `<strong style="font-size:1.2rem; color:var(--text-main);">₹${reqAmt}</strong><br><span style="font-size:0.75rem; color:var(--text-sub); text-decoration:line-through;">Total: ₹${i.amount}</span>` : `<strong style="font-size:1.2rem; color:var(--text-main);">₹${i.amount}</strong>`;
+                    list.innerHTML += `<div class="expense-item ${i.reimbursable||currentUser.role==='guardian'?'reimburse':''}"><div><strong style="color:var(--text-main); font-size:1.1rem;">${escapeHTML(i.item)}</strong><div style="font-size:0.85rem;color:var(--text-sub); margin-top:5px; line-height: 1.4;"><i class="fa-regular fa-user" style="margin-right:4px;"></i>${i.studentName} <br> <i class="fa-regular fa-calendar" style="margin-right:4px;"></i>${d.toLocaleDateString('default', { month: 'short', day: 'numeric', year: 'numeric'})}</div></div><div style="text-align:right">${amountDisplay}<br><span class="status-badge status-${i.status}">${i.status}</span>${btns}</div></div>`;
                 });
                 const approveAllBtn = document.getElementById('approveAllBtn');
                 if (hasPending) { approveAllBtn.classList.remove('hidden'); } else { approveAllBtn.classList.add('hidden'); }
@@ -681,8 +768,8 @@
                     const d = new Date(i.date); const actions = `<div class="action-icons"><i class="fa-solid fa-pen" onclick="startEditExpense('${i.id}')"></i><i class="fa-solid fa-trash" onclick="deleteItem('${i.id}', 'expense')"></i></div>`;
                     const itemDiv = document.createElement('div'); itemDiv.className = `expense-item ${i.reimbursable?'reimburse':''}`;
                     const reqAmt = i.requested_amount || i.amount;
-                    const reqNote = (i.reimbursable && reqAmt != i.amount) ? `<br><span style="font-size:0.75rem; color:var(--accent); font-weight:600;"><i class="fa-solid fa-hand-holding-dollar" style="margin-right:3px;"></i>Req: ₹${reqAmt}</span>` : '';
-                    itemDiv.innerHTML = `<div><strong style="color:var(--text-main); font-size:1.05rem;">${escapeHTML(i.item)}</strong><div style="font-size:0.8rem;color:var(--text-sub); margin-top:3px;"><i class="fa-solid fa-tag" style="margin-right:3px; opacity:0.7;"></i>${i.category} &nbsp;•&nbsp; <i class="fa-regular fa-calendar" style="margin-right:3px; opacity:0.7;"></i>${d.toLocaleDateString()}</div></div><div style="text-align:right"><strong style="font-size:1.1rem; color:var(--text-main);">₹${i.amount}</strong>${reqNote}<br>${(i.reimbursable)?`<span class="status-badge status-${i.status}">${i.status}</span>`:''}${actions}</div>`;
+                    const reqNote = (i.reimbursable && reqAmt != i.amount) ? `<br><span style="font-size:0.75rem; color:var(--accent); font-weight:700; background:rgba(16,185,129,0.1); padding:2px 6px; border-radius:4px; margin-top:4px; display:inline-block;"><i class="fa-solid fa-hand-holding-dollar" style="margin-right:4px;"></i>Req: ₹${reqAmt}</span>` : '';
+                    itemDiv.innerHTML = `<div><strong style="color:var(--text-main); font-size:1.05rem;">${escapeHTML(i.item)}</strong><div style="font-size:0.8rem;color:var(--text-sub); margin-top:4px;"><i class="fa-solid fa-tag" style="margin-right:4px; opacity:0.7;"></i>${i.category} &nbsp;•&nbsp; <i class="fa-regular fa-calendar" style="margin-right:4px; opacity:0.7;"></i>${d.toLocaleDateString('default', { month: 'short', day: 'numeric'})}</div></div><div style="text-align:right; display:flex; align-items:center; gap:15px;"><div><strong style="font-size:1.2rem; color:var(--text-main);">₹${i.amount}</strong>${reqNote}<br>${(i.reimbursable)?`<span class="status-badge status-${i.status}">${i.status}</span>`:''}</div>${actions}</div>`;
                     content.appendChild(itemDiv);
                 });
                 groupDiv.appendChild(header); groupDiv.appendChild(content); list.appendChild(groupDiv);
@@ -706,9 +793,9 @@
             
             if(myChart) myChart.destroy();
             const ctx = document.getElementById('expenseChart'); 
-            const colors = ['#38bdf8','#10b981','#f59e0b','#ef4444','#8b5cf6', '#ec4899', '#6366f1', '#14b8a6', '#f43f5e'];
-            myChart = new Chart(ctx, { type:'doughnut', data: { labels:Object.keys(cats), datasets:[{data:Object.values(cats), backgroundColor:colors, borderWidth:2, borderColor: 'var(--card-bg)', hoverOffset: 4}] }, options:{cutout: '70%', plugins:{legend:{display:false}}} });
-            document.getElementById('chartLegend').innerHTML = Object.keys(cats).map((c,i) => `<div style="display:flex;justify-content:space-between;margin-bottom:8px;font-size:0.95rem; color:var(--text-main); font-weight:500;"><span style="display:flex; align-items:center; gap:8px;"><span style="width:12px; height:12px; border-radius:50%; background:${colors[i%colors.length]}; display:inline-block;"></span>${c}</span><strong>₹${cats[c].toLocaleString()}</strong></div>`).join('');
+            const colors = ['#38bdf8','#10b981','#f59e0b','#f43f5e','#8b5cf6', '#ec4899', '#6366f1', '#14b8a6', '#f97316', '#64748b'];
+            myChart = new Chart(ctx, { type:'doughnut', data: { labels:Object.keys(cats), datasets:[{data:Object.values(cats), backgroundColor:colors, borderWidth:3, borderColor: '#0f172a', hoverOffset: 4}] }, options:{cutout: '75%', plugins:{legend:{display:false}}, layout: {padding: 10}} });
+            document.getElementById('chartLegend').innerHTML = Object.keys(cats).map((c,i) => `<div style="display:flex;justify-content:space-between; align-items:center; margin-bottom:10px; font-size:0.9rem; color:var(--text-main); font-weight:500; background:rgba(255,255,255,0.03); padding: 8px 12px; border-radius: 8px;"><span style="display:flex; align-items:center; gap:10px;"><span style="width:12px; height:12px; border-radius:50%; background:${colors[i%colors.length]}; display:inline-block; box-shadow:0 0 5px ${colors[i%colors.length]};"></span>${c}</span><strong>₹${cats[c].toLocaleString()}</strong></div>`).join('');
         }
 
         function renderLoanStats() {
@@ -719,17 +806,42 @@
             if(myChart) myChart.destroy();
             const ctx = document.getElementById('expenseChart'); 
             const colors = activeLoanTab === 'given' ? ['#8b5cf6','#a78bfa','#c4b5fd','#ede9fe'] : ['#f97316','#fb923c','#fdba74','#ffedd5'];
-            myChart = new Chart(ctx, { type:'doughnut', data: { labels:Object.keys(people), datasets:[{data:Object.values(people), backgroundColor:colors, borderWidth:2, borderColor: 'var(--card-bg)', hoverOffset: 4}] }, options:{cutout: '70%', plugins:{legend:{display:false}}} });
-            document.getElementById('chartLegend').innerHTML = Object.keys(people).map((c,i) => `<div style="display:flex;justify-content:space-between;margin-bottom:8px;font-size:0.95rem; color:var(--text-main); font-weight:500;"><span style="display:flex; align-items:center; gap:8px;"><span style="width:12px; height:12px; border-radius:50%; background:${colors[i%colors.length]}; display:inline-block;"></span>${c}</span><strong>₹${people[c].toLocaleString()}</strong></div>`).join('');
+            myChart = new Chart(ctx, { type:'doughnut', data: { labels:Object.keys(people), datasets:[{data:Object.values(people), backgroundColor:colors, borderWidth:3, borderColor: '#0f172a', hoverOffset: 4}] }, options:{cutout: '75%', plugins:{legend:{display:false}}, layout: {padding: 10}} });
+            document.getElementById('chartLegend').innerHTML = Object.keys(people).map((c,i) => `<div style="display:flex;justify-content:space-between; align-items:center; margin-bottom:10px; font-size:0.9rem; color:var(--text-main); font-weight:500; background:rgba(255,255,255,0.03); padding: 8px 12px; border-radius: 8px;"><span style="display:flex; align-items:center; gap:10px;"><span style="width:12px; height:12px; border-radius:50%; background:${colors[i%colors.length]}; display:inline-block; box-shadow:0 0 5px ${colors[i%colors.length]};"></span>${c}</span><strong>₹${people[c].toLocaleString()}</strong></div>`).join('');
+        }
+
+        function exportToExcel() {
+            if(!currentExpenses.length) return alert("No data to export");
+            let csv = "Date,Item,Category,Amount,Requested_Amount,Status\n" + currentExpenses.map(r => `${new Date(r.date).toLocaleDateString()},"${r.item}","${r.category}",${r.amount},${r.requested_amount||r.amount},${r.status||'Pending'}`).join("\n");
+            const link = document.createElement("a"); link.href = "data:text/csv;charset=utf-8," + encodeURI(csv); link.download = "Vantage_Expenses.csv"; link.click();
         }
 
         function escapeHTML(str) { if(!str) return ''; return str.toString().replace(/[&<>"']/g, function(m) { return {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;'}[m]; }); }
         
-        function toggleProfileModal() { const m = document.getElementById('profileModal'); m.classList.toggle('show'); if(m.classList.contains('show')) { document.getElementById('modalName').innerText = currentUser.name; document.getElementById('modalEmail').innerText = currentUser.email; if(currentUser.role === 'student') { document.getElementById('studentSection').classList.remove('hidden'); document.getElementById('modalKey').innerText = currentUser.student_key; } else { document.getElementById('studentSection').classList.add('hidden'); } } }
+        // Profile Modal Logic
+        function toggleProfileModal() { const m = document.getElementById('profileModal'); m.classList.toggle('show'); }
         function saveProfilePic() { const file = document.getElementById('profilePicInput').files[0]; const reader = new FileReader(); reader.onloadend = function() { const uniqueKey = 'vantageProfilePic_' + currentUser.email; localStorage.setItem(uniqueKey, reader.result); document.getElementById('profileBtn').style.backgroundImage = `url(${reader.result})`; document.getElementById('profileBtn').innerText = ""; document.getElementById('modalAvatar').style.backgroundImage = `url(${reader.result})`; document.getElementById('modalAvatar').innerHTML = ""; }; if(file) reader.readAsDataURL(file); }
         function toggleModalPwd() { const span = document.getElementById('modalPass'); const eye = document.getElementById('modalEye'); if(span.innerText === '••••••') { span.innerText = currentUser.password || "[Hidden]"; eye.classList.remove('fa-eye'); eye.classList.add('fa-eye-slash'); } else { span.innerText = '••••••'; eye.classList.remove('fa-eye-slash'); eye.classList.add('fa-eye'); } }
-        async function updatePassword() { const newPass = document.getElementById('modalNewPass').value; if(!newPass) return alert("Enter password"); const res = await apiCall({ action: 'reset_password', email: currentUser.email, password: newPass }); if(res.status === 'success') { alert("Updated!"); currentUser.password = newPass; localStorage.setItem('vantageUser', JSON.stringify(currentUser)); document.getElementById('modalNewPass').value=""; toggleModalPwd(); } else alert(res.message); }
-        function copyKey() { navigator.clipboard.writeText(currentUser.student_key); alert("Copied!"); }
+        async function updatePassword() { const newPass = document.getElementById('modalNewPass').value; if(!newPass) return alert("Enter password"); const res = await apiCall({ action: 'reset_password', email: currentUser.email, password: newPass }); if(res.status === 'success') { alert("Password updated successfully!"); currentUser.password = newPass; localStorage.setItem('vantageUser', JSON.stringify(currentUser)); document.getElementById('modalNewPass').value=""; toggleModalPwd(); toggleModalPwd(); } else alert(res.message); }
+        
+        // NEW: Update Student ID
+        async function updateStudentKey() {
+            const newKey = document.getElementById('modalNewStudentKey').value.trim();
+            if(!newKey) return alert("Enter a custom ID");
+            const res = await apiCall({ action: 'update_student_id', email: currentUser.email, student_key: currentUser.student_key, new_student_key: newKey });
+            if(res.status === 'success') {
+                alert("Student ID Updated successfully!");
+                currentUser.student_key = res.new_key;
+                localStorage.setItem('vantageUser', JSON.stringify(currentUser));
+                document.getElementById('modalKey').innerText = currentUser.student_key;
+                document.getElementById('modalNewStudentKey').value = "";
+                fetchData(currentUser.student_key, 'get_expenses'); // Re-fetch to ensure sync
+            } else {
+                alert(res.message || "Failed to update ID.");
+            }
+        }
+
+        function copyKey() { navigator.clipboard.writeText(currentUser.student_key); alert("Student Key Copied!"); }
         window.onclick = function(event) { if (!event.target.matches('.profile-btn') && !event.target.closest('.profile-modal')) { document.getElementById('profileModal').classList.remove('show'); } }
     </script>
 </body>
