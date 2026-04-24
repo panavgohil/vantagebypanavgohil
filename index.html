@@ -146,10 +146,11 @@
         .btn-approve-all { background: rgba(16,185,129,0.15); color: #34d399; border:1px solid rgba(16,185,129,0.3); padding:8px 16px; border-radius:10px; cursor:pointer; font-size:0.85rem; margin:0; width:auto; font-weight:bold; transition: all 0.2s;}
         .btn-approve-all:hover { background: var(--accent); color: white; }
 
-        .action-icons { display: flex; gap: 12px; margin-left: 15px; }
+        .action-icons { display: flex; gap: 12px; margin-left: 15px; align-items: center; }
         .action-icons i { cursor: pointer; color: var(--text-sub); font-size: 1.1rem; transition: color 0.2s; }
         .action-icons i.fa-pen:hover { color: var(--primary); }
         .action-icons i.fa-trash:hover { color: var(--danger); }
+        .action-icons i.fa-file-invoice:hover { color: var(--accent) !important; }
 
         #studentControls > div, #loanFormContainer { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 20px; padding: 25px; margin-bottom: 25px; }
 
@@ -356,7 +357,7 @@
                             <button class="text-btn" onclick="togglePastEntry()">+ Add Past Entry</button>
                         </div>
                         
-                        <div class="grid" style="display: grid; grid-template-columns: 1fr; gap: 15px;">
+                        <div style="display: grid; grid-template-columns: 1fr; gap: 15px;">
                             <div class="input-group" style="margin:0;"><i class="fa-solid fa-tag icon-left"></i><input id="expItem" placeholder="Item Name"></div>
                             
                             <div style="display:flex; gap:15px;">
@@ -368,7 +369,18 @@
                                 </div>
                             </div>
                             
-                            <div id="pastDateGroup" class="hidden input-group" style="margin:0;"><i class="fa-regular fa-calendar icon-left"></i><input type="date" id="expDate"></div>
+                            <div style="display:flex; gap:15px;">
+                                <div class="input-group" style="flex:1; margin:0;">
+                                    <i class="fa-regular fa-credit-card icon-left"></i>
+                                    <select id="expPaymentMode" style="padding-left:45px; appearance:none;">
+                                        <option value="UPI">UPI</option>
+                                        <option value="Cash">Cash</option>
+                                        <option value="Card">Card</option>
+                                        <option value="Others">Others</option>
+                                    </select>
+                                </div>
+                                <div id="pastDateGroup" class="hidden input-group" style="flex:1; margin:0;"><i class="fa-regular fa-calendar icon-left"></i><input type="date" id="expDate"></div>
+                            </div>
                         </div>
                         
                         <div style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 12px; margin-top: 15px; border: 1px solid rgba(255,255,255,0.05);">
@@ -465,7 +477,7 @@
     <script>
         // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         // PUT YOUR APPS SCRIPT DEPLOYMENT URL HERE
-        const API_URL = 'https://script.google.com/macros/s/AKfycby3Ebh2Hu6NsPmNbDxvT3fcwG_kWJhBSuvbGoE3SXRPQ-5vFcQOMj5FTI-4XZadAedw/exec'; 
+        const API_URL = 'https://script.google.com/macros/s/AKfycbyBSxyZ3MOJVQ5TgVAiLKgBNpMLOs2Z6K5taqM5p_HzfUtr3Ee3EPU8wy55vK6XtHDj/exec'; 
         // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
         let currentRole = 'student', currentUser = null, currentExpenses = [], myChart = null;
@@ -517,7 +529,6 @@
                 document.getElementById('budgetCard').classList.remove('hidden'); 
                 document.querySelector('.chart-controls').classList.remove('hidden');
                 
-                // Show Student ID editing section
                 document.getElementById('studentSection').classList.remove('hidden');
                 document.getElementById('modalKey').innerText = user.student_key;
                 
@@ -529,7 +540,6 @@
                 document.getElementById('budgetCard').classList.add('hidden'); 
                 document.querySelector('.chart-controls').classList.add('hidden');
                 
-                // Hide Student ID editing section for Guardian
                 document.getElementById('studentSection').classList.add('hidden');
                 
                 fetchData(user.email, 'get_guardian_data'); 
@@ -619,11 +629,12 @@
 
         async function addExpense() {
             const dateInput = document.getElementById('expDate').value;
+            const paymentModeInput = document.getElementById('expPaymentMode').value;
             const isReimburse = document.getElementById('expReimburse').checked;
             const payload = { 
                 student_key:currentUser.student_key, item_name:document.getElementById('expItem').value, 
                 amount:document.getElementById('expAmount').value, category:document.getElementById('expCategory').value, 
-                is_reimbursable: isReimburse 
+                is_reimbursable: isReimburse, payment_mode: paymentModeInput 
             };
             if(!payload.item_name || !payload.amount) return alert("Please fill item name and amount.");
             if(isReimburse) { const reqAmt = document.getElementById('expReqAmount').value; if(reqAmt) payload.requested_amount = reqAmt; }
@@ -633,7 +644,7 @@
             await apiCall(payload);
             
             editingExpenseId = null; document.getElementById('expBtn').innerHTML = "Save Expense"; document.getElementById('expFormTitle').innerHTML = '<i class="fa-solid fa-cart-plus" style="margin-right:8px;"></i> Add Expense';
-            document.getElementById('expItem').value=""; document.getElementById('expAmount').value=""; document.getElementById('expDate').value=""; document.getElementById('expReqAmount').value="";
+            document.getElementById('expItem').value=""; document.getElementById('expAmount').value=""; document.getElementById('expDate').value=""; document.getElementById('expReqAmount').value=""; document.getElementById('expPaymentMode').value="UPI";
             if(!document.getElementById('pastDateGroup').classList.contains('hidden')) togglePastEntry();
             document.getElementById('expReimburse').checked = false; toggleReimburseAmt();
             fetchData(currentUser.student_key, 'get_expenses');
@@ -657,6 +668,7 @@
             const exp = currentExpenses.find(e => e.id === id); if(!exp) return;
             editingExpenseId = id; document.getElementById('expFormTitle').innerHTML = '<i class="fa-solid fa-pen-to-square" style="margin-right:8px;"></i> Edit Expense'; document.getElementById('expBtn').innerText = "Update Expense";
             document.getElementById('expItem').value = exp.item; document.getElementById('expAmount').value = exp.amount; document.getElementById('expCategory').value = exp.category;
+            document.getElementById('expPaymentMode').value = exp.paymentMode || 'UPI';
             document.getElementById('expReimburse').checked = exp.reimbursable;
             
             if(exp.reimbursable) {
@@ -703,6 +715,70 @@
             await apiCall(payload); fetchLoans(); 
         }
 
+        function printInvoice(friendName) {
+            const friendLoans = givenLoans.filter(l => l.friend === friendName && l.status !== 'Repaid');
+            if(friendLoans.length === 0) return alert("No active loans for this person.");
+            
+            const totalOwed = friendLoans.reduce((sum, l) => sum + Number(l.amount), 0);
+            const today = new Date().toLocaleDateString('default', { year: 'numeric', month: 'long', day: 'numeric' });
+
+            let printWindow = window.open('', '', 'width=800,height=800');
+            let html = `
+                <html>
+                <head>
+                    <title>Vantage Loan Statement - ${friendName}</title>
+                    <style>
+                        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 40px; color: #333; }
+                        .header { border-bottom: 2px solid #eee; padding-bottom: 20px; margin-bottom: 30px; }
+                        .header h1 { margin: 0; color: #0f172a; font-size: 24px; }
+                        .header p { color: #64748b; margin: 5px 0 0 0; font-size: 14px; }
+                        .details-table { width: 100%; margin-bottom: 30px; }
+                        .details-table td { padding: 5px 0; font-size: 15px;}
+                        .details-label { color: #64748b; width: 100px; }
+                        .main-table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
+                        .main-table th, .main-table td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; }
+                        .main-table th { background: #f8fafc; color: #64748b; font-weight: 600; font-size: 14px; text-transform: uppercase; letter-spacing: 1px;}
+                        .amount-col { text-align: right !important; }
+                        .total-section { text-align: right; font-size: 18px; font-weight: bold; color: #0f172a; border-top: 2px solid #333; padding-top: 15px;}
+                        .footer { text-align: center; margin-top: 50px; font-size: 12px; color: #94a3b8; }
+                    </style>
+                </head>
+                <body onload="window.print()">
+                    <div class="header">
+                        <h1>Vantage Loan Statement</h1>
+                        <p>Generated on ${today}</p>
+                    </div>
+                    <table class="details-table">
+                        <tr><td class="details-label">Recipient:</td><td><strong>${friendName}</strong></td></tr>
+                        <tr><td class="details-label">Status:</td><td>Active Outstanding</td></tr>
+                    </table>
+                    <table class="main-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Type</th>
+                                <th>Remarks</th>
+                                <th class="amount-col">Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${friendLoans.map(l => `<tr>
+                                <td>${new Date(l.date).toLocaleDateString()}</td>
+                                <td>Money Given</td>
+                                <td>${l.remarks || '-'}</td>
+                                <td class="amount-col">₹${l.amount}</td>
+                            </tr>`).join('')}
+                        </tbody>
+                    </table>
+                    <div class="total-section">Total Outstanding: ₹${totalOwed}</div>
+                    <div class="footer">This is a computer-generated document.</div>
+                </body>
+                </html>
+            `;
+            printWindow.document.write(html);
+            printWindow.document.close();
+        }
+
         async function fetchData(id, action) {
             const res = await apiCall({ action:action, [action==='get_expenses'?'student_key':'email']:id });
             currentExpenses = res.expenses || []; currentExpenses.sort((a, b) => new Date(b.date) - new Date(a.date));
@@ -726,7 +802,10 @@
                 const nameLabel = activeLoanTab === 'given' ? l.friend : `Lender: ${l.friend}`; const isRepaid = l.status === 'Repaid';
                 const btn = (activeLoanTab === 'given' && !isRepaid) ? `<button class="btn-check" onclick="settleLoan('${l.id}', '${l.amount}')" title="Settle Loan"><i class="fa fa-check"></i></button>` : '';
                 const cssClass = activeLoanTab === 'given' ? 'loan-given' : 'loan-taken';
-                const actions = `<div class="action-icons"><i class="fa-solid fa-pen" onclick="startEditLoan('${l.id}')"></i><i class="fa-solid fa-trash" onclick="deleteItem('${l.id}', 'loan')"></i></div>`;
+                
+                const printBtn = (activeLoanTab === 'given' && !isRepaid) ? `<i class="fa-solid fa-file-invoice" onclick="printInvoice('${escapeHTML(l.friend).replace(/'/g, "\\'")}')" title="Print Statement"></i>` : '';
+                const actions = `<div class="action-icons">${printBtn}<i class="fa-solid fa-pen" onclick="startEditLoan('${l.id}')"></i><i class="fa-solid fa-trash" onclick="deleteItem('${l.id}', 'loan')"></i></div>`;
+                
                 const remarksHTML = l.remarks ? `<div style="font-size:0.75rem; color:var(--text-sub); margin-top:6px; background:rgba(0,0,0,0.2); padding:4px 8px; border-radius:6px; display:inline-block;"><i class="fa-regular fa-file-lines" style="margin-right:4px;"></i> ${escapeHTML(l.remarks)}</div>` : '';
                 list.innerHTML += `<div class="expense-item ${cssClass}"><div style="display:flex; gap:15px; align-items:center;"><div style="width:45px; height:45px; border-radius:12px; background:rgba(255,255,255,0.05); display:flex; justify-content:center; align-items:center; color:var(--text-main); font-size:1.2rem;"><i class="fa-regular fa-user"></i></div><div><strong style="color:var(--text-main); font-size:1.05rem;">${escapeHTML(nameLabel)}</strong><div style="color:var(--text-sub);font-size:0.8rem; margin-top:3px;"><i class="fa-regular fa-calendar" style="margin-right:4px;"></i>${new Date(l.date).toLocaleDateString('default', { month: 'short', day: 'numeric', year: 'numeric'})}</div>${remarksHTML}</div></div><div style="text-align:right; display:flex; gap:12px; align-items:center;"><div style="display:flex; flex-direction:column; align-items:flex-end;"><strong style="font-size:1.2rem; color:var(--text-main);">₹${l.amount}</strong><span class="status-badge status-${l.status}">${l.status}</span></div>${btn}${actions}</div></div>`;
             });
@@ -748,7 +827,7 @@
                     }
                     const reqAmt = i.requested_amount || i.amount;
                     const amountDisplay = (reqAmt != i.amount) ? `<strong style="font-size:1.2rem; color:var(--text-main);">₹${reqAmt}</strong><br><span style="font-size:0.75rem; color:var(--text-sub); text-decoration:line-through;">Total: ₹${i.amount}</span>` : `<strong style="font-size:1.2rem; color:var(--text-main);">₹${i.amount}</strong>`;
-                    list.innerHTML += `<div class="expense-item ${i.reimbursable||currentUser.role==='guardian'?'reimburse':''}"><div><strong style="color:var(--text-main); font-size:1.1rem;">${escapeHTML(i.item)}</strong><div style="font-size:0.85rem;color:var(--text-sub); margin-top:5px; line-height: 1.4;"><i class="fa-regular fa-user" style="margin-right:4px;"></i>${i.studentName} <br> <i class="fa-regular fa-calendar" style="margin-right:4px;"></i>${d.toLocaleDateString('default', { month: 'short', day: 'numeric', year: 'numeric'})}</div></div><div style="text-align:right">${amountDisplay}<br><span class="status-badge status-${i.status}">${i.status}</span>${btns}</div></div>`;
+                    list.innerHTML += `<div class="expense-item ${i.reimbursable||currentUser.role==='guardian'?'reimburse':''}"><div><strong style="color:var(--text-main); font-size:1.1rem;">${escapeHTML(i.item)}</strong><div style="font-size:0.85rem;color:var(--text-sub); margin-top:5px; line-height: 1.4;"><i class="fa-regular fa-user" style="margin-right:4px;"></i>${i.studentName} <br> <i class="fa-solid fa-money-bill-wave" style="margin-right:4px;"></i>${i.paymentMode || 'UPI'}<br> <i class="fa-regular fa-calendar" style="margin-right:4px;"></i>${d.toLocaleDateString('default', { month: 'short', day: 'numeric', year: 'numeric'})}</div></div><div style="text-align:right">${amountDisplay}<br><span class="status-badge status-${i.status}">${i.status}</span>${btns}</div></div>`;
                 });
                 const approveAllBtn = document.getElementById('approveAllBtn');
                 if (hasPending) { approveAllBtn.classList.remove('hidden'); } else { approveAllBtn.classList.add('hidden'); }
@@ -769,7 +848,7 @@
                     const itemDiv = document.createElement('div'); itemDiv.className = `expense-item ${i.reimbursable?'reimburse':''}`;
                     const reqAmt = i.requested_amount || i.amount;
                     const reqNote = (i.reimbursable && reqAmt != i.amount) ? `<br><span style="font-size:0.75rem; color:var(--accent); font-weight:700; background:rgba(16,185,129,0.1); padding:2px 6px; border-radius:4px; margin-top:4px; display:inline-block;"><i class="fa-solid fa-hand-holding-dollar" style="margin-right:4px;"></i>Req: ₹${reqAmt}</span>` : '';
-                    itemDiv.innerHTML = `<div><strong style="color:var(--text-main); font-size:1.05rem;">${escapeHTML(i.item)}</strong><div style="font-size:0.8rem;color:var(--text-sub); margin-top:4px;"><i class="fa-solid fa-tag" style="margin-right:4px; opacity:0.7;"></i>${i.category} &nbsp;•&nbsp; <i class="fa-regular fa-calendar" style="margin-right:4px; opacity:0.7;"></i>${d.toLocaleDateString('default', { month: 'short', day: 'numeric'})}</div></div><div style="text-align:right; display:flex; align-items:center; gap:15px;"><div><strong style="font-size:1.2rem; color:var(--text-main);">₹${i.amount}</strong>${reqNote}<br>${(i.reimbursable)?`<span class="status-badge status-${i.status}">${i.status}</span>`:''}</div>${actions}</div>`;
+                    itemDiv.innerHTML = `<div><strong style="color:var(--text-main); font-size:1.05rem;">${escapeHTML(i.item)}</strong><div style="font-size:0.8rem;color:var(--text-sub); margin-top:4px;"><i class="fa-solid fa-tag" style="margin-right:4px; opacity:0.7;"></i>${i.category} &nbsp;•&nbsp; <i class="fa-solid fa-money-bill-wave" style="margin-right:4px; opacity:0.7;"></i>${i.paymentMode || 'UPI'} &nbsp;•&nbsp; <i class="fa-regular fa-calendar" style="margin-right:4px; opacity:0.7;"></i>${d.toLocaleDateString('default', { month: 'short', day: 'numeric'})}</div></div><div style="text-align:right; display:flex; align-items:center; gap:15px;"><div><strong style="font-size:1.2rem; color:var(--text-main);">₹${i.amount}</strong>${reqNote}<br>${(i.reimbursable)?`<span class="status-badge status-${i.status}">${i.status}</span>`:''}</div>${actions}</div>`;
                     content.appendChild(itemDiv);
                 });
                 groupDiv.appendChild(header); groupDiv.appendChild(content); list.appendChild(groupDiv);
@@ -812,19 +891,17 @@
 
         function exportToExcel() {
             if(!currentExpenses.length) return alert("No data to export");
-            let csv = "Date,Item,Category,Amount,Requested_Amount,Status\n" + currentExpenses.map(r => `${new Date(r.date).toLocaleDateString()},"${r.item}","${r.category}",${r.amount},${r.requested_amount||r.amount},${r.status||'Pending'}`).join("\n");
+            let csv = "Date,Item,Category,Payment_Mode,Amount,Requested_Amount,Status\n" + currentExpenses.map(r => `${new Date(r.date).toLocaleDateString()},"${r.item}","${r.category}","${r.paymentMode||'UPI'}",${r.amount},${r.requested_amount||r.amount},${r.status||'Pending'}`).join("\n");
             const link = document.createElement("a"); link.href = "data:text/csv;charset=utf-8," + encodeURI(csv); link.download = "Vantage_Expenses.csv"; link.click();
         }
 
         function escapeHTML(str) { if(!str) return ''; return str.toString().replace(/[&<>"']/g, function(m) { return {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;'}[m]; }); }
         
-        // Profile Modal Logic
         function toggleProfileModal() { const m = document.getElementById('profileModal'); m.classList.toggle('show'); }
         function saveProfilePic() { const file = document.getElementById('profilePicInput').files[0]; const reader = new FileReader(); reader.onloadend = function() { const uniqueKey = 'vantageProfilePic_' + currentUser.email; localStorage.setItem(uniqueKey, reader.result); document.getElementById('profileBtn').style.backgroundImage = `url(${reader.result})`; document.getElementById('profileBtn').innerText = ""; document.getElementById('modalAvatar').style.backgroundImage = `url(${reader.result})`; document.getElementById('modalAvatar').innerHTML = ""; }; if(file) reader.readAsDataURL(file); }
         function toggleModalPwd() { const span = document.getElementById('modalPass'); const eye = document.getElementById('modalEye'); if(span.innerText === '••••••') { span.innerText = currentUser.password || "[Hidden]"; eye.classList.remove('fa-eye'); eye.classList.add('fa-eye-slash'); } else { span.innerText = '••••••'; eye.classList.remove('fa-eye-slash'); eye.classList.add('fa-eye'); } }
         async function updatePassword() { const newPass = document.getElementById('modalNewPass').value; if(!newPass) return alert("Enter password"); const res = await apiCall({ action: 'reset_password', email: currentUser.email, password: newPass }); if(res.status === 'success') { alert("Password updated successfully!"); currentUser.password = newPass; localStorage.setItem('vantageUser', JSON.stringify(currentUser)); document.getElementById('modalNewPass').value=""; toggleModalPwd(); toggleModalPwd(); } else alert(res.message); }
         
-        // NEW: Update Student ID
         async function updateStudentKey() {
             const newKey = document.getElementById('modalNewStudentKey').value.trim();
             if(!newKey) return alert("Enter a custom ID");
@@ -835,7 +912,7 @@
                 localStorage.setItem('vantageUser', JSON.stringify(currentUser));
                 document.getElementById('modalKey').innerText = currentUser.student_key;
                 document.getElementById('modalNewStudentKey').value = "";
-                fetchData(currentUser.student_key, 'get_expenses'); // Re-fetch to ensure sync
+                fetchData(currentUser.student_key, 'get_expenses');
             } else {
                 alert(res.message || "Failed to update ID.");
             }
