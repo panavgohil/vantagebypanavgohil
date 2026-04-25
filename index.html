@@ -395,6 +395,25 @@
 
                         <button class="btn-primary" onclick="addExpense()" id="expBtn" style="margin-top: 20px;">Save Expense</button>
                     </div>
+
+                    <div class="form-card" style="margin-top: 25px;">
+                        <h4 style="margin:0 0 15px 0; font-size: 1.1rem; color:var(--primary); display:flex; align-items:center; gap:8px;">
+                            <i class="fa-solid fa-qrcode"></i> Receive via UPI
+                        </h4>
+                        <div style="display:flex; gap:15px; align-items:center; flex-wrap: wrap;">
+                            <div class="input-group" style="flex:1; margin:0;">
+                                <i class="fa-brands fa-google-pay icon-left"></i>
+                                <input type="text" id="upiIdInput" placeholder="Enter UPI ID (e.g., XXXXX@ybl)">
+                            </div>
+                            <button class="btn-primary" onclick="generateUPIQR()" style="margin:0; width:auto; padding: 14px 20px;">Generate QR</button>
+                        </div>
+                        <div id="qrContainer" class="hidden" style="margin-top: 20px; text-align: center; background: rgba(0,0,0,0.2); padding: 20px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.05);">
+                            <div style="background: white; padding: 15px; border-radius: 16px; display: inline-block; box-shadow: 0 10px 25px rgba(0,0,0,0.5);">
+                                <img id="qrImage" src="" alt="QR Code" style="width: 180px; height: 180px; display: block;">
+                            </div>
+                            <p style="color:var(--text-sub); font-size:0.9rem; margin-top:15px; font-weight: 500;">Scan with any UPI app to pay <strong id="qrUpiText" style="color:white;"></strong></p>
+                        </div>
+                    </div>
                 </div>
                 
                 <div class="budget-wrapper hidden" id="budgetCard">
@@ -477,7 +496,7 @@
     <script>
         // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         // PUT YOUR APPS SCRIPT DEPLOYMENT URL HERE
-        const API_URL = 'https://script.google.com/macros/s/AKfycbyBSxyZ3MOJVQ5TgVAiLKgBNpMLOs2Z6K5taqM5p_HzfUtr3Ee3EPU8wy55vK6XtHDj/exec'; 
+        const API_URL = 'https://script.google.com/macros/s/AKfycby3Ebh2Hu6NsPmNbDxvT3fcwG_kWJhBSuvbGoE3SXRPQ-5vFcQOMj5FTI-4XZadAedw/exec'; 
         // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
         let currentRole = 'student', currentUser = null, currentExpenses = [], myChart = null;
@@ -532,6 +551,11 @@
                 document.getElementById('studentSection').classList.remove('hidden');
                 document.getElementById('modalKey').innerText = user.student_key;
                 
+                // Load saved UPI ID
+                const savedUpi = localStorage.getItem('vantageUpiId_' + user.student_key);
+                if(savedUpi) document.getElementById('upiIdInput').value = savedUpi;
+                document.getElementById('qrContainer').classList.add('hidden');
+                
                 updateBudgetUI(user.budget||0, 0); 
                 fetchData(user.student_key, 'get_expenses'); 
             } else { 
@@ -544,6 +568,20 @@
                 
                 fetchData(user.email, 'get_guardian_data'); 
             }
+        }
+
+        function generateUPIQR() {
+            const upiId = document.getElementById('upiIdInput').value.trim();
+            if(!upiId) return alert("Please enter your UPI ID");
+            
+            localStorage.setItem('vantageUpiId_' + currentUser.student_key, upiId);
+            
+            const upiString = `upi://pay?pa=${upiId}&pn=${encodeURIComponent(currentUser.name)}`;
+            const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(upiString)}`;
+            
+            document.getElementById('qrImage').src = qrUrl;
+            document.getElementById('qrUpiText').innerText = upiId;
+            document.getElementById('qrContainer').classList.remove('hidden');
         }
 
         function setDashMode(mode) {
@@ -724,54 +762,78 @@
 
             let printWindow = window.open('', '', 'width=800,height=800');
             let html = `
+                <!DOCTYPE html>
                 <html>
                 <head>
-                    <title>Vantage Loan Statement - ${friendName}</title>
+                    <title>Loan Statement - ${friendName}</title>
+                    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+                    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
                     <style>
-                        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 40px; color: #333; }
-                        .header { border-bottom: 2px solid #eee; padding-bottom: 20px; margin-bottom: 30px; }
-                        .header h1 { margin: 0; color: #0f172a; font-size: 24px; }
-                        .header p { color: #64748b; margin: 5px 0 0 0; font-size: 14px; }
-                        .details-table { width: 100%; margin-bottom: 30px; }
+                        @media print {
+                            @page { margin: 0; }
+                            body { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; margin: 2cm !important; }
+                        }
+                        body { font-family: 'Inter', sans-serif; background-color: #0f172a; color: #f1f5f9; padding: 40px; margin: 0; line-height: 1.6; }
+                        .invoice-box { max-width: 800px; margin: auto; padding: 40px; background: #1e293b; border-radius: 24px; border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); }
+                        .header { border-bottom: 2px solid rgba(255,255,255,0.1); padding-bottom: 25px; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: flex-start; }
+                        .header-left h1 { margin: 0; color: #0ea5e9; font-size: 2.2rem; font-family: 'Playfair Display', serif; }
+                        .header-left p { color: #94a3b8; margin: 5px 0 0 0; font-size: 0.9rem; }
+                        .header-right { text-align: right; }
+                        .header-right span { display: block; }
+                        .sender-label { color: #0ea5e9; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px; font-weight: 700; margin-bottom: 5px; }
+                        .sender-name { color: white; font-weight: bold; font-size: 1.2rem; }
+                        .sender-email { color: #94a3b8; font-size: 0.85rem; margin-top: 3px;}
+                        .details-table { width: 100%; margin-bottom: 40px; }
                         .details-table td { padding: 5px 0; font-size: 15px;}
-                        .details-label { color: #64748b; width: 100px; }
+                        .details-label { color: #94a3b8; width: 100px; }
+                        .status-badge { background: rgba(245,158,11,0.15); color: #fbbf24; padding: 6px 12px; border-radius: 8px; font-size: 0.75rem; font-weight: bold; letter-spacing: 1px; text-transform: uppercase; border: 1px solid rgba(245,158,11,0.3); }
                         .main-table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
-                        .main-table th, .main-table td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; }
-                        .main-table th { background: #f8fafc; color: #64748b; font-weight: 600; font-size: 14px; text-transform: uppercase; letter-spacing: 1px;}
-                        .amount-col { text-align: right !important; }
-                        .total-section { text-align: right; font-size: 18px; font-weight: bold; color: #0f172a; border-top: 2px solid #333; padding-top: 15px;}
-                        .footer { text-align: center; margin-top: 50px; font-size: 12px; color: #94a3b8; }
+                        .main-table th, .main-table td { padding: 15px 12px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.05); }
+                        .main-table th { color: #0ea5e9; font-weight: 600; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; background: rgba(0,0,0,0.2); }
+                        .main-table td { font-size: 0.95rem; }
+                        .amount-col { text-align: right !important; font-weight: 600; color: white; }
+                        .total-section { text-align: right; font-size: 1.6rem; font-weight: 800; color: #10b981; border-top: 2px solid rgba(255,255,255,0.1); padding-top: 20px; letter-spacing: -0.5px;}
+                        .footer { text-align: center; margin-top: 50px; font-size: 0.85rem; color: #64748b; font-weight: 500; }
                     </style>
                 </head>
-                <body onload="window.print()">
-                    <div class="header">
-                        <h1>Vantage Loan Statement</h1>
-                        <p>Generated on ${today}</p>
+                <body onload="setTimeout(() => window.print(), 500)">
+                    <div class="invoice-box">
+                        <div class="header">
+                            <div class="header-left">
+                                <h1>Statement of Account</h1>
+                                <p>Generated on ${today}</p>
+                            </div>
+                            <div class="header-right">
+                                <span class="sender-label">Generated By</span>
+                                <span class="sender-name">${currentUser.name}</span>
+                                <span class="sender-email">${currentUser.email}</span>
+                            </div>
+                        </div>
+                        <table class="details-table">
+                            <tr><td class="details-label">Billed To:</td><td><strong style="color: white; font-size: 1.15rem;">${friendName}</strong></td></tr>
+                            <tr><td class="details-label" style="padding-top: 15px;">Status:</td><td style="padding-top: 15px;"><span class="status-badge">Active Outstanding</span></td></tr>
+                        </table>
+                        <table class="main-table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Type</th>
+                                    <th>Remarks</th>
+                                    <th class="amount-col">Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${friendLoans.map(l => `<tr>
+                                    <td style="color: #94a3b8;">${new Date(l.date).toLocaleDateString()}</td>
+                                    <td style="color: #f1f5f9;">Money Given</td>
+                                    <td style="color: #94a3b8;">${l.remarks || '-'}</td>
+                                    <td class="amount-col">₹${l.amount}</td>
+                                </tr>`).join('')}
+                            </tbody>
+                        </table>
+                        <div class="total-section">Total Outstanding: ₹${totalOwed}</div>
+                        <div class="footer">Please settle the due amount at your earliest convenience.</div>
                     </div>
-                    <table class="details-table">
-                        <tr><td class="details-label">Recipient:</td><td><strong>${friendName}</strong></td></tr>
-                        <tr><td class="details-label">Status:</td><td>Active Outstanding</td></tr>
-                    </table>
-                    <table class="main-table">
-                        <thead>
-                            <tr>
-                                <th>Date</th>
-                                <th>Type</th>
-                                <th>Remarks</th>
-                                <th class="amount-col">Amount</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${friendLoans.map(l => `<tr>
-                                <td>${new Date(l.date).toLocaleDateString()}</td>
-                                <td>Money Given</td>
-                                <td>${l.remarks || '-'}</td>
-                                <td class="amount-col">₹${l.amount}</td>
-                            </tr>`).join('')}
-                        </tbody>
-                    </table>
-                    <div class="total-section">Total Outstanding: ₹${totalOwed}</div>
-                    <div class="footer">This is a computer-generated document.</div>
                 </body>
                 </html>
             `;
