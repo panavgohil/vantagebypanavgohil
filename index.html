@@ -152,16 +152,12 @@
         .action-icons i.fa-trash:hover { color: var(--danger); }
         .action-icons i.fa-file-invoice:hover { color: var(--accent) !important; }
 
-        #studentControls > div, #loanFormContainer { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 20px; padding: 25px; margin-bottom: 25px; }
+        #studentControls > div, #loanFormContainer, #splitBillContainer { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 20px; padding: 25px; margin-bottom: 25px; }
 
-        .budget-wrapper { background: rgba(0,0,0,0.2); padding: 20px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 25px;}
-        .budget-header { display: flex; justify-content: space-between; align-items: center; font-size: 0.9rem; color: var(--text-sub); margin-bottom: 12px; font-weight: 600;}
         .progress-track { width: 100%; height: 10px; background: rgba(255,255,255,0.05); border-radius: 5px; overflow: hidden; box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);}
         .progress-fill { height: 100%; background: var(--gradient); width: 0%; transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1); border-radius: 5px;}
         .progress-fill.warning { background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); } 
         .progress-fill.danger { background: linear-gradient(135deg, #f87171 0%, #ef4444 100%); }
-        .set-budget-btn { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; font-size: 0.75rem; cursor: pointer; padding: 6px 12px; border-radius: 8px; font-weight: 600; transition: background 0.2s;}
-        .set-budget-btn:hover { background: rgba(255,255,255,0.1); }
 
         .search-bar-container { margin-bottom: 20px; position: relative; }
         .search-bar { width: 100%; padding: 14px 45px 14px 45px; border-radius: 12px; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.05); color: white; font-size: 0.95rem; }
@@ -346,54 +342,93 @@
 
             <div id="dashToggle" class="dash-toggle hidden">
                 <div id="mode-spend" class="dash-opt active" onclick="setDashMode('spend')"><i class="fa-solid fa-wallet" style="margin-right:6px;"></i> Spending</div>
-                <div id="mode-lend" class="dash-opt" onclick="setDashMode('lend')"><i class="fa-solid fa-hand-holding-dollar" style="margin-right:6px;"></i> Loans</div>
+                <div id="mode-lend" class="dash-opt" onclick="setDashMode('lend')"><i class="fa-solid fa-hand-holding-dollar" style="margin-right:6px;"></i> Loans & Splits</div>
             </div>
 
             <div id="section-spend">
+                
+                <div id="metricsRow" class="hidden" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin-bottom: 25px;">
+                    <div style="background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.05); border-radius: 20px; padding: 20px; position: relative;">
+                        <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                            <span style="font-size:0.75rem; color:var(--text-sub); font-weight:700; text-transform:uppercase; letter-spacing:1px;">Spent Today</span>
+                            <div style="background:rgba(14,165,233,0.1); width:32px; height:32px; border-radius:10px; display:flex; justify-content:center; align-items:center; color:var(--primary);"><i class="fa-solid fa-wallet"></i></div>
+                        </div>
+                        <strong id="spentTodayDisplay" style="display:block; font-size:2.2rem; color:var(--primary); margin:10px 0; letter-spacing: -1px;">₹0</strong>
+                        <div style="font-size:0.75rem; color:var(--text-sub); display:flex; align-items:center; gap:5px;"><i class="fa-solid fa-rotate" style="font-size: 0.7rem;"></i> Resets at Midnight</div>
+                    </div>
+
+                    <div style="background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.05); border-radius: 20px; padding: 20px;">
+                        <span style="font-size:0.75rem; color:var(--text-sub); font-weight:700; text-transform:uppercase; letter-spacing:1px;">Today's Peak Type</span>
+                        <strong id="peakTypeDisplay" style="display:block; font-size:2.2rem; color:var(--accent); margin:10px 0; letter-spacing: -1px;">None</strong>
+                        <div style="font-size:0.75rem; color:var(--text-sub);">Aggregated from today's inputs</div>
+                    </div>
+
+                    <div style="background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.05); border-radius: 20px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between;">
+                        <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                            <span style="font-size:0.75rem; color:var(--text-sub); font-weight:700; text-transform:uppercase; letter-spacing:1px;">Monthly Limit</span>
+                            <button class="text-btn" onclick="promptBudget()" style="color:var(--primary); font-size:0.75rem; padding:0; font-weight:700;">Configure</button>
+                        </div>
+                        <strong id="budgetDisplay" style="display:block; font-size:2.2rem; color:white; margin:10px 0; letter-spacing: -1px;">₹0</strong>
+                        <div>
+                            <div class="progress-track" style="height: 6px; margin-bottom: 8px;"><div class="progress-fill" id="budgetBar"></div></div>
+                            <div style="font-size:0.75rem; color:var(--text-sub);" id="budgetText">0% utilized</div>
+                        </div>
+                    </div>
+                </div>
+
                 <div id="studentControls" class="hidden">
                     <div class="form-card">
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap: wrap; gap: 10px;">
                             <h4 style="margin:0; color:var(--primary);" id="expFormTitle"><i class="fa-solid fa-cart-plus" style="margin-right:8px;"></i>Add Expense</h4>
-                            <button class="text-btn" onclick="togglePastEntry()">+ Add Past Entry</button>
-                        </div>
-                        
-                        <div style="display: grid; grid-template-columns: 1fr; gap: 15px;">
-                            <div class="input-group" style="margin:0;"><i class="fa-solid fa-tag icon-left"></i><input id="expItem" placeholder="Item Name"></div>
-                            
-                            <div style="display:flex; gap:15px;">
-                                <div class="input-group" style="flex:1; margin:0;"><i class="fa-solid fa-indian-rupee-sign icon-left"></i><input type="number" id="expAmount" placeholder="Total Cost"></div>
-                                <div class="input-group" style="flex:1; margin:0;"><i class="fa-solid fa-list icon-left"></i>
-                                    <select id="expCategory" style="padding-left:45px; appearance:none;">
-                                        <option>Essentials</option><option>Food</option><option>Travel</option><option>Study</option><option>Rent</option><option>Utilities</option><option>Health</option><option>Fashion</option><option>Entertainment</option><option>Others</option>
-                                    </select>
-                                </div>
-                            </div>
-                            
-                            <div style="display:flex; gap:15px;">
-                                <div class="input-group" style="flex:1; margin:0;">
-                                    <i class="fa-regular fa-credit-card icon-left"></i>
-                                    <select id="expPaymentMode" style="padding-left:45px; appearance:none;">
-                                        <option value="UPI">UPI</option>
-                                        <option value="Cash">Cash</option>
-                                        <option value="Card">Card</option>
-                                        <option value="Others">Others</option>
-                                    </select>
-                                </div>
-                                <div id="pastDateGroup" class="hidden input-group" style="flex:1; margin:0;"><i class="fa-regular fa-calendar icon-left"></i><input type="date" id="expDate"></div>
+                            <div style="display:flex; gap:10px; align-items: center;">
+                                <button class="text-btn" id="pastEntryBtn" onclick="togglePastEntry()">+ Add Past Entry</button>
+                                <button class="btn-export" style="margin:0; padding:6px 12px; font-size:0.85rem; display:flex; align-items:center; gap:6px; color:var(--primary); border-color:rgba(14,165,233,0.3);" onclick="toggleBulkMode()" id="bulkToggleBtn">
+                                    <i class="fa-solid fa-layer-group"></i> Add Multiple Entries
+                                </button>
                             </div>
                         </div>
                         
-                        <div style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 12px; margin-top: 15px; border: 1px solid rgba(255,255,255,0.05);">
-                            <label style="color:white; display:flex; align-items:center; gap:12px; cursor:pointer; font-weight:500; font-size:0.95rem;">
-                                <input type="checkbox" id="expReimburse" onchange="toggleReimburseAmt()"> Request Reimbursement from Guardian
-                            </label>
-                            <div id="reimburseAmtGroup" class="hidden input-group" style="margin-top:15px; margin-bottom:0;">
-                                <i class="fa-solid fa-hand-holding-dollar icon-left" style="color:var(--accent);"></i>
-                                <input type="number" id="expReqAmount" placeholder="Partial Amount (Leave blank for full amount)" style="border-color: rgba(16,185,129,0.3);">
+                        <div id="singleExpenseForm">
+                            <div style="display: grid; grid-template-columns: 1fr; gap: 15px;">
+                                <div class="input-group" style="margin:0;"><i class="fa-solid fa-tag icon-left"></i><input id="expItem" placeholder="Item Name"></div>
+                                
+                                <div style="display:flex; gap:15px;">
+                                    <div class="input-group" style="flex:1; margin:0;"><i class="fa-solid fa-indian-rupee-sign icon-left"></i><input type="number" id="expAmount" placeholder="Total Cost"></div>
+                                    <div class="input-group" style="flex:1; margin:0;"><i class="fa-solid fa-list icon-left"></i>
+                                        <select id="expCategory" style="padding-left:45px; appearance:none;">
+                                            <option>Essentials</option><option>Food</option><option>Travel</option><option>Study</option><option>Rent</option><option>Utilities</option><option>Health</option><option>Fashion</option><option>Entertainment</option><option>Others</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <div style="display:flex; gap:15px;">
+                                    <div class="input-group" style="flex:1; margin:0;">
+                                        <i class="fa-regular fa-credit-card icon-left"></i>
+                                        <select id="expPaymentMode" style="padding-left:45px; appearance:none;">
+                                            <option value="UPI">UPI</option><option value="Cash">Cash</option><option value="Card">Card</option><option value="Others">Others</option>
+                                        </select>
+                                    </div>
+                                    <div id="pastDateGroup" class="hidden input-group" style="flex:1; margin:0;"><i class="fa-regular fa-calendar icon-left"></i><input type="date" id="expDate"></div>
+                                </div>
                             </div>
+                            
+                            <div style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 12px; margin-top: 15px; border: 1px solid rgba(255,255,255,0.05);">
+                                <label style="color:white; display:flex; align-items:center; gap:12px; cursor:pointer; font-weight:500; font-size:0.95rem;">
+                                    <input type="checkbox" id="expReimburse" onchange="toggleReimburseAmt()"> Request Reimbursement from Guardian
+                                </label>
+                                <div id="reimburseAmtGroup" class="hidden input-group" style="margin-top:15px; margin-bottom:0;">
+                                    <i class="fa-solid fa-hand-holding-dollar icon-left" style="color:var(--accent);"></i>
+                                    <input type="number" id="expReqAmount" placeholder="Partial Amount (Leave blank for full amount)" style="border-color: rgba(16,185,129,0.3);">
+                                </div>
+                            </div>
+                            <button class="btn-primary" onclick="addExpense()" id="expBtn" style="margin-top: 20px;">Save Expense</button>
                         </div>
 
-                        <button class="btn-primary" onclick="addExpense()" id="expBtn" style="margin-top: 20px;">Save Expense</button>
+                        <div id="bulkExpenseContainer" class="hidden" style="margin-top: 10px;">
+                            <div id="bulkRowsList" style="display:flex; flex-direction:column; gap:12px;"></div>
+                            <button class="secondary" onclick="addBulkRow()" style="font-size: 0.85rem; padding: 10px; margin-top: 15px;">+ Add Another Row</button>
+                            <button class="btn-primary" onclick="submitBulkExpenses()" style="margin-top: 15px; background: var(--accent); box-shadow: 0 4px 15px rgba(16,185,129,0.3);">Save All Entries</button>
+                        </div>
                     </div>
 
                     <div class="form-card" style="margin-top: 25px;">
@@ -415,18 +450,6 @@
                         </div>
                     </div>
                 </div>
-                
-                <div class="budget-wrapper hidden" id="budgetCard">
-                    <div class="budget-header">
-                        <span>Monthly Budget Limit</span>
-                        <button class="set-budget-btn" onclick="promptBudget()"><i class="fa-solid fa-pen" style="margin-right:5px;"></i> Set Limit</button>
-                    </div>
-                    <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-top: 5px;">
-                        <strong id="budgetDisplay" style="color:white; font-size:1.4rem; letter-spacing: -0.5px;">₹0</strong>
-                        <div style="font-size:0.8rem; color:var(--text-sub); font-weight:600;" id="budgetText">0% used</div>
-                    </div>
-                    <div class="progress-track"><div class="progress-fill" id="budgetBar"></div></div>
-                </div>
 
                 <div style="display:flex; justify-content:space-between; margin-bottom:15px; margin-top:30px; align-items:center;">
                     <h4 style="margin:0; display:flex; align-items:center; gap:8px;"><i class="fa-solid fa-clock-rotate-left" style="color:var(--primary);"></i> Activity</h4>
@@ -447,6 +470,11 @@
             </div>
 
             <div id="section-lend" class="hidden">
+                <div class="glass-card" id="segmentDiagnostics" style="margin-bottom: 25px; border-left: 4px solid var(--accent); padding: 20px;">
+                    <h4 style="margin:0 0 15px 0; color:white; font-size: 1.1rem;"><i class="fa-solid fa-clipboard-list" style="color:var(--accent); margin-right:8px;"></i> Segment Diagnostics</h4>
+                    <div id="diagnosticsList" style="display:flex; flex-direction:column; gap:8px;"></div>
+                </div>
+
                 <div class="form-card" id="loanFormContainer" style="border-top: 3px solid var(--loan-given);">
                     <h4 style="margin:0 0 20px 0; color:var(--loan-given); display:flex; align-items:center; gap:8px;" id="loanFormTitle"><i class="fa-solid fa-hand-holding-hand"></i> Record Loan Given</h4>
                     <div style="display: grid; grid-template-columns: 1fr; gap: 15px;">
@@ -461,6 +489,23 @@
                     <button class="btn-primary" style="background:var(--loan-given); box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3); margin-top: 20px;" onclick="addLoan()" id="loanBtn">Save Record</button>
                 </div>
                 
+                <div class="form-card" id="splitBillContainer" style="border-top: 3px solid var(--primary); margin-top: 25px;">
+                    <h4 style="margin:0 0 20px 0; color:var(--primary); display:flex; align-items:center; gap:8px;"><i class="fa-solid fa-calculator"></i> Dynamic Bill Split Calculator</h4>
+                    <div style="display: grid; grid-template-columns: 1fr; gap: 15px;">
+                        <div style="display:flex; gap:15px;">
+                            <div class="input-group" style="flex:1; margin:0;"><i class="fa-solid fa-indian-rupee-sign icon-left"></i><input type="number" id="splitTotalAmt" placeholder="Grand Total (₹)"></div>
+                            <div class="input-group" style="flex:1; margin:0;"><i class="fa-solid fa-note-sticky icon-left"></i><input id="splitBillRef" placeholder="Bill Ref / Notes"></div>
+                        </div>
+                        <div id="splitParticipantsList" style="display:flex; flex-direction:column; gap:10px; margin-top: 10px;"></div>
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                             <div class="input-group" style="flex:1; margin:0;"><i class="fa-solid fa-percent icon-left"></i><input type="number" id="splitSelfPct" placeholder="My Share (%)" onkeyup="autoCalculateSelfAmt()"></div>
+                             <div class="input-group" style="flex:1; margin:0;"><i class="fa-solid fa-indian-rupee-sign icon-left"></i><input type="number" id="splitSelfAmt" placeholder="My Amt" readonly></div>
+                        </div>
+                        <button class="secondary" onclick="addSplitParticipantRow()" style="font-size: 0.85rem; padding: 10px;">+ Add Friend Row</button>
+                    </div>
+                    <button class="btn-primary" style="margin-top: 20px;" onclick="submitSplitBill()">Submit Calculated Splits</button>
+                </div>
+
                 <div class="loan-tabs" style="margin-top: 30px;">
                     <div id="tab-given" class="loan-tab active" onclick="switchLoanTab('given')">Money Given</div>
                     <div id="tab-taken" class="loan-tab" onclick="switchLoanTab('taken')">Money Taken</div>
@@ -496,12 +541,13 @@
     <script>
         // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         // PUT YOUR APPS SCRIPT DEPLOYMENT URL HERE
-        const API_URL = 'https://script.google.com/macros/s/AKfycby3Ebh2Hu6NsPmNbDxvT3fcwG_kWJhBSuvbGoE3SXRPQ-5vFcQOMj5FTI-4XZadAedw/exec'; 
+        const API_URL = 'https://script.google.com/macros/s/AKfycbyqoAW3voefqyt9ng8V1TxRdqHe8OrNrbevwklpa-3BjcZt-11eBAx_WmEPoQI6JrYv/exec'; 
         // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
         let currentRole = 'student', currentUser = null, currentExpenses = [], myChart = null;
         let givenLoans = [], takenLoans = [], activeLoanTab = 'given';
         let editingExpenseId = null, editingLoanId = null;
+        let isBulkMode = false; // New global for bulk entry
 
         const loader = { show: () => document.getElementById('loader-overlay').classList.remove('hidden'), hide: () => document.getElementById('loader-overlay').classList.add('hidden') };
         const msg = (text) => document.getElementById('authMsg').innerText = text;
@@ -545,7 +591,7 @@
             if(user.role === 'student') { 
                 document.getElementById('studentControls').classList.remove('hidden'); 
                 document.getElementById('dashToggle').classList.remove('hidden'); 
-                document.getElementById('budgetCard').classList.remove('hidden'); 
+                document.getElementById('metricsRow').classList.remove('hidden'); // SHOW METRICS
                 document.querySelector('.chart-controls').classList.remove('hidden');
                 
                 document.getElementById('studentSection').classList.remove('hidden');
@@ -561,13 +607,46 @@
             } else { 
                 document.getElementById('studentControls').classList.add('hidden'); 
                 document.getElementById('dashToggle').classList.add('hidden'); 
-                document.getElementById('budgetCard').classList.add('hidden'); 
+                document.getElementById('metricsRow').classList.add('hidden'); // HIDE METRICS FOR GUARDIANS
                 document.querySelector('.chart-controls').classList.add('hidden');
                 
                 document.getElementById('studentSection').classList.add('hidden');
                 
                 fetchData(user.email, 'get_guardian_data'); 
             }
+        }
+
+        // NEW: DAILY METRICS UPDATER
+        function updateDailyMetrics() {
+            if (!currentUser || currentUser.role !== 'student') return;
+            
+            const todayStr = new Date().toDateString();
+            let spentToday = 0;
+            let categoryCounts = {};
+
+            currentExpenses.forEach(exp => {
+                const expDateStr = new Date(exp.date).toDateString();
+                if (expDateStr === todayStr) {
+                    const amt = Number(exp.amount);
+                    spentToday += amt;
+                    categoryCounts[exp.category] = (categoryCounts[exp.category] || 0) + amt;
+                }
+            });
+
+            document.getElementById('spentTodayDisplay').innerText = `₹${spentToday.toLocaleString()}`;
+
+            let peakType = 'None';
+            let maxAmount = 0;
+            for (const [category, amount] of Object.entries(categoryCounts)) {
+                if (amount > maxAmount) {
+                    maxAmount = amount;
+                    peakType = category;
+                }
+            }
+            
+            const peakEl = document.getElementById('peakTypeDisplay');
+            peakEl.innerText = peakType;
+            peakEl.style.color = peakType === 'None' ? 'var(--accent)' : 'var(--text-main)';
         }
 
         function generateUPIQR() {
@@ -605,7 +684,7 @@
 
         function switchLoanTab(type) {
             activeLoanTab = type; document.getElementById('tab-given').classList.toggle('active', type==='given'); document.getElementById('tab-taken').classList.toggle('active', type==='taken');
-            editingLoanId = null; document.getElementById('loanBtn').innerText = type === 'given' ? "Save Record" : "Save Record";
+            editingLoanId = null; document.getElementById('loanBtn').innerText = "Save Record";
             const container = document.getElementById('loanFormContainer'), title = document.getElementById('loanFormTitle');
             const nameInput = document.getElementById('loanName'), keyInput = document.getElementById('loanFriendKey');
             const amtInput = document.getElementById('loanAmount'), btn = document.getElementById('loanBtn');
@@ -616,7 +695,7 @@
 
         function togglePastEntry() { 
             const group = document.getElementById('pastDateGroup'); group.classList.toggle('hidden'); 
-            const btn = document.querySelector('.text-btn'); 
+            const btn = document.getElementById('pastEntryBtn'); 
             if(!group.classList.contains('hidden')) { btn.innerText = "Cancel Past Entry"; btn.style.color = "var(--danger)"; } 
             else { btn.innerHTML = "+ Add Past Entry"; btn.style.color = "var(--primary)"; document.getElementById('expDate').value = ""; } 
         }
@@ -626,6 +705,101 @@
             const group = document.getElementById('reimburseAmtGroup');
             if(isChecked) { group.classList.remove('hidden'); } 
             else { group.classList.add('hidden'); document.getElementById('expReqAmount').value = ""; }
+        }
+
+        // NEW: BULK TOGGLE & LOGIC
+        function toggleBulkMode() {
+            isBulkMode = !isBulkMode;
+            const singleForm = document.getElementById('singleExpenseForm');
+            const bulkForm = document.getElementById('bulkExpenseContainer');
+            const btn = document.getElementById('bulkToggleBtn');
+            const title = document.getElementById('expFormTitle');
+            const pastBtn = document.getElementById('pastEntryBtn');
+
+            if(isBulkMode) {
+                singleForm.classList.add('hidden');
+                pastBtn.classList.add('hidden'); 
+                bulkForm.classList.remove('hidden');
+                btn.innerHTML = '<i class="fa-solid fa-minus"></i> Single Entry';
+                btn.style.color = "white";
+                title.innerHTML = '<i class="fa-solid fa-layer-group" style="margin-right:8px;"></i>Bulk Expenses';
+                
+                if(document.getElementById('bulkRowsList').children.length === 0) addBulkRow(); 
+            } else {
+                singleForm.classList.remove('hidden');
+                pastBtn.classList.remove('hidden');
+                bulkForm.classList.add('hidden');
+                btn.innerHTML = '<i class="fa-solid fa-layer-group"></i> Add Multiple Entries';
+                btn.style.color = "var(--primary)";
+                title.innerHTML = '<i class="fa-solid fa-cart-plus" style="margin-right:8px;"></i>Add Expense';
+            }
+        }
+
+        function addBulkRow() {
+            const list = document.getElementById('bulkRowsList');
+            const rowId = 'bulk_row_' + Date.now();
+            const today = new Date().toISOString().split('T')[0];
+            
+            const html = `
+                <div id="${rowId}" style="display:flex; gap:8px; align-items:center; flex-wrap:wrap; background:rgba(0,0,0,0.2); padding:12px; border-radius:12px; border:1px solid rgba(255,255,255,0.05);">
+                    <input type="date" class="b-date" value="${today}" style="padding:12px 10px !important; width: 130px; font-size:0.85rem !important;">
+                    <input type="text" class="b-item" placeholder="Item Name" style="padding:12px 15px !important; flex:2; min-width: 140px; font-size:0.85rem !important;">
+                    <input type="number" class="b-amt" placeholder="₹ Amt" style="padding:12px 15px !important; width:90px; font-size:0.85rem !important;">
+                    
+                    <select class="b-cat" style="padding:12px 10px !important; width: 110px; font-size:0.85rem !important; appearance:none;">
+                        <option>Essentials</option><option>Food</option><option>Travel</option><option>Study</option><option>Rent</option><option>Utilities</option><option>Health</option><option>Fashion</option><option>Others</option>
+                    </select>
+                    
+                    <select class="b-mode" style="padding:12px 10px !important; width: 90px; font-size:0.85rem !important; appearance:none;">
+                        <option value="UPI">UPI</option><option value="Cash">Cash</option><option value="Card">Card</option>
+                    </select>
+                    
+                    <label style="display:flex; align-items:center; gap:5px; color:var(--text-sub); font-size:0.8rem; cursor:pointer; margin:0 5px;">
+                        <input type="checkbox" class="b-reimb" style="width:16px; height:16px;"> Reimb
+                    </label>
+                    
+                    <i class="fa-solid fa-xmark" style="color:var(--danger); cursor:pointer; font-size:1.1rem; padding: 5px;" onclick="document.getElementById('${rowId}').remove()"></i>
+                </div>
+            `;
+            list.insertAdjacentHTML('beforeend', html);
+        }
+
+        async function submitBulkExpenses() {
+            const rows = document.querySelectorAll('#bulkRowsList > div');
+            let expenses = [];
+            
+            rows.forEach(row => {
+                const item = row.querySelector('.b-item').value;
+                const amt = row.querySelector('.b-amt').value;
+                
+                if(item && amt && parseFloat(amt) > 0) {
+                    expenses.push({
+                        date: row.querySelector('.b-date').value || new Date().toISOString().split('T')[0],
+                        item_name: item,
+                        amount: amt,
+                        category: row.querySelector('.b-cat').value,
+                        payment_mode: row.querySelector('.b-mode').value,
+                        is_reimbursable: row.querySelector('.b-reimb').checked,
+                        requested_amount: amt // Assuming full reimbursement in bulk mode
+                    });
+                }
+            });
+
+            if(expenses.length === 0) return alert("Please fill out at least one valid expense row (Item Name and Amount are required).");
+
+            const payload = {
+                action: 'add_bulk_expenses',
+                student_key: currentUser.student_key,
+                expenses: expenses
+            };
+
+            await apiCall(payload);
+            
+            document.getElementById('bulkRowsList').innerHTML = "";
+            addBulkRow(); 
+            toggleBulkMode(); // Switch back to single mode automatically
+            alert(`${expenses.length} expenses saved successfully!`);
+            fetchData(currentUser.student_key, 'get_expenses');
         }
 
         async function promptBudget() {
@@ -702,6 +876,74 @@
             fetchLoans();
         }
 
+        /* --- DYNAMIC SPLIT BILL FUNCTIONS --- */
+        function addSplitParticipantRow() {
+            const list = document.getElementById('splitParticipantsList');
+            const rowId = 'split_row_' + Date.now();
+            const html = `
+                <div id="${rowId}" style="display:flex; gap:10px; align-items:center; flex-wrap: wrap; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05);">
+                    <div style="width: 100%; display: flex; justify-content: space-between; margin-bottom: 5px;">
+                        <span style="font-size: 0.8rem; color: var(--text-sub); font-weight: 600;">Participant</span>
+                        <i class="fa-solid fa-xmark" style="color:var(--danger); cursor:pointer;" onclick="document.getElementById('${rowId}').remove()"></i>
+                    </div>
+                    <div class="input-group" style="flex:1; min-width: 120px; margin:0;"><i class="fa-regular fa-user icon-left"></i><input type="text" class="split-name" placeholder="Name"></div>
+                    <div class="input-group" style="flex:1; min-width: 120px; margin:0;"><i class="fa-solid fa-key icon-left"></i><input type="text" class="split-key" placeholder="ID (Opt)"></div>
+                    <div class="input-group" style="width: 80px; margin:0;"><i class="fa-solid fa-percent icon-left"></i><input type="number" class="split-pct" placeholder="%" onkeyup="autoCalculateSplitAmt('${rowId}')"></div>
+                    <div class="input-group" style="width: 100px; margin:0;"><i class="fa-solid fa-indian-rupee-sign icon-left"></i><input type="number" class="split-amt" placeholder="Amt" readonly></div>
+                </div>
+            `;
+            list.insertAdjacentHTML('beforeend', html);
+        }
+
+        function autoCalculateSplitAmt(rowId) {
+            const total = parseFloat(document.getElementById('splitTotalAmt').value) || 0;
+            const row = document.getElementById(rowId);
+            const pct = parseFloat(row.querySelector('.split-pct').value) || 0;
+            row.querySelector('.split-amt').value = Math.round(total * (pct / 100));
+        }
+
+        function autoCalculateSelfAmt() {
+            const total = parseFloat(document.getElementById('splitTotalAmt').value) || 0;
+            const pct = parseFloat(document.getElementById('splitSelfPct').value) || 0;
+            document.getElementById('splitSelfAmt').value = Math.round(total * (pct / 100));
+        }
+
+        async function submitSplitBill() {
+            const total = document.getElementById('splitTotalAmt').value;
+            const remarks = document.getElementById('splitBillRef').value;
+            const rows = document.querySelectorAll('#splitParticipantsList > div[id^="split_row_"]');
+            
+            let splits = [];
+            rows.forEach(row => {
+                const name = row.querySelector('.split-name').value;
+                const key = row.querySelector('.split-key').value;
+                const amt = row.querySelector('.split-amt').value;
+                if(name && amt && parseFloat(amt) > 0) {
+                    splits.push({ name: name, studentId: key, amount: amt, percentage: row.querySelector('.split-pct').value });
+                }
+            });
+
+            if(!total || splits.length === 0) return alert("Please enter total amount and at least one valid participant.");
+
+            const payload = {
+                action: 'add_split_bill',
+                student_key: currentUser.student_key,
+                total: total,
+                remarks: remarks,
+                splits: splits
+            };
+
+            await apiCall(payload);
+            
+            document.getElementById('splitTotalAmt').value = "";
+            document.getElementById('splitBillRef').value = "";
+            document.getElementById('splitSelfPct').value = "";
+            document.getElementById('splitSelfAmt').value = "";
+            document.getElementById('splitParticipantsList').innerHTML = "";
+            alert("Bill split successfully recorded!");
+            fetchLoans();
+        }
+
         function startEditExpense(id) {
             const exp = currentExpenses.find(e => e.id === id); if(!exp) return;
             editingExpenseId = id; document.getElementById('expFormTitle').innerHTML = '<i class="fa-solid fa-pen-to-square" style="margin-right:8px;"></i> Edit Expense'; document.getElementById('expBtn').innerText = "Update Expense";
@@ -719,7 +961,8 @@
 
             document.getElementById('pastDateGroup').classList.remove('hidden');
             const d = new Date(exp.date); document.getElementById('expDate').value = d.toISOString().split('T')[0];
-            document.querySelector('.text-btn').innerText = "Cancel Edit"; document.querySelector('.text-btn').style.color = "var(--danger)";
+            const btn = document.getElementById('pastEntryBtn');
+            if (btn) { btn.innerText = "Cancel Edit"; btn.style.color = "var(--danger)"; }
             document.getElementById('studentControls').scrollIntoView({behavior: "smooth"});
         }
 
@@ -834,8 +1077,8 @@
                         <div class="total-section">Total Outstanding: ₹${totalOwed}</div>
                         <div class="footer">Please settle the due amount at your earliest convenience.</div>
                     </div>
-                </body>
-                </html>
+                <\/body>
+                <\/html>
             `;
             printWindow.document.write(html);
             printWindow.document.close();
@@ -846,6 +1089,7 @@
             currentExpenses = res.expenses || []; currentExpenses.sort((a, b) => new Date(b.date) - new Date(a.date));
             if(currentUser.role === 'student') {
                 renderList(currentExpenses); populateChartSelector(); filterChartByMonth(); updateBudgetUI(currentUser.budget||0, calculateCurrentMonthSpent());
+                updateDailyMetrics(); 
             } else {
                 renderList(currentExpenses); renderStats(currentExpenses);
             }
@@ -854,7 +1098,43 @@
         async function fetchLoans() {
             const res = await apiCall({ action:'get_loans', student_key:currentUser.student_key });
             givenLoans = res.given || []; takenLoans = res.taken || [];
-            renderLoanList(); renderLoanStats();
+            renderLoanList(); renderLoanStats(); renderSegmentDiagnostics();
+        }
+
+        function renderSegmentDiagnostics() {
+            const container = document.getElementById('diagnosticsList');
+            container.innerHTML = "";
+            let balances = {};
+
+            givenLoans.filter(l => l.status !== 'Repaid').forEach(l => {
+                balances[l.friend] = (balances[l.friend] || 0) + Number(l.amount);
+            });
+
+            takenLoans.filter(l => l.status !== 'Repaid').forEach(l => {
+                balances[l.friend] = (balances[l.friend] || 0) - Number(l.amount);
+            });
+
+            if(Object.keys(balances).length === 0) {
+                container.innerHTML = "<p style='color:var(--text-sub); font-size:0.85rem; margin:0;'>Clean financial checklist!</p>";
+                return;
+            }
+
+            Object.keys(balances).forEach(person => {
+                const net = balances[person];
+                if (net === 0) return;
+                
+                const color = net > 0 ? "var(--loan-given)" : "var(--loan-taken)";
+                const icon = net > 0 ? "fa-arrow-up" : "fa-arrow-down";
+                
+                container.innerHTML += `
+                    <div style="display:flex; justify-content:space-between; background:rgba(0,0,0,0.2); padding:10px 15px; border-radius:10px;">
+                        <span style="color:var(--text-main); font-weight:500; font-size:0.9rem;">${person}</span>
+                        <span style="color:${color}; font-weight:700; font-size:0.9rem;">
+                            <i class="fa-solid ${icon}" style="font-size:0.7rem; margin-right:4px;"></i> ₹${Math.abs(net).toLocaleString()}
+                        </span>
+                    </div>
+                `;
+            });
         }
 
         function renderLoanList() {
@@ -900,8 +1180,14 @@
             const groups = {};
             items.forEach(i => { const m = new Date(i.date).toLocaleDateString('default', { month: 'long', year: 'numeric' }); if(!groups[m]) groups[m] = []; groups[m].push(i); });
             for (const [month, expenses] of Object.entries(groups)) {
+                
+                let monthSum = 0;
+                expenses.forEach(e => { monthSum += Number(e.amount); });
+                
                 const groupDiv = document.createElement('div'); groupDiv.className = 'month-group';
-                const header = document.createElement('div'); header.className = 'month-header'; header.innerHTML = `<span><i class="fa-regular fa-calendar-days" style="margin-right:8px;"></i>${month}</span><i class="fa-solid fa-chevron-down"></i>`;
+                const header = document.createElement('div'); header.className = 'month-header'; 
+                header.innerHTML = `<span><i class="fa-regular fa-calendar-days" style="margin-right:8px;"></i>${month}</span><span style="font-size:0.85rem; display:flex; align-items:center; gap:8px;">Sum: ₹${monthSum.toLocaleString()} <i class="fa-solid fa-chevron-down"></i></span>`;
+
                 const content = document.createElement('div'); content.className = 'month-content';
                 header.onclick = () => { header.classList.toggle('collapsed'); content.classList.toggle('collapsed'); };
 
